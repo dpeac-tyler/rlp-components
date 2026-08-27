@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RLP Component Library</title>
+<link rel="stylesheet" href="css/styles.css">
+<style>
+  body { background: #f9f9f7; }
+  .library-wrap { width: 100%; padding: 3rem 2rem 6rem; box-sizing: border-box; }
+  .library-intro { font-size: 1.6rem; color: #3d4551; margin-bottom: 2rem; }
+  html { scroll-behavior: smooth; }
+  .library-controls {
+    position: sticky; top: 0; z-index: 20; background: #f9f9f7;
+    padding: 1.6rem 0; border-bottom: 2px solid #dfe1e2; margin-bottom: 2rem;
+    display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;
+  }
+  .library-controls input { max-width: 400px; margin: 0; }
+  #component-count { font-size: 1.4rem; color: #71767a; }
+  #az-nav { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-left: auto; }
+  #az-nav a, #az-nav span {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 2.4rem; height: 2.4rem; border-radius: 3px;
+    font-size: 1.3rem; font-weight: 700; text-decoration: none;
+  }
+  #az-nav a { background: #1a4480; color: #fff; }
+  #az-nav a:hover { background: #16324f; }
+  #az-nav span { color: #c9c9c9; }
+  #az-nav a.no-match { background: #dfe1e2; color: #a9aeb1; }
+  tr.letter-row { scroll-margin-top: 9rem; }
+  #icon-library-heading { scroll-margin-top: 9rem; }
+  .icon-group-heading { margin-top: 4rem; }
+  .icon-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.6rem; margin-bottom: 2rem;
+  }
+  .icon-card {
+    background: #fff; border: 1px solid #dfe1e2; border-radius: 4px;
+    padding: 1.6rem; display: flex; gap: 1.2rem; align-items: flex-start;
+  }
+  .icon-card img { flex-shrink: 0; }
+  .icon-card .icon-filename { font-size: 1.6rem; font-weight: 700; margin: 0 0 0.6rem; word-break: break-all; }
+  .icon-card .icon-labels { font-size: 1.6rem; color: #3d4551; }
+  #component-table { width: 100%; table-layout: fixed; border-collapse: collapse; }
+  #component-table th, #component-table td { vertical-align: top; padding: 1.6rem; }
+  #component-table th:nth-child(1), #component-table td:nth-child(1) { width: 33%; }
+  #component-table th:nth-child(2), #component-table td:nth-child(2) { width: 45%; }
+  #component-table th:nth-child(3), #component-table td:nth-child(3) { width: 22%; }
+  .comp-name { font-size: 1.7rem; font-weight: 700; margin: 0 0 1.2rem; }
+  .comp-preview {
+    background: #fff; border: 1px solid #dfe1e2; border-radius: 4px;
+    padding: 2rem; overflow: auto; position: relative;
+  }
+  .code-cell { position: relative; }
+  .code-cell pre {
+    background: #1b1b1b; color: #f0f0f0; font-size: 1.3rem; line-height: 1.5;
+    padding: 1.6rem; border-radius: 4px; overflow-x: auto; margin: 0; max-height: 420px;
+  }
+  .code-cell .copy-btn {
+    position: absolute; top: 0.8rem; right: 0.8rem; font-size: 1.2rem;
+    background: #3d4551; color: #fff; border: none; border-radius: 3px;
+    padding: 0.4rem 0.8rem; cursor: pointer;
+  }
+  .code-cell .copy-btn:hover { background: #565c65; }
+  .notes-cell { font-size: 1.6rem; color: #3d4551; white-space: pre-wrap; }
+  .notes-cell .source-tag {
+    display: inline-block; font-size: 1.2rem; font-weight: 700; color: #71767a;
+    text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.6rem;
+  }
+  .notes-cell .gap-flag {
+    display: inline-block; background: #fef0c8; border: 1px solid #c2850c;
+    color: #543a00; padding: 0.6rem 1rem; border-radius: 3px; font-size: 1.3rem;
+    margin-top: 0.8rem;
+  }
+  tr.letter-row td {
+    background: #f0f0f0; font-size: 1.4rem; font-weight: 700; color: #71767a;
+    padding: 0.6rem 1.6rem; border-top: 2px solid #dfe1e2;
+  }
+  tr.comp-row.hidden-by-filter { display: none; }
+</style>
+</head>
+<body>
+<div class="library-wrap">
+  <h1 class="page-title page-title--underlined">RLP Component Library</h1>
+  <p class="library-intro">
+    Canonical, cross-project reference for every reusable RLP UI component — markup pulled verbatim from
+    live pages across the RLP directories, not hand-written from the style guide. Devs: copy the HTML column
+    directly. AI agents: this page is the source of truth for reproducing RLP components — match existing
+    markup and classes exactly rather than inventing new patterns.
+  </p>
+  <div class="library-controls">
+    <input type="text" id="component-filter" class="usa-input" placeholder="Filter components…">
+    <span id="component-count"></span>
+    <nav id="az-nav" aria-label="Jump to letter"></nav>
+    <a href="#icon-library-heading" style="font-size:1.4rem; white-space:nowrap;">Jump to Icon Library ↓</a>
+  </div>
+  <table id="component-table">
+    <colgroup><col><col><col></colgroup>
+    <thead>
+      <tr>
+        <th>Component / Preview</th>
+        <th>HTML</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody id="component-rows"></tbody>
+  </table>
+
+  <h2 id="icon-library-heading" class="page-title page-title--underlined">Icon Library</h2>
+  <p class="library-intro">
+    Every file in <code>assets/</code>, grouped by what it's actually used for — pulled from real
+    aria-label / Icon Key text across scanned pages, not invented. Icons used for more than one action
+    list every label found; that's expected, reuse them the same way.
+  </p>
+
+  <h3 class="section-heading icon-group-heading">Action Icons</h3>
+  <div class="icon-grid">
+    <div class="icon-card"><img src="assets/eye-icon.png" alt="" width="30" height="30"><div><p class="icon-filename">eye-icon.png</p><p class="icon-labels">View Case, View Task, View Denial Code, View Document, View Appeal Configuration, Preview</p></div></div>
+    <div class="icon-card"><img src="assets/edit-icon.png" alt="" width="30" height="30"><div><p class="icon-filename">edit-icon.png</p><p class="icon-labels">Edit Case, Edit Application, Edit Denial Code, Edit Email, Edit File Details, Edit Appeal Configuration</p></div></div>
+    <div class="icon-card"><img src="assets/icon-delete.png" alt="" width="30" height="30"><div><p class="icon-filename">icon-delete.png</p><p class="icon-labels">Delete Case Subject, Delete Search Category, Delete Denial Code, Delete Document, Delete Appeal Configuration, Delete (no associations)</p></div></div>
+    <div class="icon-card"><img src="assets/discard-icon.png" alt="" width="30" height="30"><div><p class="icon-filename">discard-icon.png</p><p class="icon-labels">Discard, Discard Application</p></div></div>
+    <div class="icon-card"><img src="assets/publish-icon.png" alt="" width="30" height="30"><div><p class="icon-filename">publish-icon.png</p><p class="icon-labels">Publish Application, Publish (Draft → Active)</p></div></div>
+    <div class="icon-card"><img src="assets/icon-deactivate.png" alt="" width="30" height="30"><div><p class="icon-filename">icon-deactivate.png</p><p class="icon-labels">Deactivate (Active → Inactive)</p></div></div>
+    <div class="icon-card"><img src="assets/icon-reactivate.png" alt="" width="30" height="30"><div><p class="icon-filename">icon-reactivate.png</p><p class="icon-labels">Reactivate (Inactive → Active)</p></div></div>
+    <div class="icon-card"><img src="assets/icon-archive.png" alt="" width="30" height="30"><div><p class="icon-filename">icon-archive.png</p><p class="icon-labels">Archive (template has associations)</p></div></div>
+    <div class="icon-card"><img src="assets/claim-case.png" alt="" width="30" height="30"><div><p class="icon-filename">claim-case.png</p><p class="icon-labels">Claim Case</p></div></div>
+    <div class="icon-card"><img src="assets/claim-task.png" alt="" width="30" height="30"><div><p class="icon-filename">claim-task.png</p><p class="icon-labels">Claim Task</p></div></div>
+    <div class="icon-card"><img src="assets/unclaim-case.png" alt="" width="30" height="30"><div><p class="icon-filename">unclaim-case.png</p><p class="icon-labels">Unclaim Case</p></div></div>
+    <div class="icon-card"><img src="assets/unclaim-task.png" alt="" width="30" height="30"><div><p class="icon-filename">unclaim-task.png</p><p class="icon-labels">Unclaim Task</p></div></div>
+    <div class="icon-card"><img src="assets/download-certificate.png" alt="" width="30" height="30"><div><p class="icon-filename">download-certificate.png</p><p class="icon-labels">Download Certificate, Download Email, Download File</p></div></div>
+    <div class="icon-card"><img src="assets/print-icon.png" alt="" width="30" height="30"><div><p class="icon-filename">print-icon.png</p><p class="icon-labels">Print Email, Print File, Print Letter</p></div></div>
+    <div class="icon-card"><img src="assets/resend-email.png" alt="" width="30" height="30"><div><p class="icon-filename">resend-email.png</p><p class="icon-labels">Resend Email</p></div></div>
+    <div class="icon-card"><img src="assets/envelope-icon.png" alt="" width="30" height="30"><div><p class="icon-filename">envelope-icon.png</p><p class="icon-labels">View Email, View Letter</p></div></div>
+    <div class="icon-card"><img src="assets/create-invoice.png" alt="" width="30" height="30"><div><p class="icon-filename">create-invoice.png</p><p class="icon-labels">Create Invoice</p></div></div>
+    <div class="icon-card"><img src="assets/initiate-inspection.png" alt="" width="30" height="30"><div><p class="icon-filename">initiate-inspection.png</p><p class="icon-labels">Initiate Inspection</p></div></div>
+    <div class="icon-card"><img src="assets/review-task.png" alt="" width="30" height="30"><div><p class="icon-filename">review-task.png</p><p class="icon-labels">Review Task</p></div></div>
+    <div class="icon-card"><img src="assets/view-applicant-profile.png" alt="" width="30" height="30"><div><p class="icon-filename">view-applicant-profile.png</p><p class="icon-labels">View Applicant Profile</p></div></div>
+    <div class="icon-card"><img src="assets/view-submission.png" alt="" width="30" height="30"><div><p class="icon-filename">view-submission.png</p><p class="icon-labels">View Submission</p></div></div>
+    <div class="icon-card"><img src="assets/view-history.png" alt="" width="30" height="30"><div><p class="icon-filename">view-history.png</p><p class="icon-labels">View History</p></div></div>
+    <div class="icon-card"><img src="assets/manage-agency-license-fields.png" alt="" width="30" height="30"><div><p class="icon-filename">manage-agency-license-fields.png</p><p class="icon-labels">Manage Agency License Fields</p></div></div>
+    <div class="icon-card"><img src="assets/manage-license.png" alt="" width="30" height="30"><div><p class="icon-filename">manage-license.png</p><p class="icon-labels">Manage License</p></div></div>
+    <div class="icon-card"><img src="assets/regenerate-certificate.png" alt="" width="30" height="30"><div><p class="icon-filename">regenerate-certificate.png</p><p class="icon-labels">Regenerate Certificate</p></div></div>
+    <div class="icon-card"><img src="assets/lock.png" alt="" width="24" height="24"><div><p class="icon-filename">lock.png</p><p class="icon-labels">"Agency Only" inline indicator (16×16, sits before restricted-item text — not a clickable control)</p></div></div>
+    <div class="icon-card"><img src="assets/test-icon.png" alt="" width="30" height="30"><div><p class="icon-filename">test-icon.png</p><p class="icon-labels">Test Application — name suggests a dev/placeholder icon; confirm with Daniel before reusing in a real flow</p></div></div>
+  </div>
+
+  <h3 class="section-heading icon-group-heading">Branding / Logos</h3>
+  <div class="icon-grid">
+    <div class="icon-card"><img src="assets/agency-logo.png" alt="" width="60" height="30"><div><p class="icon-filename">agency-logo.png</p><p class="icon-labels">Header banner agency logo (alt: "ASP agency logo") — swap per-agency</p></div></div>
+    <div class="icon-card"><img src="assets/rlp-logo.png" alt="" width="30" height="30"><div><p class="icon-filename">rlp-logo.png</p><p class="icon-labels">Header banner RLP product logo (alt: "RLP logo")</p></div></div>
+    <div class="icon-card"><img src="assets/il-logo.png" alt="" width="60" height="30"><div><p class="icon-filename">il-logo.png</p><p class="icon-labels">Same header-logo slot as agency-logo.png, used instead in rlp-packets and rlp-inspections (Illinois agency) — expected per-project variation, not drift</p></div></div>
+  </div>
+
+  <h3 class="section-heading icon-group-heading">Document Backgrounds</h3>
+  <div class="icon-grid">
+    <div class="icon-card"><img src="assets/ar-state-police-blank.png" alt="" width="60" height="60" style="object-fit:cover;"><div><p class="icon-filename">ar-state-police-blank.png</p><p class="icon-labels">Full-page background/watermark for a printable certificate template (individual-profile.html) — not a UI icon, a print asset</p></div></div>
+  </div>
+
+</div>
+
+<script>
+const COMPONENTS = [
+{
+  name: "Accordion — Icon Key",
+  preview: `<div class="usa-accordion usa-accordion--bordered">
+  <h3 class="usa-accordion__heading">
+    <button type="button" class="usa-accordion__button" aria-expanded="false" aria-controls="demo-accordion-content">Icon Key</button>
+  </h3>
+  <div id="demo-accordion-content" class="usa-accordion__content usa-prose" hidden>
+    <p class="text-bold margin-0 margin-bottom-2">Options and Control Types</p>
+    <div class="icon-key-grid">
+      <div class="icon-key-item"><img src="assets/eye-icon.png" alt="" width="24" height="24"><span>- View Case</span></div>
+      <div class="icon-key-item"><img src="assets/edit-icon.png" alt="" width="24" height="24"><span>- Edit Case</span></div>
+    </div>
+  </div>
+</div>`,
+  code: `<div class="usa-accordion usa-accordion--bordered">
+  <h3 class="usa-accordion__heading">
+    <button type="button" class="usa-accordion__button" aria-expanded="false"
+      aria-controls="cases-icon-key-content">
+      Icon Key
+    </button>
+  </h3>
+  <div id="cases-icon-key-content" class="usa-accordion__content usa-prose" hidden>
+    <p class="text-bold margin-0 margin-bottom-2">Options and Control Types</p>
+    <div class="icon-key-grid">
+      <div class="icon-key-item">
+        <img src="assets/eye-icon.png" alt="" width="24" height="24">
+        <span>- View Case</span>
+      </div>
+      <div class="icon-key-item">
+        <img src="assets/edit-icon.png" alt="" width="24" height="24">
+        <span>- Edit Case</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.querySelectorAll('.usa-accordion__button').forEach(button => {
+  button.addEventListener('click', function () {
+    const expanded = this.getAttribute('aria-expanded') === 'true';
+    const content = document.getElementById(this.getAttribute('aria-controls'));
+    if (expanded) {
+      this.setAttribute('aria-expanded', 'false');
+      content.setAttribute('hidden', '');
+    } else {
+      this.setAttribute('aria-expanded', 'true');
+      content.removeAttribute('hidden');
+    }
+  });
+});
+</` + `script>`,
+  notes: `SOURCE: view-cases.html
+
+Every list page with a Controls column gets one of these, positioned above the table-controls bar. Icons render 24×24 here vs. 30×30 in the actual table row. aria-controls / content id must be unique per instance — a page can have several (e.g. per-tab icon keys in view-case-detail.html).`
+},
+{
+  name: "Add-Item List (Growing Rows)",
+  preview: `<div id="demo-choices">
+  <div class="usa-form-group" style="margin-bottom: 1.5rem;">
+    <label class="usa-label" for="demo-choice-1">Choice 1 <span class="field-required">Required</span></label>
+    <div style="display:flex; align-items:center; gap:1rem;">
+      <input class="usa-input" id="demo-choice-1" type="text" style="flex:1;">
+    </div>
+  </div>
+</div>
+<button type="button" class="usa-button usa-button--accent-warm" id="demo-add-choice">Add Choice</button>`,
+  code: `<div id="mcChoicesContainer">
+  <div class="usa-form-group" style="margin-bottom: 1.5rem; position: relative;" data-choice-number="1">
+    <label class="usa-label" for="mcChoice1">Choice 1 <span class="field-required">Required</span></label>
+    <div style="display: flex; align-items: center; gap: 1rem;">
+      <input class="usa-input" id="mcChoice1" name="mcChoice1" type="text" style="flex: 1;">
+      <button type="button" class="mc-delete-btn" style="display: none;" onclick="deleteMCChoice(1)">
+        <img src="assets/icon-delete.png" alt="Delete" style="width: 24px; height: 24px;">
+      </button>
+    </div>
+  </div>
+</div>
+
+<div style="margin-bottom: 2rem;">
+  <button type="button" class="usa-button usa-button--accent-warm" id="addMCChoiceButton">Add Choice</button>
+</div>`,
+  notes: `SOURCE: rlp-packets/create-questions.html (MC choice builder)
+
+The delete icon on each row is hidden until there are 2+ rows (can't delete the last one). Accent-warm button always sits directly below the growing list, never above it.
+
+GAP: your global standards describe a distinct "form sits above table, questions-section gray box, 70/15/15 grid" add-item pattern (example: adding secondary application types to a packet). The actual create-packet.html implementation uses a MODAL to add a secondary, not an inline 70/15/15 form — no page scanned so far implements that exact grid ratio. Worth confirming with Daniel whether to update the standard or point to the real source page.`
+},
+{
+  name: "Alert — Error (Form Validation)",
+  preview: `<div class="usa-alert usa-alert--error">
+  <div class="usa-alert__body">
+    <h3 class="usa-alert__heading">Error status</h3>
+    <p class="usa-alert__text">Please correct the following errors before submitting.</p>
+  </div>
+</div>`,
+  code: `<div id="error-alert" class="usa-alert usa-alert--error" hidden>
+  <div class="usa-alert__body">
+    <h3 class="usa-alert__heading">Error status</h3>
+    <p class="usa-alert__text">Please correct the following errors before submitting.</p>
+  </div>
+</div>
+
+<script>
+// Shown + scrolled into view on failed validation:
+document.getElementById('error-alert').removeAttribute('hidden');
+window.scrollTo({ top: 0, behavior: 'smooth' });
+</` + `script>`,
+  notes: `SOURCE: add-denial-code.html
+
+Sits above profile-content, right after the page header. Paired with the "Field With Error Message" pattern — see the full validateForm()/showFieldError()/clearErrors() shape noted there.`
+},
+{
+  name: "Breadcrumb",
+  preview: `<nav class="usa-breadcrumb" aria-label="Breadcrumbs">
+  <ol class="usa-breadcrumb__list">
+    <li class="usa-breadcrumb__list-item"><a href="#" class="usa-breadcrumb__link">Home</a></li>
+    <li class="usa-breadcrumb__list-item"><a href="#" class="usa-breadcrumb__link">View Cases</a></li>
+    <li class="usa-breadcrumb__list-item usa-current" aria-current="page"><span>CM-2026-0347</span></li>
+  </ol>
+</nav>`,
+  code: `<nav class="usa-breadcrumb margin-top-2" aria-label="Breadcrumbs">
+  <ol class="usa-breadcrumb__list">
+    <li class="usa-breadcrumb__list-item">
+      <a href="index.html" class="usa-breadcrumb__link">Home</a>
+    </li>
+    <li class="usa-breadcrumb__list-item">
+      <a href="view-cases.html" class="usa-breadcrumb__link">View Cases</a>
+    </li>
+    <li class="usa-breadcrumb__list-item usa-current" aria-current="page">
+      <span id="breadcrumb-case-number">CM-2026-0347</span>
+    </li>
+  </ol>
+</nav>`,
+  notes: `SOURCE: view-case-detail.html
+
+Required on any page deeper than one level. Final crumb is a plain <span>, never a link.`
+},
+{
+  name: "Button — Accent-Warm",
+  preview: `<button type="button" class="usa-button usa-button--accent-warm">Add Choice</button>`,
+  code: `<button type="button" class="usa-button usa-button--accent-warm" id="addMCChoiceButton">Add Choice</button>`,
+  notes: `SOURCE: create-questions.html
+
+Orange #fa9441. Use only for add-item actions within a form section (never as a general primary action).`
+},
+{
+  name: "Button — Group, Segmented (Filter Tabs)",
+  preview: `<div class="usa-button-group usa-button-group--segmented">
+  <ul class="usa-button-group__list">
+    <li class="usa-button-group__item"><button type="button" class="usa-button demo-segment active" data-filter="open">Open</button></li>
+    <li class="usa-button-group__item"><button type="button" class="usa-button demo-segment" data-filter="pending">Pending</button></li>
+    <li class="usa-button-group__item"><button type="button" class="usa-button demo-segment" data-filter="closed">Closed</button></li>
+  </ul>
+</div>`,
+  code: `<div class="usa-button-group usa-button-group--segmented">
+  <ul class="usa-button-group__list">
+    <li class="usa-button-group__item">
+      <button type="button" class="usa-button category-filter-btn active" data-filter="open">Open</button>
+    </li>
+    <li class="usa-button-group__item">
+      <button type="button" class="usa-button category-filter-btn" data-filter="pending">Pending</button>
+    </li>
+    <li class="usa-button-group__item">
+      <button type="button" class="usa-button category-filter-btn" data-filter="closed">Closed</button>
+    </li>
+  </ul>
+</div>`,
+  notes: `SOURCE: view-cases.html
+
+NOT in the documented 4-class button table — a 5th real pattern, used for status-category filtering above a results table. "active" class marks the current selection; toggled by a plain click handler on .category-filter-btn.`
+},
+{
+  name: "Button — Outline",
+  preview: `<button type="button" class="usa-button usa-button--outline">Clear Search</button>`,
+  code: `<button type="button" class="usa-button usa-button--outline">Clear Search</button>`,
+  notes: `SOURCE: view-cases.html, queues.html, create-case.html
+
+Also NOT in the documented 4-class table, but used consistently for "Clear/Back/Skip" actions (also seen in rlp-packets as Back/Skip step-buttons). Flag to Daniel: formalize as a 5th button standard, or fold into usa-button--secondary?`
+},
+{
+  name: "Button — Primary",
+  preview: `<button type="button" class="usa-button">Save</button>`,
+  code: `<button type="button" class="usa-button" id="submit-button">Save</button>`,
+  notes: `SOURCE: add-denial-code.html
+
+Navy #1a4480. Primary actions only — Save, Create New, Submit.`
+},
+{
+  name: "Button — Secondary",
+  preview: `<a href="#" class="usa-button usa-button--secondary">Cancel</a>`,
+  code: `<a href="denials.html" class="usa-button usa-button--secondary">Cancel</a>`,
+  notes: `SOURCE: add-denial-code.html
+
+Often an <a> styled as a button rather than a <button> when it's a pure navigation/cancel link — not always a real form control.`
+},
+{
+  name: "Button — Unstyled",
+  preview: `<button type="button" class="usa-button usa-button--unstyled">Preview</button>`,
+  code: `<button type="button" class="usa-button usa-button--unstyled"
+        onclick="openVersionPreview(1)"
+        aria-label="Preview version 1">Preview</button>`,
+  notes: `SOURCE: correspondence-email-template.html
+
+Icon-only or link-styled controls inside table cells / dense UI. Always give it an aria-label when the visible text alone wouldn't be enough context (e.g. repeated "Preview" across many rows).`
+},
+{
+  name: "Checkbox",
+  preview: `<div class="usa-checkbox">
+  <input class="usa-checkbox__input" id="demo-checkbox" type="checkbox">
+  <label class="usa-checkbox__label" for="demo-checkbox">Application</label>
+</div>`,
+  code: `<div class="usa-checkbox">
+  <input class="usa-checkbox__input" id="applies-application" type="checkbox" name="applies-to" value="application">
+  <label class="usa-checkbox__label" for="applies-application">Application</label>
+</div>`,
+  notes: `SOURCE: add-inspection-type.html
+
+A second, non-USWDS "multiselect-option" checkbox variant also exists (queues.html filter panel) — likely a duplicate pattern worth consolidating rather than reproducing both going forward.`
+},
+{
+  name: "Combobox (Long-List Select)",
+  preview: `<div style="max-width:360px;">
+  <label class="usa-label" for="demo-combo-input">Owner Application <span class="field-required">Required</span></label>
+  <div class="combo-box" id="demo-combo">
+    <input class="usa-input combo-box__input" type="text" id="demo-combo-input" placeholder="Please Select" autocomplete="off" aria-expanded="false" aria-controls="demo-combo-list">
+    <input type="hidden" id="demo-combo-hidden">
+    <ul class="combo-box__list" id="demo-combo-list" role="listbox" hidden></ul>
+  </div>
+</div>`,
+  code: `<label class="usa-label" for="primary-license-input">
+  Owner Application <span class="field-required">Required</span>
+</label>
+<span class="usa-error-message" id="primary-license-error" hidden>Select a primary application type</span>
+<div class="combo-box" id="primary-combo">
+  <input class="usa-input combo-box__input" type="text" id="primary-license-input"
+    placeholder="Please Select" autocomplete="off" aria-expanded="false"
+    aria-controls="primary-combo-list" disabled>
+  <input type="hidden" id="primary-license" name="primary-license">
+  <ul class="combo-box__list" id="primary-combo-list" role="listbox" hidden></ul>
+</div>
+
+<script>
+// See initComboBox(textInputId, hiddenInputId, listId, optionsOrFn, onSelectCallback)
+// in rlp-packets/create-packet.html for the full filter/select/keyboard-blur wiring.
+</` + `script>`,
+  notes: `SOURCE: rlp-packets/create-packet.html — does NOT exist anywhere in rlp-case-management despite being documented in the global standards as the long-list (10+ item) dropdown pattern.
+
+Text input + hidden input (holds the real value) + filtered <ul role="listbox">. Often starts disabled until a parent select (e.g. license type) picks a value. The CSS for .combo-box/.combo-box__input/.combo-box__list was NOT in the compiled styles.css of either source project — it was inline <style> in create-packet.html. It has been copied into this library's css/styles.css; consider backporting it into every project's base stylesheet instead of re-inlining it per page.`
+},
+{
+  name: "Date Input",
+  preview: `<label class="usa-label" for="demo-date">Target Completion Date</label>
+<input class="usa-input" id="demo-date" type="date" style="max-width:240px;">`,
+  code: `<input class="usa-input" id="target-completion-date" name="target-completion-date" type="date" required>`,
+  notes: `SOURCE: create-investigation.html
+
+Plain native <input type="date"> styled with usa-input — no USWDS date-picker JS widget in use anywhere scanned so far.`
+},
+{
+  name: "Empty State — Standalone Paragraph",
+  preview: `<p style="padding: 3rem 0; color: #71767a; font-size: 1.6rem;">
+  No email templates found. <a href="#" class="usa-link">Create your first email template.</a>
+</p>`,
+  code: `<table class="usa-table usa-table--borderless usa-table--striped">
+  ...
+  <tbody id="email-tbody"></tbody>
+</table>
+
+<p id="no-email-msg" style="display: none; padding: 3rem 0; color: #71767a; font-size: 1.6rem;">
+  No email templates found. <a href="correspondence-email-template.html" class="usa-link">Create your first email template.</a>
+</p>`,
+  notes: `SOURCE: correspondence.html
+
+Whole-table empty state: the <table> and this <p> toggle opposite display values via JS once data loads/clears. Different from the row-level empty state — see that entry for the distinction.`
+},
+{
+  name: "Empty State — Table Row",
+  preview: `<table class="usa-table usa-table--borderless usa-table--striped" style="margin:0;">
+  <tbody><tr><td>No investigations on record for this case.</td></tr></tbody>
+</table>`,
+  code: `<tbody id="investigations-tbody">
+  <tr id="investigations-empty-row">
+    <td colspan="7">No investigations on record for this case.</td>
+  </tr>
+</tbody>
+
+<script>
+// Removed via JS once a real row is added:
+document.getElementById('investigations-empty-row').remove();
+</` + `script>`,
+  notes: `SOURCE: view-case-detail.html
+
+A single <tr> with colspan spanning all columns, removed (not hidden) once real rows exist. Use this inside an existing table; use the standalone-paragraph pattern when the whole table should disappear.`
+},
+{
+  name: "Field With Error Message",
+  preview: `<div class="margin-bottom-4">
+  <label class="usa-label" for="demo-code-value">Code Value <span class="field-required">Required</span></label>
+  <span class="usa-error-message">Enter a code value</span>
+  <input class="usa-input" id="demo-code-value" type="text">
+</div>`,
+  code: `<div class="margin-bottom-4" id="code-value-group">
+  <label class="usa-label" for="code-value">Code Value <span class="field-required">Required</span></label>
+  <span class="usa-error-message" id="code-value-error" hidden>Enter a code value</span>
+  <input class="usa-input" id="code-value" name="code-value" type="text" required>
+</div>
+
+<script>
+function showFieldError(groupId, errorId, fieldId) {
+  document.getElementById(groupId).classList.add('usa-form-group--error');
+  document.getElementById(errorId).removeAttribute('hidden');
+  document.getElementById(fieldId).classList.add('usa-input--error');
+}
+function clearErrors() {
+  document.querySelectorAll('.usa-form-group--error').forEach(el => el.classList.remove('usa-form-group--error'));
+  document.querySelectorAll('.usa-error-message').forEach(el => el.setAttribute('hidden', ''));
+  document.querySelectorAll('.usa-input--error').forEach(el => el.classList.remove('usa-input--error'));
+  document.getElementById('error-alert').setAttribute('hidden', '');
+}
+</` + `script>`,
+  notes: `SOURCE: add-denial-code.html
+
+The group wrapper is often a plain <div id="..."> rather than literally usa-form-group — usa-form-group--error / usa-input--error get toggled on by JS, not baked into the initial markup. Each input also clears its own error live on the 'input' event.`
+},
+{
+  name: "File Input",
+  preview: `<div>
+  <label class="usa-label" for="demo-file">File <span class="field-required">Required</span></label>
+  <input type="file" id="demo-file" style="font-size: 1.6rem; display: block; width: 100%;">
+</div>`,
+  code: `<div class="margin-bottom-2">
+  <label class="usa-label" for="doc-file">File <span class="field-required">Required</span></label>
+  <input type="file" id="doc-file" name="doc-file" style="font-size: 1.6rem; display: block; width: 100%;">
+</div>`,
+  notes: `SOURCE: create-case.html
+
+Plain native file input with inline sizing styles — no USWDS drag-and-drop usa-file-input widget in use.`
+},
+{
+  name: "Icon Button (Table Row Action)",
+  preview: `<a href="#" class="icon-button" aria-label="View Task"><img src="assets/eye-icon.png" alt="" width="30" height="30"></a>
+<a href="#" class="icon-button" aria-label="Claim Task"><img src="assets/claim-task.png" alt="" width="30" height="30"></a>`,
+  code: `<a href="task-detail.html?id=1" class="icon-button" aria-label="View Task">
+  <img src="assets/eye-icon.png" alt="" width="30" height="30">
+</a>
+<a href="#" class="icon-button" aria-label="Claim Task">
+  <img src="assets/claim-task.png" alt="" width="30" height="30">
+</a>`,
+  notes: `SOURCE: queues.html
+
+30×30 in tables (vs. 24×24 in the Icon Key accordion). alt="" (decorative) — the accessible name lives in aria-label on the wrapping <a>.`
+},
+{
+  name: "Modal / Dialog",
+  preview: `<button type="button" class="usa-button" data-modal-open="demo-modal">Open Modal</button>
+<div id="demo-modal" class="modal-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="demo-modal-title">
+  <div class="modal-content" style="max-width:420px;">
+    <div class="modal-header">
+      <h2 class="modal-title" id="demo-modal-title">Upload Document</h2>
+      <button type="button" class="modal-close" data-modal-close aria-label="Close modal">&times;</button>
+    </div>
+    <div class="modal-body"><p style="font-size:1.6rem;">Form fields go here.</p></div>
+    <div class="modal-footer">
+      <button type="button" class="usa-button">Upload Document</button>
+      <button type="button" class="usa-button usa-button--secondary" data-modal-close>Cancel</button>
+    </div>
+  </div>
+</div>`,
+  code: `<div id="upload-document-modal" class="modal-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="upload-document-modal-title">
+  <div class="modal-content" style="max-width: 600px;">
+    <div class="modal-header">
+      <h2 class="modal-title" id="upload-document-modal-title">Upload Document</h2>
+      <button type="button" class="modal-close" id="upload-document-modal-close" aria-label="Close modal">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-body"><!-- form fields --></div>
+    <div class="modal-footer">
+      <button type="button" class="usa-button" id="upload-document-submit-btn">Upload Document</button>
+      <button type="button" class="usa-button usa-button--secondary" id="upload-document-cancel-btn">Cancel</button>
+    </div>
+  </div>
+</div>`,
+  notes: `SOURCE: create-case.html
+
+Custom implementation (not USWDS usa-modal) — toggled via the hidden attribute, not a class. max-width is set inline per-modal instance. Not documented in global standards.`
+},
+{
+  name: "Navigation — Primary Nav",
+  preview: `<nav class="horizontalNav main-menu">
+  <ul class="usa-nav__primary display-flex padding-left-0">
+    <li class="usa-nav__primary-item active"><span class="menuItem-inner"><a href="#">Queues</a></span></li>
+    <li class="usa-nav__primary-item"><span class="menuItem-inner"><a href="#">My Tasks</a></span></li>
+    <li class="usa-nav__primary-item"><span class="menuItem-inner"><a href="#">License Types</a></span></li>
+    <li class="usa-nav__primary-item"><span class="menuItem-inner"><a href="#">Applications</a></span></li>
+    <li class="usa-nav__primary-item"><span class="menuItem-inner"><a href="#">Settings</a></span></li>
+  </ul>
+</nav>`,
+  code: `<nav class="horizontalNav main-menu">
+  <ul class="usa-nav__primary display-flex padding-left-0">
+    <li class="usa-nav__primary-item">
+      <span class="menuItem-inner"><a href="queues.html">Queues</a></span>
+    </li>
+    <li class="usa-nav__primary-item">
+      <span class="menuItem-inner"><a href="my-tasks.html">My Tasks</a></span>
+    </li>
+    <li class="usa-nav__primary-item">
+      <span class="menuItem-inner"><a href="license-types.html">License Types</a></span>
+    </li>
+    <li class="usa-nav__primary-item">
+      <span class="menuItem-inner"><a href="applications.html">Applications</a></span>
+    </li>
+    <li class="usa-nav__primary-item">
+      <span class="menuItem-inner"><a href="settings.html">Settings</a></span>
+    </li>
+  </ul>
+</nav>`,
+  notes: `SOURCE: view-case-detail.html
+
+This is only the primary nav list — the full page chrome also includes a banner/logo/utility row above it. Every page copies the whole shell verbatim; mark the current page's item with class "active".`
+},
+{
+  name: "Page Action Bar — Standard (Left-Aligned)",
+  preview: `<div class="usa-form-group" style="max-width:300px;">
+  <label class="usa-label" for="demo-doc-search">Search</label>
+  <div style="display:flex; gap:1rem;">
+    <input class="usa-input" id="demo-doc-search" type="text" style="flex:1;">
+    <button type="button" class="usa-button">Search</button>
+  </div>
+</div>
+<button type="button" class="usa-button" style="margin-top:15px;">Upload Document</button>
+<hr style="margin:2rem 0;">
+<div class="margin-top-2">
+  <button type="button" class="usa-button">Save</button>
+  <a href="#" class="usa-button usa-button--secondary">Cancel</a>
+</div>`,
+  code: `<!-- Single primary action above a table (Documents tab) -->
+<button type="button" class="usa-button" id="upload-document-btn" style="margin-top: 15px;">Upload Document</button>
+
+<!-- Save/Cancel on a form -->
+<div class="margin-top-2">
+  <button type="button" class="usa-button" id="submit-button">Save</button>
+  <a href="denials.html" class="usa-button usa-button--secondary">Cancel</a>
+</div>`,
+  notes: `SOURCE: rlp-document-locker/individual-profile.html (Documents tab), rlp-case-management/add-denial-code.html
+
+THE RLP STANDARD for normal pages (detail views, forms, tabs). No flex/justify-content wrapper at all — plain block flow. Primary action always comes first/leftmost (Save before Cancel; a lone action like "Upload Document" just sits left under whatever it acts on).
+
+Do NOT right-align or use justify-content: flex-end here — that's a common default AI tools reach for, but it is not the RLP convention. Right-alignment is reserved for the step/wizard pattern only — see that entry.`
+},
+{
+  name: "Page Action Bar — Step/Wizard (Split)",
+  preview: `<div style="background:#f0f0f0; padding:1rem; border-radius:0.5rem; display:flex; justify-content:space-between;">
+  <button type="button" class="usa-button usa-button--outline">Back</button>
+  <div style="display:flex; gap:1rem;">
+    <button type="button" class="usa-button usa-button--outline">Skip</button>
+    <button type="button" class="usa-button">Next</button>
+  </div>
+</div>`,
+  code: `<div class="app-builder-button-container">
+  <a href="application-license-fees.html" class="usa-button usa-button--outline">Back</a>
+  <div style="display:flex; gap:1rem;">
+    <a href="endorsements.html" class="usa-button usa-button--outline">Skip</a>
+    <a href="endorsements.html" class="usa-button">Next</a>
+  </div>
+</div>
+
+.app-builder-button-container {
+  background-color: #f0f0f0;
+  padding: 1rem;
+  margin-top: 2rem;
+  border-radius: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+}`,
+  notes: `SOURCE: rlp-packets/additional-items.html + css/styles.css (.app-builder-button-container)
+
+ONLY use this split/right-aligned layout for multi-step application/packet wizards. Back (or Cancel) stays left; forward progress (Next / Save & Continue), optionally grouped with Skip, sits right via justify-content: space-between. Do not use this pattern on normal detail/form pages — see "Page Action Bar — Standard" for those.`
+},
+{
+  name: "Page Title",
+  preview: `<h1 class="page-title page-title--underlined">Case Details: CM-2026-0347</h1>`,
+  code: `<h1 class="page-title page-title--underlined" id="case-detail-title">Case Details: CM-2026-0347</h1>`,
+  notes: `SOURCE: view-case-detail.html`
+},
+{
+  name: "Pagination",
+  preview: `<nav aria-label="Pagination" class="usa-pagination" style="display:flex; justify-content:center;">
+  <ul class="usa-pagination__list">
+    <li class="usa-pagination__item usa-pagination__arrow"><a href="#" class="usa-pagination__link usa-pagination__previous-page" aria-label="Previous page"><span>‹</span><span class="usa-pagination__link-text">Previous</span></a></li>
+    <li class="usa-pagination__item usa-pagination__page-no"><a href="#" class="usa-pagination__button usa-current" aria-label="Page 1" aria-current="page">1</a></li>
+    <li class="usa-pagination__item usa-pagination__page-no"><a href="#" class="usa-pagination__button" aria-label="Page 2">2</a></li>
+    <li class="usa-pagination__item usa-pagination__page-no"><a href="#" class="usa-pagination__button" aria-label="Page 3">3</a></li>
+    <li class="usa-pagination__item usa-pagination__arrow"><a href="#" class="usa-pagination__link usa-pagination__next-page" aria-label="Next page"><span class="usa-pagination__link-text">Next</span><span>›</span></a></li>
+  </ul>
+</nav>`,
+  code: `<nav aria-label="Pagination" class="usa-pagination" style="display: flex; justify-content: center; margin-top: 2rem;">
+  <ul class="usa-pagination__list">
+    <li class="usa-pagination__item usa-pagination__arrow">
+      <a href="#" class="usa-pagination__link usa-pagination__previous-page" aria-label="Previous page">
+        <span>‹</span>
+        <span class="usa-pagination__link-text">Previous</span>
+      </a>
+    </li>
+    <li class="usa-pagination__item usa-pagination__page-no">
+      <a href="#" class="usa-pagination__button usa-current" aria-label="Page 1" aria-current="page">1</a>
+    </li>
+    <li class="usa-pagination__item usa-pagination__page-no">
+      <a href="#" class="usa-pagination__button" aria-label="Page 2">2</a>
+    </li>
+    <li class="usa-pagination__item usa-pagination__arrow">
+      <a href="#" class="usa-pagination__link usa-pagination__next-page" aria-label="Next page">
+        <span class="usa-pagination__link-text">Next</span>
+        <span>›</span>
+      </a>
+    </li>
+  </ul>
+</nav>`,
+  notes: `SOURCE: queues.html
+
+Standard USWDS pagination markup, used as-is. Current page gets usa-current + aria-current="page" on the <a>, not the <li>.`
+},
+{
+  name: "Radio Group",
+  preview: `<fieldset class="usa-fieldset">
+  <legend class="usa-legend">Status <span class="field-required">Required</span></legend>
+  <div class="usa-radio"><input class="usa-radio__input" id="demo-radio-active" type="radio" name="demo-status" checked><label class="usa-radio__label" for="demo-radio-active">Active</label></div>
+  <div class="usa-radio"><input class="usa-radio__input" id="demo-radio-inactive" type="radio" name="demo-status"><label class="usa-radio__label" for="demo-radio-inactive">Inactive</label></div>
+</fieldset>`,
+  code: `<fieldset class="usa-fieldset">
+  <legend class="usa-legend">Status <span class="field-required">Required</span></legend>
+  <div class="usa-radio">
+    <input class="usa-radio__input" id="status-active" type="radio" name="status" value="active" checked>
+    <label class="usa-radio__label" for="status-active">Active</label>
+  </div>
+  <div class="usa-radio">
+    <input class="usa-radio__input" id="status-inactive" type="radio" name="status" value="inactive">
+    <label class="usa-radio__label" for="status-inactive">Inactive</label>
+  </div>
+</fieldset>`,
+  notes: `SOURCE: add-denial-code.html`
+},
+{
+  name: "Section Heading",
+  preview: `<h2 class="section-heading">Section Title</h2>`,
+  code: `<h2 class="section-heading">Section Title</h2>`,
+  notes: `Standard: font-size 1.9rem; font-weight 700; border-bottom 2px solid #dfe1e2; padding-bottom 8px; margin 32px 0 16px. Used throughout create-case.html, create-questions.html, etc.`
+},
+{
+  name: "Select — Short List",
+  preview: `<label class="usa-label" for="demo-select">Appeal Configuration</label>
+<select class="usa-select" id="demo-select">
+  <option value="">Please Select</option>
+  <option>Standard Administrative Review</option>
+  <option>Formal Hearing Process</option>
+  <option>Informal Review</option>
+</select>`,
+  code: `<label class="usa-label" for="appeal-configuration">Appeal Configuration</label>
+<select class="usa-select" id="appeal-configuration" name="appeal-configuration">
+  <option value="">Please Select</option>
+  <option value="standard-administrative-review">Standard Administrative Review</option>
+  <option value="formal-hearing-process">Formal Hearing Process</option>
+  <option value="informal-review">Informal Review</option>
+  <option value="expedited-review">Expedited Review</option>
+  <option value="late-appeal-process">Late Appeal Process</option>
+</select>`,
+  notes: `SOURCE: add-denial-code.html
+
+For under ~10 items. Placeholder is always "Please Select" — never "Select one" or "-- Select --". For 10+ items use the Combobox pattern instead.`
+},
+{
+  name: "Status Tag / Badge",
+  preview: `<div style="display:flex; gap:2rem;"><span class="status-pending">Pending</span><span class="status-active">Active</span><span class="status-rejected">Rejected</span></div>`,
+  code: `<span class="status-pending">Pending</span>`,
+  notes: `SOURCE: view-case-detail.html; color mapping in css/styles.css (~line 836)
+
+Semantic class-per-status-value groups: active/approved/live/paid/completed · pending/open/assigned/approved-awaiting-payment · rejected/denied/cancelled/past-due/terminated · expired/revoked/withdrawn/decommissioned/retired · in-progress/rejected-for-resubmission/in-cart · inactive · on-hold/suspended/payment-in-process · in-review/draft/initiated · archived.
+
+When reproducing a NEW status value, map it to the closest existing semantic group — don't invent a new color.`
+},
+{
+  name: "Table — With Controls Bar",
+  preview: `<div class="table-controls">
+  <div class="table-controls__left"><strong>Showing 1 - 2 of 2 Entries</strong></div>
+  <div class="table-controls__right">
+    <label for="demo-entries" class="table-controls__label">Show</label>
+    <select class="usa-select table-controls__select" id="demo-entries"><option>100</option><option>50</option></select>
+  </div>
+</div>
+<table class="usa-table usa-table--borderless usa-table--striped" style="margin:0;">
+  <thead><tr><th scope="col">Application Title</th><th scope="col">Controls</th></tr></thead>
+  <tbody><tr><td>Business Application 123</td><td><a href="#" class="icon-button" aria-label="View Task"><img src="assets/eye-icon.png" alt="" width="30" height="30"></a></td></tr></tbody>
+</table>`,
+  code: `<div class="table-controls">
+  <div class="table-controls__left">
+    <strong>Showing 1 - 5 of 5 Entries</strong>
+  </div>
+  <div class="table-controls__right">
+    <label for="entries-per-page" class="table-controls__label">Show</label>
+    <select class="usa-select table-controls__select" id="entries-per-page" name="entries-per-page">
+      <option value="100" selected>100</option>
+      <option value="50">50</option>
+      <option value="25">25</option>
+      <option value="10">10</option>
+    </select>
+  </div>
+</div>
+
+<table class="usa-table usa-table--borderless usa-table--striped">
+  <thead>
+    <tr>
+      <th scope="col" role="columnheader" aria-sort="none">Application Title <span class="sort-arrows"></span></th>
+      <th scope="col" role="columnheader">Controls</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Business Application 123</td>
+      <td>
+        <a href="task-detail.html?id=1" class="icon-button" aria-label="View Task">
+          <img src="assets/eye-icon.png" alt="" width="30" height="30">
+        </a>
+      </td>
+    </tr>
+  </tbody>
+</table>`,
+  notes: `SOURCE: queues.html
+
+Sortable headers get role="columnheader" aria-sort="none" + an empty <span class="sort-arrows">. Controls column has no sort arrows and is always last, with white-space: nowrap to prevent icon wrapping. Precede with the Icon Key accordion when a Controls column is present.`
+},
+{
+  name: "Tag",
+  preview: `<span class="usa-tag">Reinspection</span> <span class="usa-tag">Asset</span> <span class="usa-tag">Primary</span>
+<div style="margin-top:1.6rem; font-size:1.2rem; color:#71767a;">Legacy pill variant — do not reuse, see notes:</div>
+<span style="display:inline-block; padding:0.25rem 0.8rem; font-size:1.3rem; font-weight:700; border-radius:2rem; line-height:1.5; background-color:#ecf3ec; color:#417505;">Current</span>
+<span style="display:inline-block; padding:0.25rem 0.8rem; font-size:1.3rem; font-weight:700; border-radius:2rem; line-height:1.5; background-color:#e7f6f8; color:#13669A;">v3</span>
+<span style="display:inline-block; padding:0.25rem 0.8rem; font-size:1.3rem; font-weight:700; border-radius:2rem; line-height:1.5; background-color:#f0f0f0; color:#5C5F66;">Archived</span>`,
+  code: `<!-- Canonical (stock USWDS) — use this going forward -->
+<span class="usa-tag">Primary</span>
+
+.usa-tag {
+  background-color: #565c65;
+  border-radius: 0;
+  color: #fff;
+  display: inline-block;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: normal;
+  line-height: 1;
+  padding: 0.3rem 0.7rem;
+  text-transform: uppercase;
+}`,
+  notes: `SOURCE (canonical): rlp-inspections/css/styles.css — matches stock USWDS exactly. rlp-packets/css/styles.css has a near-identical simplified variant.
+
+RESOLVED 2026-08-27: the gray square tag is canonical — use it everywhere. The pill-shaped .usa-tag--active/--draft/--archived variant in rlp-case-management/correspondence-email-template.html (lines ~90-93) is legacy drift, not a second real pattern. Don't reuse it; the correspondence template's status/current badges should be migrated to the canonical tag when that page is next touched.`
+},
+{
+  name: "Tabs — Horizontal",
+  preview: `<div class="horizontal-tabs">
+  <button type="button" class="horizontal-tab demo-tab active" data-tab="demo-a">Inspections</button>
+  <button type="button" class="horizontal-tab demo-tab" data-tab="demo-b">Investigations</button>
+</div>
+<div class="tab-content">
+  <div class="tab-panel demo-panel active" data-panel="demo-a" style="padding-top:1rem; font-size:1.6rem;">Inspections panel content.</div>
+  <div class="tab-panel demo-panel" data-panel="demo-b" style="padding-top:1rem; font-size:1.6rem; display:none;">Investigations panel content.</div>
+</div>`,
+  code: `<div class="horizontal-tabs" style="margin-top: 3rem;">
+  <button type="button" class="horizontal-tab case-detail-tab active" data-tab="inspections">Inspections</button>
+  <button type="button" class="horizontal-tab case-detail-tab" data-tab="investigations">Investigations</button>
+  <button type="button" class="horizontal-tab case-detail-tab" data-tab="hearings" id="hearings-tab" hidden>Hearings</button>
+</div>
+
+<div class="tab-content">
+  <div class="tab-panel case-detail-panel active" id="inspections-panel"><!-- panel content --></div>
+  <div class="tab-panel case-detail-panel" id="investigations-panel"><!-- panel content --></div>
+</div>`,
+  notes: `SOURCE: view-case-detail.html
+
+Custom implementation (not USWDS) — .horizontal-tab.active / .tab-panel.active toggled by matching data-tab, JS-driven. A tab can be pre-hidden (e.g. "Hearings" only shows for Appeal case type) and revealed conditionally.`
+},
+{
+  name: "Task Container (Tile)",
+  preview: `<div class="task-container" style="margin-top:0;">
+  <div class="task-header" style="display:flex; justify-content:space-between; align-items:flex-start;">
+    <h3 style="margin:0;">Section Title</h3>
+  </div>
+  <div class="task-content-section">
+    <hr>
+    <p style="font-size:1.6rem;">Section content goes here.</p>
+  </div>
+</div>`,
+  code: `<div class="task-container margin-top-2">
+  <div class="task-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
+    <!-- header content -->
+  </div>
+  <div class="task-content-section">
+    <h3>Section Title</h3>
+    <hr>
+    <!-- section content -->
+  </div>
+</div>`,
+  notes: `SOURCE: view-case-detail.html (product-approved redesign, 2026-05-28)
+
+The redesigned case-detail page is a stack of these tiles on an off-white #f9f9f7 page background, 30px top margin between tiles.`
+},
+{
+  name: "Textarea",
+  preview: `<label class="usa-label" for="demo-textarea">Description</label>
+<textarea class="usa-textarea" id="demo-textarea" style="max-width:100%;"></textarea>`,
+  code: `<label class="usa-label" for="doc-description">Description</label>
+<textarea class="usa-textarea" id="doc-description" name="doc-description"></textarea>`,
+  notes: `SOURCE: create-case.html`
+}
+];
+
+COMPONENTS.sort((a, b) => a.name.localeCompare(b.name));
+
+const tbody = document.getElementById('component-rows');
+let lastLetter = '';
+
+COMPONENTS.forEach((comp, i) => {
+  const letter = comp.name[0].toUpperCase();
+  if (letter !== lastLetter) {
+    lastLetter = letter;
+    const letterRow = document.createElement('tr');
+    letterRow.className = 'letter-row';
+    letterRow.id = 'letter-' + letter;
+    const td = document.createElement('td');
+    td.colSpan = 3;
+    td.textContent = letter;
+    letterRow.appendChild(td);
+    tbody.appendChild(letterRow);
+  }
+
+  const row = document.createElement('tr');
+  row.className = 'comp-row';
+  row.dataset.name = comp.name.toLowerCase();
+
+  const nameCell = document.createElement('td');
+  const h3 = document.createElement('h3');
+  h3.className = 'comp-name';
+  h3.textContent = comp.name;
+  const previewDiv = document.createElement('div');
+  previewDiv.className = 'comp-preview';
+  previewDiv.innerHTML = comp.preview;
+  nameCell.appendChild(h3);
+  nameCell.appendChild(previewDiv);
+
+  const codeCell = document.createElement('td');
+  codeCell.className = 'code-cell';
+  const pre = document.createElement('pre');
+  const codeEl = document.createElement('code');
+  codeEl.textContent = comp.code;
+  pre.appendChild(codeEl);
+  const copyBtn = document.createElement('button');
+  copyBtn.type = 'button';
+  copyBtn.className = 'copy-btn';
+  copyBtn.textContent = 'Copy';
+  copyBtn.addEventListener('click', () => {
+    navigator.clipboard.writeText(comp.code).then(() => {
+      copyBtn.textContent = 'Copied!';
+      setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1500);
+    });
+  });
+  codeCell.appendChild(copyBtn);
+  codeCell.appendChild(pre);
+
+  const notesCell = document.createElement('td');
+  notesCell.className = 'notes-cell';
+  notesCell.textContent = comp.notes;
+
+  row.appendChild(nameCell);
+  row.appendChild(codeCell);
+  row.appendChild(notesCell);
+  tbody.appendChild(row);
+});
+
+document.getElementById('component-count').textContent = COMPONENTS.length + ' components';
+
+const availableLetters = new Set(COMPONENTS.map(c => c.name[0].toUpperCase()));
+const azNav = document.getElementById('az-nav');
+for (let i = 65; i <= 90; i++) {
+  const letter = String.fromCharCode(i);
+  if (availableLetters.has(letter)) {
+    const a = document.createElement('a');
+    a.href = '#letter-' + letter;
+    a.textContent = letter;
+    a.dataset.letter = letter;
+    azNav.appendChild(a);
+  } else {
+    const span = document.createElement('span');
+    span.textContent = letter;
+    azNav.appendChild(span);
+  }
+}
+
+function updateLetterAvailability() {
+  document.querySelectorAll('#az-nav a').forEach(a => {
+    const letterRow = document.getElementById('letter-' + a.dataset.letter);
+    let hasVisible = false;
+    if (letterRow) {
+      let next = letterRow.nextElementSibling;
+      while (next && next.classList.contains('comp-row')) {
+        if (!next.classList.contains('hidden-by-filter')) hasVisible = true;
+        next = next.nextElementSibling;
+      }
+    }
+    a.classList.toggle('no-match', !hasVisible);
+  });
+}
+
+document.getElementById('component-filter').addEventListener('input', function () {
+  const q = this.value.toLowerCase().trim();
+  let visible = 0;
+  document.querySelectorAll('tr.comp-row').forEach(row => {
+    const match = !q || row.dataset.name.includes(q);
+    row.classList.toggle('hidden-by-filter', !match);
+    if (match) visible++;
+  });
+  document.querySelectorAll('tr.letter-row').forEach(letterRow => {
+    let next = letterRow.nextElementSibling;
+    let hasVisible = false;
+    while (next && next.classList.contains('comp-row')) {
+      if (!next.classList.contains('hidden-by-filter')) hasVisible = true;
+      next = next.nextElementSibling;
+    }
+    letterRow.style.display = hasVisible ? '' : 'none';
+  });
+  document.getElementById('component-count').textContent = visible + ' of ' + COMPONENTS.length + ' components';
+  updateLetterAvailability();
+});
+
+// Accordion demo wiring (generic — works for any number of accordions)
+document.querySelectorAll('.usa-accordion__button').forEach(button => {
+  button.addEventListener('click', function () {
+    const expanded = this.getAttribute('aria-expanded') === 'true';
+    const content = document.getElementById(this.getAttribute('aria-controls'));
+    if (expanded) {
+      this.setAttribute('aria-expanded', 'false');
+      content.setAttribute('hidden', '');
+    } else {
+      this.setAttribute('aria-expanded', 'true');
+      content.removeAttribute('hidden');
+    }
+  });
+});
+
+// Segmented button group demo wiring
+document.querySelectorAll('.demo-segment').forEach(btn => {
+  btn.addEventListener('click', function () {
+    this.parentElement.parentElement.querySelectorAll('.demo-segment').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+// Tabs demo wiring
+document.querySelectorAll('.demo-tab').forEach(tab => {
+  tab.addEventListener('click', function () {
+    const scope = this.closest('.comp-preview');
+    scope.querySelectorAll('.demo-tab').forEach(t => t.classList.remove('active'));
+    scope.querySelectorAll('.demo-panel').forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
+    this.classList.add('active');
+    const panel = scope.querySelector('.demo-panel[data-panel="' + this.dataset.tab + '"]');
+    panel.classList.add('active');
+    panel.style.display = 'block';
+  });
+});
+
+// Modal demo wiring
+document.querySelectorAll('[data-modal-open]').forEach(btn => {
+  btn.addEventListener('click', function () {
+    document.getElementById(this.dataset.modalOpen).removeAttribute('hidden');
+  });
+});
+document.querySelectorAll('[data-modal-close]').forEach(btn => {
+  btn.addEventListener('click', function () {
+    this.closest('.modal-overlay').setAttribute('hidden', '');
+  });
+});
+
+// Add-item demo wiring
+(function () {
+  const addBtn = document.getElementById('demo-add-choice');
+  if (!addBtn) return;
+  let count = 1;
+  addBtn.addEventListener('click', function () {
+    count++;
+    const container = document.getElementById('demo-choices');
+    const div = document.createElement('div');
+    div.className = 'usa-form-group';
+    div.style.marginBottom = '1.5rem';
+    div.innerHTML = '<label class="usa-label">Choice ' + count + ' <span class="field-required">Required</span></label>' +
+      '<div style="display:flex; align-items:center; gap:1rem;"><input class="usa-input" type="text" style="flex:1;"></div>';
+    container.appendChild(div);
+  });
+})();
+
+// Combobox demo wiring (simplified copy of initComboBox in rlp-packets/create-packet.html)
+(function () {
+  const textInput = document.getElementById('demo-combo-input');
+  if (!textInput) return;
+  const hiddenInput = document.getElementById('demo-combo-hidden');
+  const list = document.getElementById('demo-combo-list');
+  const options = [
+    { value: 'fbla-owner', label: 'FBLA - Owner' },
+    { value: 'fbla-manager', label: 'FBLA - Manager' },
+    { value: 'fbla-company', label: 'FBLA - Company' },
+    { value: 'fbla-employee', label: 'FBLA - Employee' }
+  ];
+
+  function renderList(query) {
+    const q = query.toLowerCase().trim();
+    const matches = q ? options.filter(o => o.label.toLowerCase().includes(q)) : options;
+    list.innerHTML = '';
+    if (matches.length === 0) {
+      const li = document.createElement('li');
+      li.className = 'combo-box__option combo-box__option--no-results';
+      li.textContent = 'No matching options';
+      list.appendChild(li);
+    } else {
+      matches.forEach(opt => {
+        const li = document.createElement('li');
+        li.className = 'combo-box__option';
+        li.textContent = opt.label;
+        li.setAttribute('role', 'option');
+        li.addEventListener('mousedown', e => {
+          e.preventDefault();
+          textInput.value = opt.label;
+          hiddenInput.value = opt.value;
+          list.setAttribute('hidden', '');
+          textInput.setAttribute('aria-expanded', 'false');
+        });
+        list.appendChild(li);
+      });
+    }
+    list.removeAttribute('hidden');
+    textInput.setAttribute('aria-expanded', 'true');
+  }
+
+  textInput.addEventListener('input', function () { hiddenInput.value = ''; renderList(this.value); });
+  textInput.addEventListener('focus', function () { renderList(this.value); });
+  textInput.addEventListener('blur', function () {
+    setTimeout(() => {
+      list.setAttribute('hidden', '');
+      textInput.setAttribute('aria-expanded', 'false');
+      if (!hiddenInput.value) textInput.value = '';
+    }, 150);
+  });
+})();
+</script>
+</body>
+</html>
