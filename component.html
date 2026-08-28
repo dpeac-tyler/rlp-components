@@ -532,7 +532,7 @@ This is only the primary nav list — the full page chrome also includes a banne
 <hr style="margin:2rem 0;">
 <div class="margin-top-2">
   <button type="button" class="usa-button">Save</button>
-  <a href="#" class="usa-button usa-button--secondary">Cancel</a>
+  <button type="button" class="usa-button usa-button--secondary">Cancel</button>
 </div>`,
   code: `<!-- Single primary action above a table (Documents tab) -->
 <button type="button" class="usa-button" id="upload-document-btn" style="margin-top: 15px;">Upload Document</button>
@@ -540,9 +540,9 @@ This is only the primary nav list — the full page chrome also includes a banne
 <!-- Save/Cancel on a form -->
 <div class="margin-top-2">
   <button type="button" class="usa-button" id="submit-button">Save</button>
-  <a href="denials.html" class="usa-button usa-button--secondary">Cancel</a>
+  <button type="button" class="usa-button usa-button--secondary" id="cancel-edit-letter">Cancel</button>
 </div>`,
-  notes: `SOURCE: rlp-document-locker/individual-profile.html (Documents tab), rlp-case-management/add-denial-code.html
+  notes: `SOURCE: rlp-document-locker/individual-profile.html (Documents tab), rlp-case-management/add-denial-code.html (Save), rlp-affiliations/edit-letter.html (Cancel)
 
 THE RLP STANDARD for normal pages (detail views, forms, tabs). No flex/justify-content wrapper at all — plain block flow. Primary action always comes first/leftmost (Save before Cancel; a lone action like "Upload Document" just sits left under whatever it acts on).
 
