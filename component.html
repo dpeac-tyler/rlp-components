@@ -1290,11 +1290,15 @@ function renderMain() {
   const p = parseNotes(c.notes);
   main.innerHTML = '<div class="lib-pane">' +
     '<h1>' + esc(c.name) + '</h1>' +
-    '<p class="lib-source"><span class="lib-source__badge">SOURCE</span>' + esc(p.source) + '</p>' +
+    '<p class="lib-source"><span class="lib-source__badge">SOURCE</span>' + esc(p.source) +
+      '<button type="button" class="lib-copy" id="lib-copy-link" style="margin-left:auto;">Copy link</button></p>' +
     '<div class="lib-stage">' + c.preview + '</div>' +
     '<p class="lib-stage__label">Rendered preview</p>' +
     '<div class="lib-split"><div>' +
-      '<div class="lib-codehead"><h2 class="lib-h2">HTML</h2><button type="button" class="lib-copy" id="lib-copy">Copy HTML</button></div>' +
+      '<div class="lib-codehead"><h2 class="lib-h2">HTML</h2><div style="display:flex;gap:8px;">' +
+        '<button type="button" class="lib-copy" id="lib-copy">Copy HTML</button>' +
+        '<button type="button" class="lib-copy" id="lib-copy-ai">Copy for AI</button>' +
+      '</div></div>' +
       '<pre><code>' + esc(c.code) + '</code></pre>' +
     '</div><aside>' +
       '<h2 class="lib-h2" style="margin-bottom:9px">Notes</h2><div class="lib-notes">' +
@@ -1309,9 +1313,52 @@ function renderMain() {
       setTimeout(() => { copyBtn.textContent = 'Copy HTML'; }, 1500);
     });
   });
+
+  const copyAiBtn = document.getElementById('lib-copy-ai');
+  copyAiBtn.addEventListener('click', () => {
+    navigator.clipboard.writeText(buildAIMarkdown(c, p)).then(() => {
+      copyAiBtn.textContent = 'Copied';
+      setTimeout(() => { copyAiBtn.textContent = 'Copy for AI'; }, 1500);
+    });
+  });
+
+  const linkBtn = document.getElementById('lib-copy-link');
+  linkBtn.addEventListener('click', () => {
+    const url = location.origin + location.pathname + hashForView();
+    navigator.clipboard.writeText(url).then(() => {
+      linkBtn.textContent = 'Copied';
+      setTimeout(() => { linkBtn.textContent = 'Copy link'; }, 1500);
+    });
+  });
 }
 
-function render() { renderIndex(); renderMain(); }
+function buildAIMarkdown(c, p) {
+  let md = '# ' + c.name + '\n\nSource: ' + p.source + '\n\n## HTML\n```html\n' + c.code + '\n```\n';
+  if (p.paras.length) md += '\n## Notes\n' + p.paras.join('\n\n') + '\n';
+  if (p.flags.length) md += '\n' + p.flags.map(t => '> ⚠ ' + t).join('\n\n') + '\n';
+  return md;
+}
+
+function hashForView() {
+  if (state.view === 'status') return '#__status';
+  if (state.view === 'icons') return '#__icons';
+  return '#' + encodeURIComponent(state.sel);
+}
+
+function applyHashFromLocation() {
+  const raw = location.hash.slice(1);
+  if (!raw) return;
+  if (raw === '__status') { state.view = 'status'; return; }
+  if (raw === '__icons') { state.view = 'icons'; return; }
+  const name = decodeURIComponent(raw);
+  if (COMPONENTS.some(c => c.name === name)) { state.view = 'component'; state.sel = name; }
+}
+
+function render() {
+  history.replaceState(null, '', hashForView());
+  renderIndex();
+  renderMain();
+}
 
 indexList.addEventListener('click', e => {
   const btn = e.target.closest('.lib-item');
@@ -1320,6 +1367,8 @@ indexList.addEventListener('click', e => {
   else { state.view = 'component'; state.sel = btn.dataset.name; main.scrollTop = 0; }
   render();
 });
+
+window.addEventListener('hashchange', () => { applyHashFromLocation(); render(); });
 
 searchEl.addEventListener('input', function () { state.q = this.value; renderIndex(); });
 
@@ -1363,6 +1412,7 @@ document.addEventListener('click', e => {
   if (mc) { const ov = mc.closest('.modal-overlay'); if (ov) ov.setAttribute('hidden', ''); }
 });
 
+applyHashFromLocation();
 render();
 
 </script>
