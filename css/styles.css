@@ -1223,6 +1223,16 @@ select:focus {
   margin-bottom: 1.6rem;
 }
 
+/* Added here — h3 has no font-size anywhere in the base stylesheet (only h1/h2 do),
+   so section titles like "Section 1: Case Information" render at the tiny browser
+   default. Same gap exists in rlp-case-management/css/styles.css; not yet backported. */
+.task-content-section h3 {
+  font-size: 1.9rem;
+  font-weight: 700;
+  margin-top: 0;
+  margin-bottom: 1.6rem;
+}
+
 .task-content-section h2 a {
   color: #1b1b1b;
   text-decoration: none;
