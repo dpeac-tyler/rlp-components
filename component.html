@@ -355,6 +355,107 @@ Text input + hidden input (holds the real value) + filtered <ul role="listbox">.
 Plain native <input type="date"> styled with usa-input — no USWDS date-picker JS widget in use anywhere scanned so far.`
 },
 {
+  name: "Document Upload — Attachment Panel (Two-Step Save)",
+  preview: `<div style="background:#f0f0f0; padding:2rem; border-radius:0.5rem; max-width:520px;">
+  <p style="font-size:1.6rem; margin-top:0;">After you click <strong>Upload</strong>, you must click <strong>Save</strong> under the Attachment Name input field to upload the file before you click <strong>Save and Close</strong> on this window.</p>
+  <p style="font-size:1.6rem; font-weight:700;">File size and type limitations per attachment: 50 MB for txt, csv, png, jpg, jpeg, pdf, doc, xls, docx, xlsx</p>
+  <div class="usa-form-group">
+    <label class="usa-label" for="demo-attachment-name">Attachment Name <span class="field-required">Required</span></label>
+    <input class="usa-input" id="demo-attachment-name" type="text">
+  </div>
+  <div class="usa-form-group">
+    <label class="usa-label" for="demo-attachment-notes">Document Notes <span class="tooltip-icon">?</span></label>
+    <textarea class="usa-textarea" id="demo-attachment-notes" rows="4"></textarea>
+    <div class="character-counter">500 of 500 remaining</div>
+  </div>
+  <button type="button" class="usa-button">Upload</button>
+</div>`,
+  code: `<div class="questions-section" style="background:#f0f0f0; padding:2rem; border-radius:0.5rem;">
+  <p style="font-size:1.6rem; margin-top:0;">After you click <strong>Upload</strong>, you must click <strong>Save</strong> under the Attachment Name input field to upload the file before you click <strong>Save and Close</strong> on this window.</p>
+  <p style="font-size:1.6rem; font-weight:700;">File size and type limitations per attachment: 50 MB for txt, csv, png, jpg, jpeg, pdf, doc, xls, docx, xlsx</p>
+
+  <div class="usa-form-group">
+    <label class="usa-label" for="attachment-name">Attachment Name <span class="field-required">Required</span></label>
+    <input class="usa-input" id="attachment-name" name="attachment-name" type="text" required>
+  </div>
+
+  <div class="usa-form-group">
+    <label class="usa-label" for="attachment-notes">Document Notes <span class="tooltip-icon">?</span></label>
+    <textarea class="usa-textarea" id="attachment-notes" name="attachment-notes" maxlength="500" rows="4"></textarea>
+    <div class="character-counter"><span id="attachment-notes-remaining">500</span> of 500 remaining</div>
+  </div>
+
+  <input type="file" id="attachment-file-input" name="attachment-file-input" hidden>
+
+  <div class="margin-top-2" id="attachment-actions-initial">
+    <button type="button" class="usa-button" id="attachment-upload-btn">Upload</button>
+  </div>
+  <div class="margin-top-2" id="attachment-actions-selected" hidden>
+    <button type="button" class="usa-button" id="attachment-save-btn">Save</button>
+    <button type="button" class="usa-button usa-button--secondary" id="attachment-cancel-btn">Cancel</button>
+  </div>
+  <div class="margin-top-2" id="attachment-actions-saved" hidden>
+    <button type="button" class="usa-button" id="attachment-finish-btn">Finish</button>
+    <button type="button" class="usa-button usa-button--secondary" id="attachment-delete-btn">Delete</button>
+  </div>
+</div>
+
+<script>
+(function() {
+  var fileInput = document.getElementById('attachment-file-input');
+  var actionsInitial = document.getElementById('attachment-actions-initial');
+  var actionsSelected = document.getElementById('attachment-actions-selected');
+  var actionsSaved = document.getElementById('attachment-actions-saved');
+  var notesField = document.getElementById('attachment-notes');
+  var notesRemaining = document.getElementById('attachment-notes-remaining');
+
+  notesField.addEventListener('input', function() {
+    notesRemaining.textContent = 500 - notesField.value.length;
+  });
+
+  document.getElementById('attachment-upload-btn').addEventListener('click', function() {
+    fileInput.click();
+  });
+
+  fileInput.addEventListener('change', function() {
+    if (!fileInput.files.length) return;
+    actionsInitial.hidden = true;
+    actionsSelected.hidden = false;
+  });
+
+  document.getElementById('attachment-cancel-btn').addEventListener('click', function() {
+    fileInput.value = '';
+    actionsSelected.hidden = true;
+    actionsInitial.hidden = false;
+  });
+
+  document.getElementById('attachment-save-btn').addEventListener('click', function() {
+    // Server-side virus scan + file-spec check happens here; no client markup for this step.
+    actionsSelected.hidden = true;
+    actionsSaved.hidden = false;
+  });
+
+  document.getElementById('attachment-delete-btn').addEventListener('click', function() {
+    if (confirm('Delete this attachment?')) {
+      fileInput.value = '';
+      actionsSaved.hidden = true;
+      actionsInitial.hidden = false;
+    }
+  });
+})();
+</` + `script>`,
+  notes: `SOURCE: reference screenshot provided by Daniel (2026-08-28) documenting the real production upload flow — not yet implemented in any prototype. Every existing prototype upload modal (rlp-document-locker, rlp-packets, etc.) uses a simpler single-step "Document Title + pick file + Save" pattern and calls the name field "Document Title," not "Attachment Name." Building a new feature against document upload should follow THIS flow, not the older ones.
+
+Real interaction sequence (three button states swapped via JS, not CSS, matching the Field-With-Error-Message pattern of toggling classes/hidden rather than baking states into markup):
+1. Initial — Attachment Name + Document Notes visible, single "Upload" button. Clicking Upload opens the native OS file picker directly (input[type=file] is hidden and clicked programmatically) — there is no separate "Choose File" control.
+2. Selected — once a file is chosen, the button row swaps to "Save" (primary) + "Cancel" (secondary). User may edit Document Notes here.
+3. Saved — clicking Save triggers a server-side virus scan + file-spec check (no client markup for this — treat it as a black box), then the button row swaps again to "Finish" (primary) + "Delete" (secondary, confirm before removing).
+
+The outer "Save and Close" referenced in the instructional text is a separate, higher-level action on the parent window/modal this panel lives inside (e.g. closing out of a multi-attachment list) — it is not part of this panel itself.
+
+Reused existing real patterns rather than inventing new ones: .tooltip-icon (circle "?" — from rlp-packets/question-builder.html; note it has no wired-up popover content anywhere in the codebase, just cursor:help styling) and .character-counter / "X of Y remaining" (from rlp-affiliations/task-detail-denied.html). The grey panel background reuses the established questions-section convention (#f0f0f0) rather than matching the screenshot's exact tone.`
+},
+{
   name: "Empty State — Standalone Paragraph",
   preview: `<p style="padding: 3rem 0; color: #71767a; font-size: 1.6rem;">
   No email templates found. <a href="#" class="usa-link">Create your first email template.</a>
