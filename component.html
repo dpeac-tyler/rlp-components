@@ -285,11 +285,11 @@ Navy #1a4480. Primary actions only — Save, Create New, Submit.`
 },
 {
   name: "Button — Secondary",
-  preview: `<a href="#" class="usa-button usa-button--secondary">Cancel</a>`,
-  code: `<a href="denials.html" class="usa-button usa-button--secondary">Cancel</a>`,
-  notes: `SOURCE: add-denial-code.html
+  preview: `<button type="button" class="usa-button usa-button--secondary">Cancel</button>`,
+  code: `<button type="button" class="usa-button usa-button--secondary" id="cancel-edit-letter">Cancel</button>`,
+  notes: `SOURCE: rlp-affiliations/edit-letter.html
 
-Often an <a> styled as a button rather than a <button> when it's a pure navigation/cancel link — not always a real form control.`
+A real <button type="button">, not a link — only used for Cancel next to Save/Submit. A handful of older pages (e.g. add-denial-code.html) still use an <a> styled as this class; that's legacy drift, not a second real pattern.`
 },
 {
   name: "Button — Unstyled",
