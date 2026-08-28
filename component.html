@@ -77,6 +77,7 @@
     padding: 0.6rem 1.6rem; border-top: 2px solid #dfe1e2;
   }
   tr.comp-row.hidden-by-filter { display: none; }
+  .status-pending, .status-active, .status-rejected {font-size: 16px;}
 </style>
 </head>
 <body>
@@ -794,11 +795,7 @@ Sortable headers get role="columnheader" aria-sort="none" + an empty <span class
 },
 {
   name: "Tag",
-  preview: `<span class="usa-tag">Reinspection</span> <span class="usa-tag">Asset</span> <span class="usa-tag">Primary</span>
-<div style="margin-top:1.6rem; font-size:1.2rem; color:#71767a;">Legacy pill variant — do not reuse, see notes:</div>
-<span style="display:inline-block; padding:0.25rem 0.8rem; font-size:1.3rem; font-weight:700; border-radius:2rem; line-height:1.5; background-color:#ecf3ec; color:#417505;">Current</span>
-<span style="display:inline-block; padding:0.25rem 0.8rem; font-size:1.3rem; font-weight:700; border-radius:2rem; line-height:1.5; background-color:#e7f6f8; color:#13669A;">v3</span>
-<span style="display:inline-block; padding:0.25rem 0.8rem; font-size:1.3rem; font-weight:700; border-radius:2rem; line-height:1.5; background-color:#f0f0f0; color:#5C5F66;">Archived</span>`,
+  preview: `<span class="usa-tag">Reinspection</span> <span class="usa-tag">Asset</span> <span class="usa-tag">Primary</span>`,
   code: `<!-- Canonical (stock USWDS) — use this going forward -->
 <span class="usa-tag">Primary</span>
 
@@ -816,7 +813,7 @@ Sortable headers get role="columnheader" aria-sort="none" + an empty <span class
 }`,
   notes: `SOURCE (canonical): rlp-inspections/css/styles.css — matches stock USWDS exactly. rlp-packets/css/styles.css has a near-identical simplified variant.
 
-RESOLVED 2026-08-27: the gray square tag is canonical — use it everywhere. The pill-shaped .usa-tag--active/--draft/--archived variant in rlp-case-management/correspondence-email-template.html (lines ~90-93) is legacy drift, not a second real pattern. Don't reuse it; the correspondence template's status/current badges should be migrated to the canonical tag when that page is next touched.`
+RESOLVED 2026-08-27: the gray square tag is canonical — use it everywhere. A pill-shaped .usa-tag--active/--draft/--archived variant exists in rlp-case-management/correspondence-email-template.html (lines ~90-93) as legacy drift — not a second real pattern. Don't reuse it; migrate that page's status/current badges to the canonical tag when it's next touched.`
 },
 {
   name: "Tabs — Horizontal",
