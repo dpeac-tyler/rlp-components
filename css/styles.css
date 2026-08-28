@@ -2025,7 +2025,7 @@ input[type="date"].usa-input {
 .usa-form-group--error {
   position: relative;
   padding-left: 1.6rem;
-  border-left: 0.4rem solid #d54309;
+  border-left: 0.4rem solid #b50909;
   padding-bottom: 0.8rem;
 }
 
@@ -2046,8 +2046,8 @@ input[type="date"].usa-input {
 .usa-input--error,
 .usa-select--error,
 .usa-textarea--error {
-  border: 0.4rem solid #d54309;
-  border-width: 0.4rem;
+  border: 0.3rem solid #b50909;
+  border-width: 0.3rem;
 }
 
 .usa-input--error:focus,

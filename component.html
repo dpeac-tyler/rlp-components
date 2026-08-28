@@ -313,7 +313,7 @@ Icon-only or link-styled controls inside table cells / dense UI. Always give it 
 </div>`,
   notes: `SOURCE: add-inspection-type.html
 
-A second, non-USWDS "multiselect-option" checkbox variant also exists (queues.html filter panel) — likely a duplicate pattern worth consolidating rather than reproducing both going forward.`
+A standard USWDS checkbox component.`
 },
 {
   name: "Combobox (Long-List Select)",
@@ -392,10 +392,10 @@ A single <tr> with colspan spanning all columns, removed (not hidden) once real 
 },
 {
   name: "Field With Error Message",
-  preview: `<div class="margin-bottom-4">
+  preview: `<div class="margin-bottom-4 usa-form-group--error">
   <label class="usa-label" for="demo-code-value">Code Value <span class="field-required">Required</span></label>
   <span class="usa-error-message">Enter a code value</span>
-  <input class="usa-input" id="demo-code-value" type="text">
+  <input class="usa-input usa-input--error" id="demo-code-value" type="text">
 </div>`,
   code: `<div class="margin-bottom-4" id="code-value-group">
   <label class="usa-label" for="code-value">Code Value <span class="field-required">Required</span></label>
@@ -416,9 +416,11 @@ function clearErrors() {
   document.getElementById('error-alert').setAttribute('hidden', '');
 }
 </` + `script>`,
-  notes: `SOURCE: add-denial-code.html
+  notes: `SOURCE: add-denial-code.html; error styling in css/styles.css (~line 2025)
 
-The group wrapper is often a plain <div id="..."> rather than literally usa-form-group — usa-form-group--error / usa-input--error get toggled on by JS, not baked into the initial markup. Each input also clears its own error live on the 'input' event.`
+The group wrapper is often a plain <div id="..."> rather than literally usa-form-group — usa-form-group--error / usa-input--error get toggled on by JS, not baked into the initial markup. Each input also clears its own error live on the 'input' event.
+
+RESOLVED 2026-08-28: .usa-form-group--error gets a #b50909 left border, 4px thick. .usa-input--error gets a #b50909 border, 3px thick. .usa-form-group--error .usa-label is bold. Preview above shows the classes applied directly (skipping the JS) to demonstrate the finished error state.`
 },
 {
   name: "File Input",
