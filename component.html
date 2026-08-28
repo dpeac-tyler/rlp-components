@@ -39,7 +39,7 @@
   .lib-item:hover { background: #f0f3f8; }
   .lib-item.is-active { font-weight: 700; border-left-color: #1a4480; background: #f0f3f8; color: #1a4480; }
   .lib-main { flex: 1; min-width: 0; overflow-y: auto; }
-  .lib-pane { padding: 32px 40px 90px; max-width: 1180px; }
+  .lib-pane { padding: 32px 40px 90px; width: 100%; box-sizing: border-box; }
   .lib-pane h1 { margin: 0 0 8px; font-size: 26px; font-weight: 700; letter-spacing: -0.02em; color: #1b1b1b; }
   .lib-source { margin: 0 0 24px; display: flex; align-items: center; gap: 8px;
     font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12.5px; color: #71767a; }
@@ -355,8 +355,11 @@ Text input + hidden input (holds the real value) + filtered <ul role="listbox">.
 Plain native <input type="date"> styled with usa-input — no USWDS date-picker JS widget in use anywhere scanned so far.`
 },
 {
+  
   name: "Document Upload — Attachment Panel (Two-Step Save)",
-  preview: `<div style="background:#f0f0f0; padding:2rem; border-radius:0.5rem; max-width:520px;">
+  preview: `
+  <p style="font-weight: bold; color: red;"><strong>Building a new feature against document upload should follow THIS flow.</strong></p>  
+  <div style="background:#f0f0f0; padding:2rem; border-radius:0.5rem; max-width:520px;">
   <p style="font-size:1.6rem; margin-top:0;">After you click <strong>Upload</strong>, you must click <strong>Save</strong> under the Attachment Name input field to upload the file before you click <strong>Save and Close</strong> on this window.</p>
   <p style="font-size:1.6rem; font-weight:700;">File size and type limitations per attachment: 50 MB for txt, csv, png, jpg, jpeg, pdf, doc, xls, docx, xlsx</p>
   <div class="usa-form-group">
@@ -444,7 +447,7 @@ Plain native <input type="date"> styled with usa-input — no USWDS date-picker 
   });
 })();
 </` + `script>`,
-  notes: `SOURCE: reference screenshot provided by Daniel (2026-08-28) documenting the real production upload flow — not yet implemented in any prototype. Every existing prototype upload modal (rlp-document-locker, rlp-packets, etc.) uses a simpler single-step "Document Title + pick file + Save" pattern and calls the name field "Document Title," not "Attachment Name." Building a new feature against document upload should follow THIS flow, not the older ones.
+  notes: `SOURCE: reference screenshot provided by Daniel (2026-08-28) documenting the real production upload flow — not yet implemented in any prototype. Every existing prototype upload modal (rlp-document-locker, rlp-packets, etc.) uses a simpler single-step "Document Title + pick file + Save" pattern and calls the name field "Document Title," not "Attachment Name."
 
 Real interaction sequence (three button states swapped via JS, not CSS, matching the Field-With-Error-Message pattern of toggling classes/hidden rather than baking states into markup):
 1. Initial — Attachment Name + Document Notes visible, single "Upload" button. Clicking Upload opens the native OS file picker directly (input[type=file] is hidden and clicked programmatically) — there is no separate "Choose File" control.
