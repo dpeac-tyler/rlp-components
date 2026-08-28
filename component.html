@@ -355,11 +355,8 @@ Text input + hidden input (holds the real value) + filtered <ul role="listbox">.
 Plain native <input type="date"> styled with usa-input — no USWDS date-picker JS widget in use anywhere scanned so far.`
 },
 {
-  
   name: "Document Upload — Attachment Panel (Two-Step Save)",
-  preview: `
-  <p style="font-weight: bold; color: red;"><strong>Building a new feature against document upload should follow THIS flow.</strong></p>  
-  <div style="background:#f0f0f0; padding:2rem; border-radius:0.5rem; max-width:520px;">
+  preview: `<div style="background:#f0f0f0; padding:2rem; border-radius:0.5rem; max-width:520px;">
   <p style="font-size:1.6rem; margin-top:0;">After you click <strong>Upload</strong>, you must click <strong>Save</strong> under the Attachment Name input field to upload the file before you click <strong>Save and Close</strong> on this window.</p>
   <p style="font-size:1.6rem; font-weight:700;">File size and type limitations per attachment: 50 MB for txt, csv, png, jpg, jpeg, pdf, doc, xls, docx, xlsx</p>
   <div class="usa-form-group">
@@ -448,6 +445,8 @@ Plain native <input type="date"> styled with usa-input — no USWDS date-picker 
 })();
 </` + `script>`,
   notes: `SOURCE: reference screenshot provided by Daniel (2026-08-28) documenting the real production upload flow — not yet implemented in any prototype. Every existing prototype upload modal (rlp-document-locker, rlp-packets, etc.) uses a simpler single-step "Document Title + pick file + Save" pattern and calls the name field "Document Title," not "Attachment Name."
+
+Flag to Daniel: building a new feature against document upload should follow THIS flow, not the older single-step ones already in rlp-document-locker/rlp-packets.
 
 Real interaction sequence (three button states swapped via JS, not CSS, matching the Field-With-Error-Message pattern of toggling classes/hidden rather than baking states into markup):
 1. Initial — Attachment Name + Document Notes visible, single "Upload" button. Clicking Upload opens the native OS file picker directly (input[type=file] is hidden and clicked programmatically) — there is no separate "Choose File" control.
