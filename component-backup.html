@@ -5,93 +5,256 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>RLP Component Library</title>
 <link rel="stylesheet" href="css/styles.css">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <style>
-  html { box-sizing: border-box; font-size: 10px; }
-  body { margin: 0; background: #f9f9f7; color: #1b1b1b;
-    font-family: 'Public Sans', 'Public Sans Web', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif; overflow: hidden; }
-  a { color: #1a4480; }
-  .lib-app { height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-  .lib-top { flex: 0 0 auto; display: flex; align-items: center; gap: 20px; padding: 0 24px; height: 58px; background: #1a4480; color: #fff; }
-  .lib-top__brand { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 700; letter-spacing: -0.01em; }
-  .lib-top__tag { font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase; color: #c6d5ea;
-    border-left: 1px solid rgba(255,255,255,0.25); padding-left: 20px; }
-  .lib-top__count { margin-left: auto; font-size: 12px; color: #c6d5ea; font-variant-numeric: tabular-nums; }
-  .lib-body { flex: 1; min-height: 0; display: flex; }
-  .lib-index { flex: 0 0 306px; width: 306px; background: #fff; border-right: 1px solid #dfe1e2; display: flex; flex-direction: column; min-height: 0; }
-  .lib-index__search { padding: 14px 16px 12px; border-bottom: 1px solid #dfe1e2; display: flex; flex-direction: column; gap: 10px; }
-  .lib-index__search input { width: 100%; height: 36px; padding: 0 10px; font: inherit; font-size: 13px;
-    border: 1px solid #565c65; border-radius: 3px; box-sizing: border-box; }
-  .lib-az { display: flex; flex-wrap: wrap; gap: 3px; }
-  .lib-az a, .lib-az span { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px;
-    border-radius: 2px; font-size: 11px; font-weight: 700; text-decoration: none; }
-  .lib-az a { background: #1a4480; color: #fff; }
-  .lib-az a:hover { background: #16324f; }
-  .lib-az span { background: #eff1f1; color: #b4b8bb; }
-  .lib-index__list { flex: 1; overflow-y: auto; padding: 8px 0 40px; }
-  .lib-group { margin-bottom: 6px; scroll-margin-top: 8px; }
-  .lib-group__head { position: sticky; top: 0; background: #fff; display: flex; align-items: center; justify-content: space-between;
-    padding: 7px 16px 5px; border-bottom: 1px solid #eceded; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: #71767a; }
-  .lib-group__head span:last-child { font-variant-numeric: tabular-nums; }
-  .lib-item { display: block; width: 100%; text-align: left; font: inherit; font-size: 13.5px; padding: 7px 16px;
-    border: none; border-left: 3px solid transparent; background: none; color: #3d4551; cursor: pointer; }
-  .lib-item:hover { background: #f0f3f8; }
-  .lib-item.is-active { font-weight: 700; border-left-color: #1a4480; background: #f0f3f8; color: #1a4480; }
-  .lib-main { flex: 1; min-width: 0; overflow-y: auto; }
-  .lib-pane { padding: 32px 40px 90px; max-width: 1180px; }
-  .lib-pane h1 { margin: 0 0 8px; font-size: 26px; font-weight: 700; letter-spacing: -0.02em; color: #1b1b1b; }
-  .lib-source { margin: 0 0 24px; display: flex; align-items: center; gap: 8px;
-    font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12.5px; color: #71767a; }
-  .lib-source__badge { font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em; color: #3d4551;
-    background: #eff1f1; border: 1px solid #dfe1e2; border-radius: 2px; padding: 3px 7px; }
-  .lib-stage { background: #fff; border: 1px solid #dfe1e2; border-radius: 5px; padding: 34px 32px; margin-bottom: 10px; overflow: auto; }
-  .lib-stage .usa-input, .lib-stage .usa-select, .lib-stage .usa-textarea { max-width: 100%; }
-  .lib-stage__label { margin: 0 0 30px; font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase; color: #71767a; }
-  .lib-split { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(280px, 1fr); gap: 26px; align-items: start; }
-  .lib-h2 { margin: 0; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #1b1b1b; }
-  .lib-codehead { display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px; }
-  .lib-copy { font: inherit; font-size: 12.5px; font-weight: 700; color: #1a4480; background: #fff;
-    border: 1px solid #adc3e0; border-radius: 3px; padding: 6px 12px; cursor: pointer; }
-  .lib-copy:hover { background: #f0f3f8; }
-  .lib-pane pre { margin: 0; background: #1b1b1b; color: #f0f0f0; font-family: ui-monospace, Menlo, Consolas, monospace;
-    font-size: 12.5px; line-height: 1.6; padding: 20px; border-radius: 5px; overflow-x: auto; }
-  .lib-notes { background: #fff; border: 1px solid #dfe1e2; border-radius: 5px; padding: 18px; display: flex; flex-direction: column; gap: 12px; }
-  .lib-notes p { margin: 0; font-size: 13.5px; line-height: 1.65; color: #3d4551; white-space: pre-wrap; text-wrap: pretty; }
-  .lib-flag { background: #fef0c8; border-left: 3px solid #c2850c; color: #543a00; padding: 11px 13px; border-radius: 2px;
-    font-size: 12.5px; line-height: 1.6; white-space: pre-wrap; }
-  .lib-intro { margin: 0 0 26px; max-width: 720px; font-size: 14.5px; line-height: 1.65; color: #3d4551; }
-  .lib-card { background: #fff; border: 1px solid #dfe1e2; border-radius: 5px; overflow: hidden; }
-  .lib-row--status { display: grid; grid-template-columns: 34px minmax(0, 120px) minmax(0, 1fr) minmax(0, 1.1fr);
-    gap: 16px; align-items: start; padding: 16px 20px; border-bottom: 1px solid #eceded; }
-  .lib-row--icon { display: grid; grid-template-columns: 40px minmax(0, 220px) minmax(0, 1fr);
-    gap: 16px; align-items: center; padding: 12px 20px; border-bottom: 1px solid #eceded; }
-  .lib-swatch { width: 30px; height: 30px; border-radius: 3px; border: 1px solid rgba(0,0,0,0.12); }
-  .lib-mono { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12.5px; font-weight: 700; min-width: 0; }
-  .lib-mono--sm { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 11.5px; font-weight: 400;
-    line-height: 1.6; color: #71767a; min-width: 0; overflow-wrap: anywhere; }
-  .lib-cell { min-width: 0; font-size: 14px; line-height: 1.55; color: #3d4551; }
-  .lib-iconbox { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: #f6f6f4; border-radius: 3px; }
-  .lib-subhead { margin: 0 0 12px; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #1a4480; }
+  body { background: #f9f9f7; }
+  .library-wrap { width: 100%; padding: 3rem 2rem 6rem; box-sizing: border-box; }
+  .library-intro { font-size: 1.6rem; color: #3d4551; margin-bottom: 2rem; }
+  html { scroll-behavior: smooth; }
+  .library-controls {
+    position: sticky; top: 0; z-index: 20; background: #f9f9f7;
+    padding: 1.6rem 0; border-bottom: 2px solid #dfe1e2; margin-bottom: 2rem;
+    display: flex; align-items: center; gap: 2rem; flex-wrap: wrap;
+  }
+  .library-controls input { max-width: 400px; margin: 0; }
+  #component-count { font-size: 1.4rem; color: #71767a; }
+  #az-nav { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-left: auto; }
+  #az-nav a, #az-nav span {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 2.4rem; height: 2.4rem; border-radius: 3px;
+    font-size: 1.3rem; font-weight: 700; text-decoration: none;
+  }
+  #az-nav a { background: #1a4480; color: #fff; }
+  #az-nav a:hover { background: #16324f; }
+  #az-nav span { color: #c9c9c9; }
+  #az-nav a.no-match { background: #dfe1e2; color: #a9aeb1; }
+  tr.letter-row { scroll-margin-top: 9rem; }
+  #status-colors-heading { scroll-margin-top: 9rem; }
+  #icon-library-heading { scroll-margin-top: 9rem; }
+  .icon-group-heading { margin-top: 4rem; }
+  .status-color-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.6rem; margin-bottom: 2rem;
+  }
+  .status-color-card {
+    background: #fff; border: 1px solid #dfe1e2; border-radius: 4px;
+    padding: 1.6rem; display: flex; gap: 1.2rem; align-items: flex-start;
+  }
+  .status-color-swatch {
+    flex-shrink: 0; width: 3.6rem; height: 3.6rem; border-radius: 4px; border: 1px solid #dfe1e2;
+  }
+  .status-color-card .status-color-hex { font-size: 1.4rem; font-weight: 700; margin: 0 0 0.4rem; font-family: monospace; }
+  .status-color-card .status-color-sample { margin: 0 0 0.6rem; }
+  .status-color-card .status-color-labels { font-size: 1.6rem; color: #3d4551; margin: 0 0 0.6rem; }
+  .status-color-card .status-color-classes { font-size: 1.3rem; color: #71767a; word-break: break-word; }
+  .icon-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.6rem; margin-bottom: 2rem;
+  }
+  .icon-card {
+    background: #fff; border: 1px solid #dfe1e2; border-radius: 4px;
+    padding: 1.6rem; display: flex; gap: 1.2rem; align-items: flex-start;
+  }
+  .icon-card img { flex-shrink: 0; }
+  .icon-card .icon-filename { font-size: 1.6rem; font-weight: 700; margin: 0 0 0.6rem; word-break: break-all; }
+  .icon-card .icon-labels { font-size: 1.6rem; color: #3d4551; }
+  #component-table { width: 100%; table-layout: fixed; border-collapse: collapse; }
+  #component-table th, #component-table td { vertical-align: top; padding: 1.6rem; }
+  #component-table th:nth-child(1), #component-table td:nth-child(1) { width: 33%; }
+  #component-table th:nth-child(2), #component-table td:nth-child(2) { width: 45%; }
+  #component-table th:nth-child(3), #component-table td:nth-child(3) { width: 22%; }
+  .comp-name { font-size: 1.7rem; font-weight: 700; margin: 0 0 1.2rem; }
+  .comp-preview {
+    background: #fff; border: 1px solid #dfe1e2; border-radius: 4px;
+    padding: 2rem; overflow: auto; position: relative;
+  }
+  .code-cell { position: relative; }
+  .code-cell pre {
+    background: #1b1b1b; color: #f0f0f0; font-size: 1.3rem; line-height: 1.5;
+    padding: 1.6rem; border-radius: 4px; overflow-x: auto; margin: 0; max-height: 420px;
+  }
+  .code-cell .copy-btn {
+    position: absolute; top: 0.8rem; right: 0.8rem; font-size: 1.2rem;
+    background: #3d4551; color: #fff; border: none; border-radius: 3px;
+    padding: 0.4rem 0.8rem; cursor: pointer;
+  }
+  .code-cell .copy-btn:hover { background: #565c65; }
+  .notes-cell { font-size: 1.6rem; color: #3d4551; white-space: pre-wrap; }
+  .notes-cell .source-tag {
+    display: inline-block; font-size: 1.2rem; font-weight: 700; color: #71767a;
+    text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.6rem;
+  }
+  .notes-cell .gap-flag {
+    display: inline-block; background: #fef0c8; border: 1px solid #c2850c;
+    color: #543a00; padding: 0.6rem 1rem; border-radius: 3px; font-size: 1.3rem;
+    margin-top: 0.8rem;
+  }
+  tr.letter-row td {
+    background: #f0f0f0; font-size: 1.4rem; font-weight: 700; color: #71767a;
+    padding: 0.6rem 1.6rem; border-top: 2px solid #dfe1e2;
+  }
+  tr.comp-row.hidden-by-filter { display: none; }
+  .status-pending, .status-active, .status-rejected {font-size: 16px;}
 </style>
 </head>
 <body>
-<div class="lib-app">
-  <header class="lib-top">
-    <div class="lib-top__brand"><img src="assets/rlp-logo.png" alt="" width="24" height="24"><span>RLP Component Library</span></div>
-    <span class="lib-top__tag">Markup pulled verbatim from live pages</span>
-    <span class="lib-top__count" id="lib-count"></span>
-  </header>
-  <div class="lib-body">
-    <nav class="lib-index" aria-label="Component index">
-      <div class="lib-index__search">
-        <input type="search" id="lib-search" placeholder="Filter components&hellip;" aria-label="Filter components">
-        <div class="lib-az" id="lib-az" aria-label="Jump to letter"></div>
-      </div>
-      <div class="lib-index__list" id="lib-index-list"></div>
-    </nav>
-    <main class="lib-main" id="lib-main"></main>
+<div class="library-wrap">
+  <h1 class="page-title page-title--underlined">RLP Component Library</h1>
+  <p class="library-intro">
+    Canonical, cross-project reference for every reusable RLP UI component — markup pulled verbatim from
+    live pages across the RLP directories, not hand-written from the style guide. Devs: copy the HTML column
+    directly. AI agents: this page is the source of truth for reproducing RLP components — match existing
+    markup and classes exactly rather than inventing new patterns.
+  </p>
+  <div class="library-controls">
+    <input type="text" id="component-filter" class="usa-input" placeholder="Filter components…">
+    <span id="component-count"></span>
+    <nav id="az-nav" aria-label="Jump to letter"></nav>
+    <a href="#status-colors-heading" style="font-size:1.4rem; white-space:nowrap;">Jump to Status Colors ↓</a>
+    <a href="#icon-library-heading" style="font-size:1.4rem; white-space:nowrap;">Jump to Icon Library ↓</a>
   </div>
+  <table id="component-table">
+    <colgroup><col><col><col></colgroup>
+    <thead>
+      <tr>
+        <th style="font-size: medium;">Component / Preview</th>
+        <th style="font-size: medium;">HTML</th>
+        <th style="font-size: medium;">Notes</th>
+      </tr>
+    </thead>
+    <tbody id="component-rows"></tbody>
+  </table>
+
+  <h2 id="status-colors-heading" class="page-title page-title--underlined">Status Colors</h2>
+  <p class="library-intro">
+    Semantic status-text color mapping from <code>css/styles.css</code> (~line 836). Map a new status value to the
+    closest existing group below — don't invent a new color. See the "Status Tag / Badge" entry in the component
+    table above for markup.
+  </p>
+  <div class="status-color-grid">
+    <div class="status-color-card">
+      <div class="status-color-swatch" style="background-color:#417505;"></div>
+      <div>
+        <p class="status-color-hex">#417505 — Green</p>
+        <p class="status-color-sample"><span class="status-active">Active</span></p>
+        <p class="status-color-labels">Active · Approved · Live · Paid · Completed</p>
+        <p class="status-color-classes">.status-active, .status-approved, .status-live, .status-paid, .status-completed</p>
+      </div>
+    </div>
+    <div class="status-color-card">
+      <div class="status-color-swatch" style="background-color:#8F5800;"></div>
+      <div>
+        <p class="status-color-hex">#8F5800 — Yellow</p>
+        <p class="status-color-sample"><span class="status-pending">Pending</span></p>
+        <p class="status-color-labels">Pending / Open · Assigned · Approved - Awaiting Payment</p>
+        <p class="status-color-classes">.status-pending, .status-open, .status-assigned, .status-approved-awaiting-payment</p>
+      </div>
+    </div>
+    <div class="status-color-card">
+      <div class="status-color-swatch" style="background-color:#CD2026;"></div>
+      <div>
+        <p class="status-color-hex">#CD2026 — Red</p>
+        <p class="status-color-sample"><span class="status-rejected">Rejected</span></p>
+        <p class="status-color-labels">Rejected / Denied · Cancelled · Past Due · Terminated</p>
+        <p class="status-color-classes">.status-rejected, .status-denied, .status-cancelled, .status-past-due, .status-terminated</p>
+      </div>
+    </div>
+    <div class="status-color-card">
+      <div class="status-color-swatch" style="background-color:#80252A;"></div>
+      <div>
+        <p class="status-color-hex">#80252A — Dark Red</p>
+        <p class="status-color-sample"><span class="status-expired">Expired</span></p>
+        <p class="status-color-labels">Expired / Revoked · Withdrawn · Decommissioned · Retired</p>
+        <p class="status-color-classes">.status-expired, .status-revoked, .status-withdrawn, .status-decommissioned, .status-retired</p>
+      </div>
+    </div>
+    <div class="status-color-card">
+      <div class="status-color-swatch" style="background-color:#205493;"></div>
+      <div>
+        <p class="status-color-hex">#205493 — Cool Blue</p>
+        <p class="status-color-sample"><span class="status-in-progress">In Progress</span></p>
+        <p class="status-color-labels">In Progress · Rejected for Resubmission · In Cart</p>
+        <p class="status-color-classes">.status-in-progress, .status-rejected-for-resubmission, .status-in-cart</p>
+      </div>
+    </div>
+    <div class="status-color-card">
+      <div class="status-color-swatch" style="background-color:#A34900;"></div>
+      <div>
+        <p class="status-color-hex">#A34900 — Warm Orange</p>
+        <p class="status-color-sample"><span class="status-on-hold">On Hold</span></p>
+        <p class="status-color-labels">Inactive · On Hold · Suspended · Payment in Process</p>
+        <p class="status-color-classes">.status-inactive, .status-on-hold, .status-suspended, .status-payment-in-process</p>
+      </div>
+    </div>
+    <div class="status-color-card">
+      <div class="status-color-swatch" style="background-color:#13669A;"></div>
+      <div>
+        <p class="status-color-hex">#13669A — Draft Blue</p>
+        <p class="status-color-sample"><span class="status-draft">Draft</span></p>
+        <p class="status-color-labels">In Review · Draft · Initiated</p>
+        <p class="status-color-classes">.status-in-review, .status-draft, .status-initiated</p>
+      </div>
+    </div>
+    <div class="status-color-card">
+      <div class="status-color-swatch" style="background-color:#5C5F66;"></div>
+      <div>
+        <p class="status-color-hex">#5C5F66 — Gray</p>
+        <p class="status-color-sample"><span class="status-archived">Archived</span></p>
+        <p class="status-color-labels">Archived</p>
+        <p class="status-color-classes">.status-archived</p>
+      </div>
+    </div>
+  </div>
+
+  <h2 id="icon-library-heading" class="page-title page-title--underlined">Icon Library</h2>
+  <p class="library-intro">
+    Every file in <code>assets/</code>, grouped by what it's actually used for — pulled from real
+    aria-label / Icon Key text across scanned pages, not invented. Icons used for more than one action
+    list every label found; that's expected, reuse them the same way.
+  </p>
+
+  <h3 class="section-heading icon-group-heading">Action Icons</h3>
+  <div class="icon-grid">
+    <div class="icon-card"><img src="assets/eye-icon.png" alt="" width="30" height="30"><div><p class="icon-filename">eye-icon.png</p><p class="icon-labels">View Case, View Task, View Denial Code, View Document, View Appeal Configuration, Preview</p></div></div>
+    <div class="icon-card"><img src="assets/edit-icon.png" alt="" width="30" height="30"><div><p class="icon-filename">edit-icon.png</p><p class="icon-labels">Edit Case, Edit Application, Edit Denial Code, Edit Email, Edit File Details, Edit Appeal Configuration</p></div></div>
+    <div class="icon-card"><img src="assets/icon-delete.png" alt="" width="30" height="30"><div><p class="icon-filename">icon-delete.png</p><p class="icon-labels">Delete Case Subject, Delete Search Category, Delete Denial Code, Delete Document, Delete Appeal Configuration, Delete (no associations)</p></div></div>
+    <div class="icon-card"><img src="assets/discard-icon.png" alt="" width="30" height="30"><div><p class="icon-filename">discard-icon.png</p><p class="icon-labels">Discard, Discard Application</p></div></div>
+    <div class="icon-card"><img src="assets/publish-icon.png" alt="" width="30" height="30"><div><p class="icon-filename">publish-icon.png</p><p class="icon-labels">Publish Application, Publish (Draft → Active)</p></div></div>
+    <div class="icon-card"><img src="assets/icon-deactivate.png" alt="" width="30" height="30"><div><p class="icon-filename">icon-deactivate.png</p><p class="icon-labels">Deactivate (Active → Inactive)</p></div></div>
+    <div class="icon-card"><img src="assets/icon-reactivate.png" alt="" width="30" height="30"><div><p class="icon-filename">icon-reactivate.png</p><p class="icon-labels">Reactivate (Inactive → Active)</p></div></div>
+    <div class="icon-card"><img src="assets/icon-archive.png" alt="" width="30" height="30"><div><p class="icon-filename">icon-archive.png</p><p class="icon-labels">Archive (template has associations)</p></div></div>
+    <div class="icon-card"><img src="assets/claim-case.png" alt="" width="30" height="30"><div><p class="icon-filename">claim-case.png</p><p class="icon-labels">Claim Case</p></div></div>
+    <div class="icon-card"><img src="assets/claim-task.png" alt="" width="30" height="30"><div><p class="icon-filename">claim-task.png</p><p class="icon-labels">Claim Task</p></div></div>
+    <div class="icon-card"><img src="assets/unclaim-case.png" alt="" width="30" height="30"><div><p class="icon-filename">unclaim-case.png</p><p class="icon-labels">Unclaim Case</p></div></div>
+    <div class="icon-card"><img src="assets/unclaim-task.png" alt="" width="30" height="30"><div><p class="icon-filename">unclaim-task.png</p><p class="icon-labels">Unclaim Task</p></div></div>
+    <div class="icon-card"><img src="assets/download-certificate.png" alt="" width="30" height="30"><div><p class="icon-filename">download-certificate.png</p><p class="icon-labels">Download Certificate, Download Email, Download File</p></div></div>
+    <div class="icon-card"><img src="assets/print-icon.png" alt="" width="30" height="30"><div><p class="icon-filename">print-icon.png</p><p class="icon-labels">Print Email, Print File, Print Letter</p></div></div>
+    <div class="icon-card"><img src="assets/resend-email.png" alt="" width="30" height="30"><div><p class="icon-filename">resend-email.png</p><p class="icon-labels">Resend Email</p></div></div>
+    <div class="icon-card"><img src="assets/envelope-icon.png" alt="" width="30" height="30"><div><p class="icon-filename">envelope-icon.png</p><p class="icon-labels">View Email, View Letter</p></div></div>
+    <div class="icon-card"><img src="assets/create-invoice.png" alt="" width="30" height="30"><div><p class="icon-filename">create-invoice.png</p><p class="icon-labels">Create Invoice</p></div></div>
+    <div class="icon-card"><img src="assets/initiate-inspection.png" alt="" width="30" height="30"><div><p class="icon-filename">initiate-inspection.png</p><p class="icon-labels">Initiate Inspection</p></div></div>
+    <div class="icon-card"><img src="assets/review-task.png" alt="" width="30" height="30"><div><p class="icon-filename">review-task.png</p><p class="icon-labels">Review Task</p></div></div>
+    <div class="icon-card"><img src="assets/view-applicant-profile.png" alt="" width="30" height="30"><div><p class="icon-filename">view-applicant-profile.png</p><p class="icon-labels">View Applicant Profile</p></div></div>
+    <div class="icon-card"><img src="assets/view-submission.png" alt="" width="30" height="30"><div><p class="icon-filename">view-submission.png</p><p class="icon-labels">View Submission</p></div></div>
+    <div class="icon-card"><img src="assets/view-history.png" alt="" width="30" height="30"><div><p class="icon-filename">view-history.png</p><p class="icon-labels">View History</p></div></div>
+    <div class="icon-card"><img src="assets/manage-agency-license-fields.png" alt="" width="30" height="30"><div><p class="icon-filename">manage-agency-license-fields.png</p><p class="icon-labels">Manage Agency License Fields</p></div></div>
+    <div class="icon-card"><img src="assets/manage-license.png" alt="" width="30" height="30"><div><p class="icon-filename">manage-license.png</p><p class="icon-labels">Manage License</p></div></div>
+    <div class="icon-card"><img src="assets/regenerate-certificate.png" alt="" width="30" height="30"><div><p class="icon-filename">regenerate-certificate.png</p><p class="icon-labels">Regenerate Certificate</p></div></div>
+    <div class="icon-card"><img src="assets/lock.png" alt="" width="24" height="24"><div><p class="icon-filename">lock.png</p><p class="icon-labels">"Agency Only" inline indicator (16×16, sits before restricted-item text — not a clickable control)</p></div></div>
+    <div class="icon-card"><img src="assets/test-icon.png" alt="" width="30" height="30"><div><p class="icon-filename">test-icon.png</p><p class="icon-labels">Test Application — name suggests a dev/placeholder icon; confirm with Daniel before reusing in a real flow</p></div></div>
+  </div>
+
+  <h3 class="section-heading icon-group-heading">Branding / Logos</h3>
+  <div class="icon-grid">
+    <div class="icon-card"><img src="assets/agency-logo.png" alt="" width="60" height="30"><div><p class="icon-filename">agency-logo.png</p><p class="icon-labels">Header banner agency logo (alt: "ASP agency logo") — swap per-agency</p></div></div>
+    <div class="icon-card"><img src="assets/rlp-logo.png" alt="" width="30" height="30"><div><p class="icon-filename">rlp-logo.png</p><p class="icon-labels">Header banner RLP product logo (alt: "RLP logo")</p></div></div>
+    <div class="icon-card"><img src="assets/il-logo.png" alt="" width="60" height="30"><div><p class="icon-filename">il-logo.png</p><p class="icon-labels">Same header-logo slot as agency-logo.png, used instead in rlp-packets and rlp-inspections (Illinois agency) — expected per-project variation, not drift</p></div></div>
+  </div>
+
+  <h3 class="section-heading icon-group-heading">Document Backgrounds</h3>
+  <div class="icon-grid">
+    <div class="icon-card"><img src="assets/ar-state-police-blank.png" alt="" width="60" height="60" style="object-fit:cover;"><div><p class="icon-filename">ar-state-police-blank.png</p><p class="icon-labels">Full-page background/watermark for a printable certificate template (individual-profile.html) — not a UI icon, a print asset</p></div></div>
+  </div>
+
 </div>
 
 <script>
@@ -810,492 +973,240 @@ The redesigned case-detail page is a stack of these tiles on an off-white #f9f9f
 }
 ];
 
-const CATEGORIES = ["Buttons & Actions","Forms & Inputs","Feedback & Status","Navigation","Data Display","Page Structure"];
-const CATEGORY_OF = {
-  "Button — Primary": "Buttons & Actions",
-  "Button — Secondary": "Buttons & Actions",
-  "Button — Outline": "Buttons & Actions",
-  "Button — Accent-Warm": "Buttons & Actions",
-  "Button — Unstyled": "Buttons & Actions",
-  "Button — Group, Segmented (Filter Tabs)": "Buttons & Actions",
-  "Icon Button (Table Row Action)": "Buttons & Actions",
-  "Page Action Bar — Standard (Left-Aligned)": "Buttons & Actions",
-  "Page Action Bar — Step/Wizard (Split)": "Buttons & Actions",
-  "Checkbox": "Forms & Inputs",
-  "Radio Group": "Forms & Inputs",
-  "Select — Short List": "Forms & Inputs",
-  "Combobox (Long-List Select)": "Forms & Inputs",
-  "Date Input": "Forms & Inputs",
-  "File Input": "Forms & Inputs",
-  "Textarea": "Forms & Inputs",
-  "Field With Error Message": "Forms & Inputs",
-  "Add-Item List (Growing Rows)": "Forms & Inputs",
-  "Alert — Error (Form Validation)": "Feedback & Status",
-  "Status Tag / Badge": "Feedback & Status",
-  "Tag": "Feedback & Status",
-  "Empty State — Standalone Paragraph": "Feedback & Status",
-  "Empty State — Table Row": "Feedback & Status",
-  "Modal / Dialog": "Feedback & Status",
-  "Breadcrumb": "Navigation",
-  "Navigation — Primary Nav": "Navigation",
-  "Pagination": "Navigation",
-  "Tabs — Horizontal": "Navigation",
-  "Accordion — Icon Key": "Navigation",
-  "Table — With Controls Bar": "Data Display",
-  "Task Container (Tile)": "Page Structure",
-  "Page Title": "Page Structure",
-  "Section Heading": "Page Structure"
-};
-
-const ICONS = [
- {
-  "file": "eye-icon.png",
-  "w": 30,
-  "h": 30,
-  "labels": "View Case, View Task, View Denial Code, View Document, View Appeal Configuration, Preview",
-  "group": "Action Icons"
- },
- {
-  "file": "edit-icon.png",
-  "w": 30,
-  "h": 30,
-  "labels": "Edit Case, Edit Application, Edit Denial Code, Edit Email, Edit File Details, Edit Appeal Configuration",
-  "group": "Action Icons"
- },
- {
-  "file": "icon-delete.png",
-  "w": 30,
-  "h": 30,
-  "labels": "Delete Case Subject, Delete Search Category, Delete Denial Code, Delete Document, Delete Appeal Configuration, Delete (no associations)",
-  "group": "Action Icons"
- },
- {
-  "file": "discard-icon.png",
-  "w": 30,
-  "h": 30,
-  "labels": "Discard, Discard Application",
-  "group": "Action Icons"
- },
- {
-  "file": "publish-icon.png",
-  "w": 30,
-  "h": 30,
-  "labels": "Publish Application, Publish (Draft → Active)",
-  "group": "Action Icons"
- },
- {
-  "file": "icon-deactivate.png",
-  "w": 30,
-  "h": 30,
-  "labels": "Deactivate (Active → Inactive)",
-  "group": "Action Icons"
- },
- {
-  "file": "icon-reactivate.png",
-  "w": 30,
-  "h": 30,
-  "labels": "Reactivate (Inactive → Active)",
-  "group": "Action Icons"
- },
- {
-  "file": "icon-archive.png",
-  "w": 30,
-  "h": 30,
-  "labels": "Archive (template has associations)",
-  "group": "Action Icons"
- },
- {
-  "file": "claim-case.png",
-  "w": 30,
-  "h": 30,
-  "labels": "Claim Case",
-  "group": "Action Icons"
- },
- {
-  "file": "claim-task.png",
-  "w": 30,
-  "h": 30,
-  "labels": "Claim Task",
-  "group": "Action Icons"
- },
- {
-  "file": "unclaim-case.png",
-  "w": 30,
-  "h": 30,
-  "labels": "Unclaim Case",
-  "group": "Action Icons"
- },
- {
-  "file": "unclaim-task.png",
-  "w": 30,
-  "h": 30,
-  "labels": "Unclaim Task",
-  "group": "Action Icons"
- },
- {
-  "file": "download-certificate.png",
-  "w": 30,
-  "h": 30,
-  "labels": "Download Certificate, Download Email, Download File",
-  "group": "Action Icons"
- },
- {
-  "file": "print-icon.png",
-  "w": 30,
-  "h": 30,
-  "labels": "Print Email, Print File, Print Letter",
-  "group": "Action Icons"
- },
- {
-  "file": "resend-email.png",
-  "w": 30,
-  "h": 30,
-  "labels": "Resend Email",
-  "group": "Action Icons"
- },
- {
-  "file": "envelope-icon.png",
-  "w": 30,
-  "h": 30,
-  "labels": "View Email, View Letter",
-  "group": "Action Icons"
- },
- {
-  "file": "create-invoice.png",
-  "w": 30,
-  "h": 30,
-  "labels": "Create Invoice",
-  "group": "Action Icons"
- },
- {
-  "file": "initiate-inspection.png",
-  "w": 30,
-  "h": 30,
-  "labels": "Initiate Inspection",
-  "group": "Action Icons"
- },
- {
-  "file": "review-task.png",
-  "w": 30,
-  "h": 30,
-  "labels": "Review Task",
-  "group": "Action Icons"
- },
- {
-  "file": "view-applicant-profile.png",
-  "w": 30,
-  "h": 30,
-  "labels": "View Applicant Profile",
-  "group": "Action Icons"
- },
- {
-  "file": "view-submission.png",
-  "w": 30,
-  "h": 30,
-  "labels": "View Submission",
-  "group": "Action Icons"
- },
- {
-  "file": "view-history.png",
-  "w": 30,
-  "h": 30,
-  "labels": "View History",
-  "group": "Action Icons"
- },
- {
-  "file": "manage-agency-license-fields.png",
-  "w": 30,
-  "h": 30,
-  "labels": "Manage Agency License Fields",
-  "group": "Action Icons"
- },
- {
-  "file": "manage-license.png",
-  "w": 30,
-  "h": 30,
-  "labels": "Manage License",
-  "group": "Action Icons"
- },
- {
-  "file": "regenerate-certificate.png",
-  "w": 30,
-  "h": 30,
-  "labels": "Regenerate Certificate",
-  "group": "Action Icons"
- },
- {
-  "file": "lock.png",
-  "w": 24,
-  "h": 24,
-  "labels": "\"Agency Only\" inline indicator (16×16, sits before restricted-item text — not a clickable control)",
-  "group": "Action Icons"
- },
- {
-  "file": "test-icon.png",
-  "w": 30,
-  "h": 30,
-  "labels": "Test Application — name suggests a dev/placeholder icon; confirm with Daniel before reusing in a real flow",
-  "group": "Action Icons"
- },
- {
-  "file": "agency-logo.png",
-  "w": 60,
-  "h": 30,
-  "labels": "Header banner agency logo (alt: \"ASP agency logo\") — swap per-agency",
-  "group": "Branding / Logos"
- },
- {
-  "file": "rlp-logo.png",
-  "w": 30,
-  "h": 30,
-  "labels": "Header banner RLP product logo (alt: \"RLP logo\")",
-  "group": "Branding / Logos"
- },
- {
-  "file": "il-logo.png",
-  "w": 60,
-  "h": 30,
-  "labels": "Same header-logo slot as agency-logo.png, used instead in rlp-packets and rlp-inspections (Illinois agency) — expected per-project variation, not drift",
-  "group": "Branding / Logos"
- },
- {
-  "file": "ar-state-police-blank.png",
-  "w": 60,
-  "h": 60,
-  "labels": "Full-page background/watermark for a printable certificate template (individual-profile.html) — not a UI icon, a print asset",
-  "group": "Document Backgrounds"
- }
-];
-const STATUSES = [
- {
-  "hex": "#417505",
-  "title": "#417505 — Green",
-  "cls": "status-active",
-  "sample": "Active",
-  "labels": "Active · Approved · Live · Paid · Completed",
-  "classes": ".status-active, .status-approved, .status-live, .status-paid, .status-completed"
- },
- {
-  "hex": "#8F5800",
-  "title": "#8F5800 — Yellow",
-  "cls": "status-pending",
-  "sample": "Pending",
-  "labels": "Pending / Open · Assigned · Approved - Awaiting Payment",
-  "classes": ".status-pending, .status-open, .status-assigned, .status-approved-awaiting-payment"
- },
- {
-  "hex": "#CD2026",
-  "title": "#CD2026 — Red",
-  "cls": "status-rejected",
-  "sample": "Rejected",
-  "labels": "Rejected / Denied · Cancelled · Past Due · Terminated",
-  "classes": ".status-rejected, .status-denied, .status-cancelled, .status-past-due, .status-terminated"
- },
- {
-  "hex": "#80252A",
-  "title": "#80252A — Dark Red",
-  "cls": "status-expired",
-  "sample": "Expired",
-  "labels": "Expired / Revoked · Withdrawn · Decommissioned · Retired",
-  "classes": ".status-expired, .status-revoked, .status-withdrawn, .status-decommissioned, .status-retired"
- },
- {
-  "hex": "#205493",
-  "title": "#205493 — Cool Blue",
-  "cls": "status-in-progress",
-  "sample": "In Progress",
-  "labels": "In Progress · Rejected for Resubmission · In Cart",
-  "classes": ".status-in-progress, .status-rejected-for-resubmission, .status-in-cart"
- },
- {
-  "hex": "#A34900",
-  "title": "#A34900 — Warm Orange",
-  "cls": "status-on-hold",
-  "sample": "On Hold",
-  "labels": "Inactive · On Hold · Suspended · Payment in Process",
-  "classes": ".status-inactive, .status-on-hold, .status-suspended, .status-payment-in-process"
- },
- {
-  "hex": "#13669A",
-  "title": "#13669A — Draft Blue",
-  "cls": "status-draft",
-  "sample": "Draft",
-  "labels": "In Review · Draft · Initiated",
-  "classes": ".status-in-review, .status-draft, .status-initiated"
- },
- {
-  "hex": "#5C5F66",
-  "title": "#5C5F66 — Gray",
-  "cls": "status-archived",
-  "sample": "Archived",
-  "labels": "Archived",
-  "classes": ".status-archived"
- }
-];
-
-
-function esc(s) { return String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c])); }
-
-function parseNotes(notes) {
-  let source = '', rest = notes || '';
-  const m = rest.match(/^SOURCE[^\n]*/);
-  if (m) { source = m[0].replace(/^SOURCE(\s*\(canonical\))?:\s*/, ''); rest = rest.slice(m[0].length).trim(); }
-  const paras = [], flags = [];
-  rest.split(/\n\s*\n/).filter(Boolean).forEach(t => {
-    (/^(GAP:|RESOLVED|Flag to Daniel)/.test(t.trim()) ? flags : paras).push(t.trim());
-  });
-  return { source: source || '\u2014', paras: paras, flags: flags };
-}
-
 COMPONENTS.sort((a, b) => a.name.localeCompare(b.name));
 
-const state = { q: '', sel: COMPONENTS[0].name, view: 'component' };
+const tbody = document.getElementById('component-rows');
+let lastLetter = '';
 
-const indexList = document.getElementById('lib-index-list');
-const azStrip = document.getElementById('lib-az');
-const main = document.getElementById('lib-main');
-const countEl = document.getElementById('lib-count');
-const searchEl = document.getElementById('lib-search');
-
-function filtered() {
-  const q = state.q.trim().toLowerCase();
-  return COMPONENTS.filter(c => !q || c.name.toLowerCase().includes(q) || (c.notes || '').toLowerCase().includes(q));
-}
-
-function renderIndex() {
-  const list = filtered();
-  const letters = [...new Set(list.map(c => c.name[0].toUpperCase()))];
-  let az = '';
-  for (let i = 65; i <= 90; i++) {
-    const L = String.fromCharCode(i);
-    az += letters.includes(L) ? '<a href="#letter-' + L + '">' + L + '</a>' : '<span>' + L + '</span>';
+COMPONENTS.forEach((comp, i) => {
+  const letter = comp.name[0].toUpperCase();
+  if (letter !== lastLetter) {
+    lastLetter = letter;
+    const letterRow = document.createElement('tr');
+    letterRow.className = 'letter-row';
+    letterRow.id = 'letter-' + letter;
+    const td = document.createElement('td');
+    td.colSpan = 3;
+    td.textContent = letter;
+    letterRow.appendChild(td);
+    tbody.appendChild(letterRow);
   }
-  azStrip.innerHTML = az;
 
-  indexList.innerHTML = letters.map(L => {
-    const items = list.filter(c => c.name[0].toUpperCase() === L);
-    return '<div class="lib-group" id="letter-' + L + '">' +
-      '<div class="lib-group__head"><span>' + L + '</span><span>' + items.length + '</span></div>' +
-      items.map(c => '<button type="button" class="lib-item' +
-        (state.view === 'component' && state.sel === c.name ? ' is-active' : '') +
-        '" data-name="' + esc(c.name) + '">' + esc(c.name) + '</button>').join('') +
-      '</div>';
-  }).join('') +
-    '<div class="lib-group__head" style="position:static;border-bottom:none;padding-top:14px"><span>FOUNDATIONS</span></div>' +
-    '<button type="button" class="lib-item' + (state.view === 'status' ? ' is-active' : '') + '" data-view="status">Status Colors</button>' +
-    '<button type="button" class="lib-item' + (state.view === 'icons' ? ' is-active' : '') + '" data-view="icons">Icon Library</button>';
+  const row = document.createElement('tr');
+  row.className = 'comp-row';
+  row.dataset.name = comp.name.toLowerCase();
 
-  const q = state.q.trim();
-  countEl.textContent = q ? list.length + ' of ' + COMPONENTS.length + ' components'
-    : COMPONENTS.length + ' components \u00b7 ' + ICONS.length + ' icons';
-}
+  const nameCell = document.createElement('td');
+  const h3 = document.createElement('h3');
+  h3.className = 'comp-name';
+  h3.textContent = comp.name;
+  const previewDiv = document.createElement('div');
+  previewDiv.className = 'comp-preview';
+  previewDiv.innerHTML = comp.preview;
+  nameCell.appendChild(h3);
+  nameCell.appendChild(previewDiv);
 
-function renderMain() {
-  if (state.view === 'status') {
-    main.innerHTML = '<div class="lib-pane"><h1>Status Colors</h1>' +
-      '<p class="lib-intro">Semantic status-text mapping from <code>css/styles.css</code> (~line 836). Map a new status value to the closest group below \u2014 don\'t invent a new color.</p>' +
-      '<div class="lib-card">' + STATUSES.map(s => {
-        const name = s.title.split('\u2014')[1] ? s.title.split('\u2014')[1].trim() : '';
-        return '<div class="lib-row--status">' +
-          '<div class="lib-swatch" style="background:' + s.hex + '"></div>' +
-          '<div style="min-width:0"><div class="lib-mono">' + s.hex + '</div><div style="font-size:12px;color:#71767a;margin-top:3px">' + esc(name) + '</div></div>' +
-          '<div class="lib-cell"><div style="font-size:15px;font-weight:700;color:' + s.hex + ';margin-bottom:5px">' + esc(s.sample) + '</div>' + esc(s.labels) + '</div>' +
-          '<div class="lib-mono--sm">' + esc(s.classes) + '</div></div>';
-      }).join('') + '</div></div>';
-    return;
-  }
-  if (state.view === 'icons') {
-    const groups = [...new Set(ICONS.map(i => i.group))];
-    main.innerHTML = '<div class="lib-pane"><h1>Icon Library</h1>' +
-      '<p class="lib-intro">Every file in <code>assets/</code>, grouped by what it\'s used for \u2014 labels pulled from real aria-label / Icon Key text. Icons used for more than one action list every label found; reuse them the same way.</p>' +
-      groups.map(g => '<div style="margin-bottom:30px"><h2 class="lib-subhead">' + esc(g) + '</h2><div class="lib-card">' +
-        ICONS.filter(i => i.group === g).map(i => '<div class="lib-row--icon">' +
-          '<div class="lib-iconbox"><img src="assets/' + i.file + '" alt="" width="' + i.w + '" height="' + i.h + '"' +
-          (i.h > 40 ? ' style="width:40px;height:40px;object-fit:cover"' : '') + '></div>' +
-          '<div class="lib-mono" style="overflow-wrap:anywhere">' + esc(i.file) + '</div>' +
-          '<div class="lib-cell" style="font-size:13.5px">' + esc(i.labels) + '</div></div>').join('') +
-        '</div></div>').join('') + '</div>';
-    return;
-  }
-  const c = COMPONENTS.find(x => x.name === state.sel) || COMPONENTS[0];
-  const p = parseNotes(c.notes);
-  main.innerHTML = '<div class="lib-pane">' +
-    '<h1>' + esc(c.name) + '</h1>' +
-    '<p class="lib-source"><span class="lib-source__badge">SOURCE</span>' + esc(p.source) + '</p>' +
-    '<div class="lib-stage">' + c.preview + '</div>' +
-    '<p class="lib-stage__label">Rendered preview</p>' +
-    '<div class="lib-split"><div>' +
-      '<div class="lib-codehead"><h2 class="lib-h2">HTML</h2><button type="button" class="lib-copy" id="lib-copy">Copy HTML</button></div>' +
-      '<pre><code>' + esc(c.code) + '</code></pre>' +
-    '</div><aside>' +
-      '<h2 class="lib-h2" style="margin-bottom:9px">Notes</h2><div class="lib-notes">' +
-      p.paras.map(t => '<p>' + esc(t) + '</p>').join('') +
-      p.flags.map(t => '<div class="lib-flag">' + esc(t) + '</div>').join('') +
-      '</div></aside></div></div>';
-
-  const copyBtn = document.getElementById('lib-copy');
+  const codeCell = document.createElement('td');
+  codeCell.className = 'code-cell';
+  const pre = document.createElement('pre');
+  const codeEl = document.createElement('code');
+  codeEl.textContent = comp.code;
+  pre.appendChild(codeEl);
+  const copyBtn = document.createElement('button');
+  copyBtn.type = 'button';
+  copyBtn.className = 'copy-btn';
+  copyBtn.textContent = 'Copy';
   copyBtn.addEventListener('click', () => {
-    navigator.clipboard.writeText(c.code).then(() => {
-      copyBtn.textContent = 'Copied';
-      setTimeout(() => { copyBtn.textContent = 'Copy HTML'; }, 1500);
+    navigator.clipboard.writeText(comp.code).then(() => {
+      copyBtn.textContent = 'Copied!';
+      setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1500);
     });
+  });
+  codeCell.appendChild(copyBtn);
+  codeCell.appendChild(pre);
+
+  const notesCell = document.createElement('td');
+  notesCell.className = 'notes-cell';
+  notesCell.textContent = comp.notes;
+
+  row.appendChild(nameCell);
+  row.appendChild(codeCell);
+  row.appendChild(notesCell);
+  tbody.appendChild(row);
+});
+
+document.getElementById('component-count').textContent = COMPONENTS.length + ' components';
+
+const availableLetters = new Set(COMPONENTS.map(c => c.name[0].toUpperCase()));
+const azNav = document.getElementById('az-nav');
+for (let i = 65; i <= 90; i++) {
+  const letter = String.fromCharCode(i);
+  if (availableLetters.has(letter)) {
+    const a = document.createElement('a');
+    a.href = '#letter-' + letter;
+    a.textContent = letter;
+    a.dataset.letter = letter;
+    azNav.appendChild(a);
+  } else {
+    const span = document.createElement('span');
+    span.textContent = letter;
+    azNav.appendChild(span);
+  }
+}
+
+function updateLetterAvailability() {
+  document.querySelectorAll('#az-nav a').forEach(a => {
+    const letterRow = document.getElementById('letter-' + a.dataset.letter);
+    let hasVisible = false;
+    if (letterRow) {
+      let next = letterRow.nextElementSibling;
+      while (next && next.classList.contains('comp-row')) {
+        if (!next.classList.contains('hidden-by-filter')) hasVisible = true;
+        next = next.nextElementSibling;
+      }
+    }
+    a.classList.toggle('no-match', !hasVisible);
   });
 }
 
-function render() { renderIndex(); renderMain(); }
-
-indexList.addEventListener('click', e => {
-  const btn = e.target.closest('.lib-item');
-  if (!btn) return;
-  if (btn.dataset.view) { state.view = btn.dataset.view; }
-  else { state.view = 'component'; state.sel = btn.dataset.name; main.scrollTop = 0; }
-  render();
+document.getElementById('component-filter').addEventListener('input', function () {
+  const q = this.value.toLowerCase().trim();
+  let visible = 0;
+  document.querySelectorAll('tr.comp-row').forEach(row => {
+    const match = !q || row.dataset.name.includes(q);
+    row.classList.toggle('hidden-by-filter', !match);
+    if (match) visible++;
+  });
+  document.querySelectorAll('tr.letter-row').forEach(letterRow => {
+    let next = letterRow.nextElementSibling;
+    let hasVisible = false;
+    while (next && next.classList.contains('comp-row')) {
+      if (!next.classList.contains('hidden-by-filter')) hasVisible = true;
+      next = next.nextElementSibling;
+    }
+    letterRow.style.display = hasVisible ? '' : 'none';
+  });
+  document.getElementById('component-count').textContent = visible + ' of ' + COMPONENTS.length + ' components';
+  updateLetterAvailability();
 });
 
-searchEl.addEventListener('input', function () { state.q = this.value; renderIndex(); });
-
-azStrip.addEventListener('click', e => {
-  const a = e.target.closest('a');
-  if (!a) return;
-  e.preventDefault();
-  const target = document.getElementById(a.getAttribute('href').slice(1));
-  if (target) indexList.scrollTop = target.offsetTop - indexList.offsetTop;
+// Accordion demo wiring (generic — works for any number of accordions)
+document.querySelectorAll('.usa-accordion__button').forEach(button => {
+  button.addEventListener('click', function () {
+    const expanded = this.getAttribute('aria-expanded') === 'true';
+    const content = document.getElementById(this.getAttribute('aria-controls'));
+    if (expanded) {
+      this.setAttribute('aria-expanded', 'false');
+      content.setAttribute('hidden', '');
+    } else {
+      this.setAttribute('aria-expanded', 'true');
+      content.removeAttribute('hidden');
+    }
+  });
 });
 
-/* Demo wiring for interactive previews */
-document.addEventListener('click', e => {
-  const acc = e.target.closest('.usa-accordion__button');
-  if (acc) {
-    const ex = acc.getAttribute('aria-expanded') === 'true';
-    const box = document.getElementById(acc.getAttribute('aria-controls'));
-    acc.setAttribute('aria-expanded', ex ? 'false' : 'true');
-    if (box) { ex ? box.setAttribute('hidden', '') : box.removeAttribute('hidden'); }
-    return;
-  }
-  const seg = e.target.closest('.demo-segment');
-  if (seg) {
-    (seg.closest('.usa-button-group') || document).querySelectorAll('.demo-segment').forEach(b => b.classList.remove('active'));
-    seg.classList.add('active');
-    return;
-  }
-  const tab = e.target.closest('.demo-tab');
-  if (tab) {
-    const scope = tab.closest('.lib-stage') || document;
+// Segmented button group demo wiring
+document.querySelectorAll('.demo-segment').forEach(btn => {
+  btn.addEventListener('click', function () {
+    this.parentElement.parentElement.querySelectorAll('.demo-segment').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+// Tabs demo wiring
+document.querySelectorAll('.demo-tab').forEach(tab => {
+  tab.addEventListener('click', function () {
+    const scope = this.closest('.comp-preview');
     scope.querySelectorAll('.demo-tab').forEach(t => t.classList.remove('active'));
-    scope.querySelectorAll('.demo-panel').forEach(pn => { pn.classList.remove('active'); pn.style.display = 'none'; });
-    tab.classList.add('active');
-    const panel = scope.querySelector('.demo-panel[data-panel="' + tab.dataset.tab + '"]');
-    if (panel) { panel.classList.add('active'); panel.style.display = 'block'; }
-    return;
-  }
-  const mo = e.target.closest('[data-modal-open]');
-  if (mo) { const el = document.getElementById(mo.dataset.modalOpen); if (el) el.removeAttribute('hidden'); return; }
-  const mc = e.target.closest('[data-modal-close]');
-  if (mc) { const ov = mc.closest('.modal-overlay'); if (ov) ov.setAttribute('hidden', ''); }
+    scope.querySelectorAll('.demo-panel').forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
+    this.classList.add('active');
+    const panel = scope.querySelector('.demo-panel[data-panel="' + this.dataset.tab + '"]');
+    panel.classList.add('active');
+    panel.style.display = 'block';
+  });
 });
 
-render();
+// Modal demo wiring
+document.querySelectorAll('[data-modal-open]').forEach(btn => {
+  btn.addEventListener('click', function () {
+    document.getElementById(this.dataset.modalOpen).removeAttribute('hidden');
+  });
+});
+document.querySelectorAll('[data-modal-close]').forEach(btn => {
+  btn.addEventListener('click', function () {
+    this.closest('.modal-overlay').setAttribute('hidden', '');
+  });
+});
 
+// Add-item demo wiring
+(function () {
+  const addBtn = document.getElementById('demo-add-choice');
+  if (!addBtn) return;
+  let count = 1;
+  addBtn.addEventListener('click', function () {
+    count++;
+    const container = document.getElementById('demo-choices');
+    const div = document.createElement('div');
+    div.className = 'usa-form-group';
+    div.style.marginBottom = '1.5rem';
+    div.innerHTML = '<label class="usa-label">Choice ' + count + ' <span class="field-required">Required</span></label>' +
+      '<div style="display:flex; align-items:center; gap:1rem;"><input class="usa-input" type="text" style="flex:1;"></div>';
+    container.appendChild(div);
+  });
+})();
+
+// Combobox demo wiring (simplified copy of initComboBox in rlp-packets/create-packet.html)
+(function () {
+  const textInput = document.getElementById('demo-combo-input');
+  if (!textInput) return;
+  const hiddenInput = document.getElementById('demo-combo-hidden');
+  const list = document.getElementById('demo-combo-list');
+  const options = [
+    { value: 'fbla-owner', label: 'FBLA - Owner' },
+    { value: 'fbla-manager', label: 'FBLA - Manager' },
+    { value: 'fbla-company', label: 'FBLA - Company' },
+    { value: 'fbla-employee', label: 'FBLA - Employee' }
+  ];
+
+  function renderList(query) {
+    const q = query.toLowerCase().trim();
+    const matches = q ? options.filter(o => o.label.toLowerCase().includes(q)) : options;
+    list.innerHTML = '';
+    if (matches.length === 0) {
+      const li = document.createElement('li');
+      li.className = 'combo-box__option combo-box__option--no-results';
+      li.textContent = 'No matching options';
+      list.appendChild(li);
+    } else {
+      matches.forEach(opt => {
+        const li = document.createElement('li');
+        li.className = 'combo-box__option';
+        li.textContent = opt.label;
+        li.setAttribute('role', 'option');
+        li.addEventListener('mousedown', e => {
+          e.preventDefault();
+          textInput.value = opt.label;
+          hiddenInput.value = opt.value;
+          list.setAttribute('hidden', '');
+          textInput.setAttribute('aria-expanded', 'false');
+        });
+        list.appendChild(li);
+      });
+    }
+    list.removeAttribute('hidden');
+    textInput.setAttribute('aria-expanded', 'true');
+  }
+
+  textInput.addEventListener('input', function () { hiddenInput.value = ''; renderList(this.value); });
+  textInput.addEventListener('focus', function () { renderList(this.value); });
+  textInput.addEventListener('blur', function () {
+    setTimeout(() => {
+      list.setAttribute('hidden', '');
+      textInput.setAttribute('aria-expanded', 'false');
+      if (!hiddenInput.value) textInput.value = '';
+    }, 150);
+  });
+})();
 </script>
 </body>
 </html>
