@@ -854,7 +854,11 @@ Sortable headers get role="columnheader" aria-sort="none" + an empty <span class
 }`,
   notes: `SOURCE (canonical): rlp-inspections/css/styles.css — matches stock USWDS exactly. rlp-packets/css/styles.css has a near-identical simplified variant.
 
-RESOLVED 2026-08-27: the gray square tag is canonical — use it everywhere. A pill-shaped .usa-tag--active/--draft/--archived variant exists in rlp-case-management/correspondence-email-template.html (lines ~90-93) as legacy drift — not a second real pattern. Don't reuse it; migrate that page's status/current badges to the canonical tag when it's next touched.`
+RESOLVED 2026-08-27: the gray square tag is canonical — use it everywhere. A pill-shaped .usa-tag--active/--draft/--archived variant existed as legacy drift — never a second real pattern.
+
+MIGRATED 2026-09-04: rlp-correspondence/correspondence-email-template.html and correspondence-letter-template.html now use the canonical tag for their version (v2) and "Current" badges, and the three pill modifiers have been deleted. No known instances of the pill variant remain — don't reintroduce it.
+
+Note the canonical tag is uppercase, so a version badge renders as V2, not v2. For coloured status text in list tables (Active / Draft / Inactive / Archived), use the .status-* text classes instead — that is a separate pattern, not a tag.`
 },
 {
   name: "Tabs — Horizontal",
