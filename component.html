@@ -244,27 +244,33 @@ Orange #fa9441. Use only for add-item actions within a form section (never as a 
   name: "Button — Group, Segmented (Filter Tabs)",
   preview: `<div class="usa-button-group usa-button-group--segmented">
   <ul class="usa-button-group__list">
-    <li class="usa-button-group__item"><button type="button" class="usa-button demo-segment active" data-filter="open">Open</button></li>
-    <li class="usa-button-group__item"><button type="button" class="usa-button demo-segment" data-filter="pending">Pending</button></li>
-    <li class="usa-button-group__item"><button type="button" class="usa-button demo-segment" data-filter="closed">Closed</button></li>
+    <li class="usa-button-group__item"><button type="button" class="usa-button usa-button--outline category-filter-btn demo-segment active" data-filter="open">Open</button></li>
+    <li class="usa-button-group__item"><button type="button" class="usa-button usa-button--outline category-filter-btn demo-segment" data-filter="pending">Pending</button></li>
+    <li class="usa-button-group__item"><button type="button" class="usa-button usa-button--outline category-filter-btn demo-segment" data-filter="closed">Closed</button></li>
   </ul>
 </div>`,
   code: `<div class="usa-button-group usa-button-group--segmented">
   <ul class="usa-button-group__list">
     <li class="usa-button-group__item">
-      <button type="button" class="usa-button category-filter-btn active" data-filter="open">Open</button>
+      <button type="button" class="usa-button usa-button--outline category-filter-btn active" data-filter="open">Open</button>
     </li>
     <li class="usa-button-group__item">
-      <button type="button" class="usa-button category-filter-btn" data-filter="pending">Pending</button>
+      <button type="button" class="usa-button usa-button--outline category-filter-btn" data-filter="pending">Pending</button>
     </li>
     <li class="usa-button-group__item">
-      <button type="button" class="usa-button category-filter-btn" data-filter="closed">Closed</button>
+      <button type="button" class="usa-button usa-button--outline category-filter-btn" data-filter="closed">Closed</button>
     </li>
   </ul>
 </div>`,
-  notes: `SOURCE: view-cases.html
+  notes: `SOURCE: view-cases.html, applications.html, rlp-correspondence/correspondence.html
 
-NOT in the documented 4-class button table — a 5th real pattern, used for status-category filtering above a results table. "active" class marks the current selection; toggled by a plain click handler on .category-filter-btn.`
+Based on the USWDS segmented button group, used for status-category filtering above a results table. NOT in the documented 4-class button table — a 5th real pattern.
+
+.category-filter-btn is REQUIRED and carries all the colour: white background + blue text unselected, and .active flips it to blue background + white text (css/styles.css). usa-button--outline is a fallback so an unselected button still reads as an outline if that rule is ever missing; 230 of 253 real instances include it, so prefer it. Without .category-filter-btn you get bare .usa-button — every segment solid blue with white text, and the selected one indistinguishable.
+
+"active" marks the current selection, toggled by a plain click handler. Selection is exclusive: clicking the already-selected segment must keep it selected, not clear it — a filter group has no unfiltered state.
+
+FIXED 2026-09-04: this preview used a demo-only .demo-segment class that had no CSS, so it rendered as all-blue and misrepresented the component.`
 },
 {
   name: "Button — Outline",
