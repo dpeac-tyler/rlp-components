@@ -368,9 +368,17 @@ Icon-only or link-styled controls inside table cells / dense UI. Always give it 
   <input class="usa-checkbox__input" id="applies-application" type="checkbox" name="applies-to" value="application">
   <label class="usa-checkbox__label" for="applies-application">Application</label>
 </div>`,
-  notes: `SOURCE: add-inspection-type.html
+  notes: `SOURCE: add-inspection-type.html; wording per Confluence "Error Messaging Standards/Specifics"
 
-A standard USWDS checkbox component.`
+A standard USWDS checkbox component.
+
+Checkbox is the one component whose required message changes with the number of boxes: a single box must be checked ("Check the box for…"), a group needs at least one ("Check at least one of the options for…"). Both use "Check", not "Select" — "Select" belongs to Select and Radio.
+
+For a group, the message goes under the <legend> and <field name> is the legend text, not an individual checkbox label.`,
+  errors: [
+    { trigger: 'Unchecked (single box)', message: 'Check the box for <field name>.', placement: 'Inline, above the checkbox' },
+    { trigger: 'None checked (2+ boxes)', message: 'Check at least one of the options for <field name>.', placement: 'Inline, directly under the legend' }
+  ]
 },
 {
   name: "Combobox (Long-List Select)",
@@ -823,7 +831,14 @@ Standard USWDS pagination markup, used as-is. Current page gets usa-current + ar
     <label class="usa-radio__label" for="status-inactive">Inactive</label>
   </div>
 </fieldset>`,
-  notes: `SOURCE: add-denial-code.html`
+  notes: `SOURCE: add-denial-code.html; wording per Confluence "Error Messaging Standards/Specifics"
+
+The message goes directly under the <legend>, not under an individual radio. The whole fieldset is the field, so <field name> is the legend text.
+
+RESOLVED 2026-09-17: the standard's Radio row reads "Select at least one of the options for <field name>." — that row is a copy-paste of the Checkbox row (its mock label still says "checkbox question"), and "at least one" is wrong for a single-select control. Radio uses the same wording as Select: "Select an option for <field name>." Daniel confirmed; the Confluence doc should be corrected to match.`,
+  errors: [
+    { trigger: 'Nothing selected', message: 'Select an option for <field name>.', placement: 'Inline, directly under the legend' }
+  ]
 },
 {
   name: "Section Heading",
