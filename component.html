@@ -73,6 +73,19 @@
   .lib-cell { min-width: 0; font-size: 14px; line-height: 1.55; color: #3d4551; }
   .lib-iconbox { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: #f6f6f4; border-radius: 3px; }
   .lib-subhead { margin: 0 0 12px; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #1a4480; }
+  .lib-errsec { margin-top: 34px; }
+  .lib-errsec__head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 9px; }
+  .lib-errsec__note { font-size: 12.5px; color: #71767a; }
+  .lib-row--err { display: grid; grid-template-columns: minmax(0, 150px) minmax(0, 1fr) minmax(0, 170px) 78px;
+    gap: 16px; align-items: start; padding: 15px 20px; border-bottom: 1px solid #eceded; }
+  .lib-row--err:last-child { border-bottom: none; }
+  .lib-row--err.is-head { background: #f6f6f4; padding: 9px 20px; border-bottom: 1px solid #dfe1e2;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #71767a; }
+  .lib-trigger { font-size: 13.5px; font-weight: 700; color: #1b1b1b; min-width: 0; }
+  .lib-errmsg { min-width: 0; color: #b50909; font-size: 14px; font-weight: 700; line-height: 1.5;
+    overflow-wrap: anywhere; text-wrap: pretty; }
+  .lib-place { min-width: 0; font-size: 12.5px; line-height: 1.5; color: #71767a; }
+  .lib-copy--sm { font-size: 11.5px; padding: 4px 8px; white-space: nowrap; }
 </style>
 </head>
 <body>
@@ -94,6 +107,15 @@
 </div>
 
 <script>
+/* Shared error strings — referenced by every component that uses them, so a wording
+   change happens in one place. Source: Confluence "Error Messaging Standards/Specifics". */
+const ERR_REQUIRED = 'The field <field name> is required.';
+const ERR_NOT_VALID = 'The field <field name> is not valid.';
+/* Blocklist form, replacing the 31-item allowlist in the Confluence doc. The allowlist
+   forbade exactly two characters, so naming them is shorter, more actionable, and far
+   less punishing for screen-reader users (the string repeats in the top-of-page alert). */
+const ERR_CHARS = "The field <field name> can't include a backslash (\\) or an underscore (_).";
+
 const COMPONENTS = [
 {
   name: "Accordion — Icon Key",
@@ -186,25 +208,55 @@ GAP: your global standards describe a distinct "form sits above table, questions
   name: "Alert — Error (Form Validation)",
   preview: `<div class="usa-alert usa-alert--error">
   <div class="usa-alert__body">
-    <h3 class="usa-alert__heading">Error status</h3>
-    <p class="usa-alert__text">Please correct the following errors before submitting.</p>
+    <h3 class="usa-alert__heading">Error - 2 errors on this page.</h3>
+    <p class="usa-alert__text">Select an option for <a href="#">Appeal Configuration</a>.</p>
+    <p class="usa-alert__text">The field <a href="#">Code Value</a> is required.</p>
   </div>
 </div>`,
   code: `<div id="error-alert" class="usa-alert usa-alert--error" hidden>
   <div class="usa-alert__body">
-    <h3 class="usa-alert__heading">Error status</h3>
-    <p class="usa-alert__text">Please correct the following errors before submitting.</p>
+    <h3 class="usa-alert__heading" id="error-alert-heading">Error - 2 errors on this page.</h3>
+    <!-- One <p> per error, same order as the inputs on the page. No bullets. -->
+    <p class="usa-alert__text">Select an option for <a href="#appeal-configuration">Appeal Configuration</a>.</p>
+    <p class="usa-alert__text">The field <a href="#code-value">Code Value</a> is required.</p>
   </div>
 </div>
 
 <script>
-// Shown + scrolled into view on failed validation:
-document.getElementById('error-alert').removeAttribute('hidden');
-window.scrollTo({ top: 0, behavior: 'smooth' });
+// Shown + scrolled into view on failed validation. Heading count is always
+// written from the number of errors actually rendered — never hard-coded.
+function showErrorAlert(messages) {
+  const alert = document.getElementById('error-alert');
+  const body = alert.querySelector('.usa-alert__body');
+  document.getElementById('error-alert-heading').textContent =
+    'Error - ' + messages.length + (messages.length === 1 ? ' error' : ' errors') + ' on this page.';
+  body.querySelectorAll('.usa-alert__text').forEach(p => p.remove());
+  messages.forEach(m => {
+    const p = document.createElement('p');
+    p.className = 'usa-alert__text';
+    p.innerHTML = m;
+    body.appendChild(p);
+  });
+  alert.removeAttribute('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 </` + `script>`,
-  notes: `SOURCE: add-denial-code.html
+  notes: `SOURCE: add-denial-code.html; wording per Confluence "Error Messaging Standards/Specifics"
 
-Sits above profile-content, right after the page header. Paired with the "Field With Error Message" pattern — see the full validateForm()/showFieldError()/clearErrors() shape noted there.`
+Sits above profile-content, right after the page header. Paired with the "Field With Error Message" pattern — see the full validateForm()/showFieldError()/clearErrors() shape noted there.
+
+Four rules, all from the standard:
+1. Heading is "Error - N errors on this page." — singular "1 error" when there is one. Count the errors you actually rendered.
+2. Each error's text is IDENTICAL to its field-level message. Never reword it for the alert.
+3. One <p class="usa-alert__text"> per error, in the same order as the inputs on the page. No bullets, no <ul>.
+4. The <field name> inside each message is an anchor link to that input. Give the input an id and link to it.
+
+RESOLVED 2026-09-17: replaced the old "Error status" / "Please correct the following errors before submitting." copy, which matched neither the standard's heading nor its rule that alert text repeats the field-level message.`,
+  errors: [
+    { trigger: 'Heading, one error', message: 'Error - 1 error on this page.', placement: 'h3.usa-alert__heading' },
+    { trigger: 'Heading, 2+ errors', message: 'Error - <count> errors on this page.', placement: 'h3.usa-alert__heading' },
+    { trigger: 'Each error listed', message: '(the field-level message, verbatim)', placement: 'One p.usa-alert__text per error, input order' }
+  ]
 },
 {
   name: "Breadcrumb",
@@ -355,9 +407,19 @@ Text input + hidden input (holds the real value) + filtered <ul role="listbox">.
   preview: `<label class="usa-label" for="demo-date">Target Completion Date</label>
 <input class="usa-input" id="demo-date" type="date" style="max-width:240px;">`,
   code: `<input class="usa-input" id="target-completion-date" name="target-completion-date" type="date" required>`,
-  notes: `SOURCE: create-investigation.html
+  notes: `SOURCE: create-investigation.html; wording per Confluence "Error Messaging Standards/Specifics"
 
-Plain native <input type="date"> styled with usa-input — no USWDS date-picker JS widget in use anywhere scanned so far.`
+Plain native <input type="date"> styled with usa-input — no USWDS date-picker JS widget in use anywhere scanned so far.
+
+The date field is the one component whose invalid message is not "…is not valid." — it names the fix instead ("Enter a valid date in…"). When a business rule is what failed rather than the format, append the rule as a second sentence.
+
+GAP: the standard writes the required message as "The field <date field> is required." — <date field> rather than the <field name> token every other component uses. Read here as the same token; confirm with Daniel whether the doc should be corrected.`,
+  errors: [
+    { trigger: 'Empty field', message: 'The field <field name> is required.', placement: 'Inline, between label and input' },
+    { trigger: 'Unparseable / invalid date', message: 'Enter a valid date in the <field name>.', placement: 'Inline, between label and input' },
+    { trigger: 'Fails a business rule', message: 'Enter a valid date in the <field name>. <error rule>', placement: 'Inline, between label and input' },
+    { trigger: 'Rule example', message: 'Enter a valid date in the <field name>. Date(s) must be later than start date.', placement: 'Inline, between label and input' }
+  ]
 },
 {
   name: "Document Upload — Attachment Panel (Two-Step Save)",
@@ -502,12 +564,12 @@ A single <tr> with colspan spanning all columns, removed (not hidden) once real 
   name: "Field With Error Message",
   preview: `<div class="margin-bottom-4 usa-form-group--error">
   <label class="usa-label" for="demo-code-value">Code Value <span class="field-required">Required</span></label>
-  <span class="usa-error-message">Enter a code value</span>
+  <span class="usa-error-message">The field Code Value is required.</span>
   <input class="usa-input usa-input--error" id="demo-code-value" type="text">
 </div>`,
   code: `<div class="margin-bottom-4" id="code-value-group">
   <label class="usa-label" for="code-value">Code Value <span class="field-required">Required</span></label>
-  <span class="usa-error-message" id="code-value-error" hidden>Enter a code value</span>
+  <span class="usa-error-message" id="code-value-error" hidden>The field Code Value is required.</span>
   <input class="usa-input" id="code-value" name="code-value" type="text" required>
 </div>
 
@@ -524,11 +586,22 @@ function clearErrors() {
   document.getElementById('error-alert').setAttribute('hidden', '');
 }
 </` + `script>`,
-  notes: `SOURCE: add-denial-code.html; error styling in css/styles.css (~line 2025)
+  notes: `SOURCE: add-denial-code.html; error styling in css/styles.css (~line 2025); wording per Confluence "Error Messaging Standards/Specifics"
+
+This is the generic text-input error pattern — the messages below are the Text Input row of the standard, and they also apply to any single-line input without a more specific entry (Textarea and Custom IDs have their own).
 
 The group wrapper is often a plain <div id="..."> rather than literally usa-form-group — usa-form-group--error / usa-input--error get toggled on by JS, not baked into the initial markup. Each input also clears its own error live on the 'input' event.
 
-RESOLVED 2026-08-28: .usa-form-group--error gets a #b50909 left border, 4px thick. .usa-input--error gets a #b50909 border, 3px thick. .usa-form-group--error .usa-label is bold. Preview above shows the classes applied directly (skipping the JS) to demonstrate the finished error state.`
+Substitute the real label text for <field name>, exactly as the label reads on screen — "The field Code Value is required.", not "The field code-value is required." If the field repeats, carry the instance number: <field name (n)>.
+
+RESOLVED 2026-08-28: .usa-form-group--error gets a #b50909 left border, 4px thick. .usa-input--error gets a #b50909 border, 3px thick. .usa-form-group--error .usa-label is bold. Preview above shows the classes applied directly (skipping the JS) to demonstrate the finished error state.
+
+RESOLVED 2026-09-17: example copy was "Enter a code value", which did not follow the standard. Now "The field Code Value is required."`,
+  errors: [
+    { trigger: 'Empty field', message: ERR_REQUIRED, placement: 'Inline, between label and input' },
+    { trigger: 'Incorrect entry', message: ERR_NOT_VALID, placement: 'Inline, between label and input' },
+    { trigger: 'Invalid character(s)', message: ERR_CHARS, placement: 'Inline, between label and input' }
+  ]
 },
 {
   name: "File Input",
@@ -776,9 +849,17 @@ Standard USWDS pagination markup, used as-is. Current page gets usa-current + ar
   <option value="expedited-review">Expedited Review</option>
   <option value="late-appeal-process">Late Appeal Process</option>
 </select>`,
-  notes: `SOURCE: add-denial-code.html
+  notes: `SOURCE: add-denial-code.html; wording per Confluence "Error Messaging Standards/Specifics"
 
-For under ~10 items. Placeholder is always "Please Select" — never "Select one" or "-- Select --". For 10+ items use the Combobox pattern instead.`
+For under ~10 items. Placeholder is always "Please Select" — never "Select one" or "-- Select --". For 10+ items use the Combobox pattern instead.
+
+A select has no typed input, so it has no "incorrect entry" or "invalid character" state — the only error it can raise is nothing-selected.
+
+When a page has two or more selects that share a label stem, the instance number goes inside the token: "Select an option for Question List (2)." The standard's own example numbers every dropdown once a second one exists, rather than leaving the first unnumbered.`,
+  errors: [
+    { trigger: 'Nothing selected', message: 'Select an option for <field name>.', placement: 'Inline, between label and select' },
+    { trigger: 'Nothing selected (2+ selects)', message: 'Select an option for <field name (n)>.', placement: 'Inline, between label and select' }
+  ]
 },
 {
   name: "Status Tag / Badge",
@@ -1215,6 +1296,23 @@ const STATUSES = [
 
 function esc(s) { return String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c])); }
 
+function renderErrors(c) {
+  if (!c.errors || !c.errors.length) return '';
+  return '<section class="lib-errsec">' +
+    '<div class="lib-errsec__head"><h2 class="lib-h2">Error messages</h2>' +
+    '<span class="lib-errsec__note">Copy verbatim — substitute the on-screen label for ' +
+      esc('<field name>') + '</span></div>' +
+    '<div class="lib-card">' +
+      '<div class="lib-row--err is-head"><div>Trigger</div><div>Message</div><div>Placement</div><div></div></div>' +
+      c.errors.map((e, i) => '<div class="lib-row--err">' +
+        '<div class="lib-trigger">' + esc(e.trigger) + '</div>' +
+        '<div class="lib-errmsg">' + esc(e.message) + '</div>' +
+        '<div class="lib-place">' + esc(e.placement) + '</div>' +
+        '<div><button type="button" class="lib-copy lib-copy--sm" data-err="' + i + '">Copy</button></div>' +
+      '</div>').join('') +
+    '</div></section>';
+}
+
 function parseNotes(notes) {
   let source = '', rest = notes || '';
   const m = rest.match(/^SOURCE[^\n]*/);
@@ -1238,7 +1336,8 @@ const searchEl = document.getElementById('lib-search');
 
 function filtered() {
   const q = state.q.trim().toLowerCase();
-  return COMPONENTS.filter(c => !q || c.name.toLowerCase().includes(q) || (c.notes || '').toLowerCase().includes(q));
+  return COMPONENTS.filter(c => !q || c.name.toLowerCase().includes(q) || (c.notes || '').toLowerCase().includes(q) ||
+    (c.errors || []).some(e => (e.trigger + ' ' + e.message).toLowerCase().includes(q)));
 }
 
 function renderIndex() {
@@ -1314,7 +1413,7 @@ function renderMain() {
       '<h2 class="lib-h2" style="margin-bottom:9px">Notes</h2><div class="lib-notes">' +
       p.paras.map(t => '<p>' + esc(t) + '</p>').join('') +
       p.flags.map(t => '<div class="lib-flag">' + esc(t) + '</div>').join('') +
-      '</div></aside></div></div>';
+      '</div></aside></div>' + renderErrors(c) + '</div>';
 
   const copyBtn = document.getElementById('lib-copy');
   copyBtn.addEventListener('click', () => {
@@ -1344,6 +1443,11 @@ function renderMain() {
 
 function buildAIMarkdown(c, p) {
   let md = '# ' + c.name + '\n\nSource: ' + p.source + '\n\n## HTML\n```html\n' + c.code + '\n```\n';
+  if (c.errors && c.errors.length) {
+    md += '\n## Error messages\n\nUse these strings verbatim. Substitute the on-screen label for <field name>.\n\n' +
+      '| Trigger | Message | Placement |\n|---|---|---|\n' +
+      c.errors.map(e => '| ' + e.trigger + ' | ' + e.message + ' | ' + e.placement + ' |').join('\n') + '\n';
+  }
   if (p.paras.length) md += '\n## Notes\n' + p.paras.join('\n\n') + '\n';
   if (p.flags.length) md += '\n' + p.flags.map(t => '> ⚠ ' + t).join('\n\n') + '\n';
   return md;
@@ -1381,6 +1485,21 @@ indexList.addEventListener('click', e => {
 window.addEventListener('hashchange', () => { applyHashFromLocation(); render(); });
 
 searchEl.addEventListener('input', function () { state.q = this.value; renderIndex(); });
+
+/* Per-row copy on the error-message table. Delegated so it survives re-renders;
+   the string is looked up by index rather than stashed in an attribute, so
+   messages containing quotes copy exactly as written. */
+main.addEventListener('click', e => {
+  const btn = e.target.closest('.lib-copy--sm');
+  if (!btn) return;
+  const c = COMPONENTS.find(x => x.name === state.sel);
+  const err = c && c.errors && c.errors[Number(btn.dataset.err)];
+  if (!err) return;
+  navigator.clipboard.writeText(err.message).then(() => {
+    btn.textContent = 'Copied';
+    setTimeout(() => { btn.textContent = 'Copy'; }, 1500);
+  });
+});
 
 azStrip.addEventListener('click', e => {
   const a = e.target.closest('a');
