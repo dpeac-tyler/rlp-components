@@ -86,6 +86,43 @@
     overflow-wrap: anywhere; text-wrap: pretty; }
   .lib-place { min-width: 0; font-size: 12.5px; line-height: 1.5; color: #71767a; }
   .lib-copy--sm { font-size: 11.5px; padding: 4px 8px; white-space: nowrap; }
+  .lib-ex { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 24px; margin-bottom: 34px; }
+  .lib-ex__card { background: #fff; border: 1px solid #dfe1e2; border-radius: 5px; overflow: hidden; }
+  .lib-ex__head { display: flex; align-items: center; gap: 9px; padding: 13px 20px; border-bottom: 1px solid #dfe1e2; }
+  .lib-ex__badge { font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    color: #fff; border-radius: 2px; padding: 3px 8px; }
+  .lib-ex__badge--bad { background: #CD2026; }
+  .lib-ex__badge--good { background: #417505; }
+  .lib-ex__title { font-size: 13.5px; font-weight: 700; color: #1b1b1b; }
+  .lib-ex__stage { padding: 24px 20px; font-size: 1.6rem; }
+  .lib-ann { border-bottom: 2px solid #71767a; padding-bottom: 1px; }
+  .lib-ann__n { display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px;
+    border-radius: 50%; background: #71767a; color: #fff; font-size: 10px; font-weight: 700; margin-right: 5px;
+    vertical-align: 2px; }
+  .lib-ex--bad .lib-ann { border-bottom-color: #CD2026; }
+  .lib-ex--bad .lib-ann__n { background: #CD2026; }
+  .lib-ex--good .lib-ann { border-bottom-color: #417505; }
+  .lib-ex--good .lib-ann__n { background: #417505; }
+  .lib-key { margin: 0; padding: 18px 20px 20px; border-top: 1px solid #eceded; background: #fcfcfa;
+    list-style: none; display: flex; flex-direction: column; gap: 11px; }
+  .lib-key li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 10px; align-items: start; }
+  .lib-key__n { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px;
+    border-radius: 50%; color: #fff; font-size: 11px; font-weight: 700; }
+  .lib-ex--bad .lib-key__n { background: #CD2026; }
+  .lib-ex--good .lib-key__n { background: #417505; }
+  .lib-key__name { font-size: 13.5px; font-weight: 700; color: #1b1b1b; }
+  .lib-key__why { font-size: 12.5px; line-height: 1.6; color: #565c65; margin-top: 2px; }
+  .lib-floor { margin: 0 0 34px; background: #f0f3f8; border-left: 4px solid #1a4480; border-radius: 2px;
+    padding: 15px 18px; font-size: 14.5px; font-weight: 700; color: #16324f; }
+  .lib-rules { margin: 0; padding: 4px 0 0 0; list-style: none; counter-reset: rule; }
+  .lib-rules li { counter-increment: rule; display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 12px;
+    align-items: start; padding: 14px 20px; border-bottom: 1px solid #eceded; font-size: 13.5px; line-height: 1.6; color: #3d4551; }
+  .lib-rules li:last-child { border-bottom: none; }
+  .lib-rules li::before { content: counter(rule); display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; border-radius: 50%; background: #1a4480; color: #fff; font-size: 11.5px; font-weight: 700; }
+  .lib-row--token { display: grid; grid-template-columns: minmax(0, 190px) minmax(0, 1fr);
+    gap: 16px; align-items: start; padding: 13px 20px; border-bottom: 1px solid #eceded; }
+  .lib-row--token:last-child { border-bottom: none; }
 </style>
 </head>
 <body>
@@ -1308,8 +1345,108 @@ const STATUSES = [
  }
 ];
 
+/* Error-message writing guidance. Source: Confluence "Error Messaging
+   Standards/Specifics". The two examples are the annotated ones from that doc —
+   each numbered fragment maps to the principle of the same number below it. */
+const ERR_GUIDANCE = {
+  avoid: [
+    { n: 1, name: 'Inappropriate tone', why: 'Jokey or breezy language lands badly on someone who is already blocked.' },
+    { n: 2, name: 'Passing the blame', why: 'Naming a third party tells the user whose fault it is, not what to do next.' },
+    { n: 3, name: 'Technical jargon', why: 'Internal vocabulary ("fetch your data") means nothing to the person reading it.' },
+    { n: 4, name: 'Generic text', why: '"Try again later" gives no action, no timeframe and no way out.' }
+  ],
+  use: [
+    { n: 1, name: 'Say what happened', why: 'Lead with the outcome, in the heading, in the user’s words.' },
+    { n: 2, name: 'Say why it happened', why: 'Give the cause plainly, and own it when it is our end.' },
+    { n: 3, name: 'Provide reassurance', why: 'Tell them what they have NOT lost. This is the line most often missed.' },
+    { n: 4, name: 'Give them a way out', why: 'Name the next action they can take right now.' },
+    { n: 5, name: 'Help them fix it', why: 'Offer the escalation path if the next action does not work.' }
+  ],
+  badExample: {
+    heading: [{ n: 1, text: 'Whoops! Something went wrong' }],
+    body: [
+      { n: 2, text: 'The third-party you’re trying to connect to isn’t responding,' },
+      { n: 3, text: 'so we can’t fetch your data.' },
+      { n: 4, text: 'Try again later.' }
+    ]
+  },
+  goodExample: {
+    heading: [{ n: 1, text: 'Unable to connect to your account' }],
+    body: [
+      { n: 3, text: 'Your changes were saved,' },
+      { n: 2, text: 'but we could not connect to your account due to a technical issue on our end.' },
+      { n: 4, text: 'Please try connecting again.' },
+      { n: 5, text: 'If the issue keeps happening, contact Customer Care.' }
+    ]
+  },
+  floor: 'At the very least: say what happened, and say how to fix it.',
+  alertRules: [
+    'The heading is "Error - N errors on this page." Use the singular "1 error" when there is one, and count the errors you actually rendered.',
+    'Each error’s text is IDENTICAL to its field-level message. Never reword a message for the alert.',
+    'One <p class="usa-alert__text"> per error, in the same order as the inputs appear on the page. No bullets, no <ul>.',
+    'The <field name> inside each message is an anchor link to that input. Give the input an id and link to it.',
+    'The alert scrolls into view when Save is attempted with errors. It is cleared and rebuilt on every validation run.',
+    'Modals follow the same pattern, and may add one sentence of context above the list — e.g. "Please make updates to the New Status and/or New Expiration Date field before clicking Save. To leave the page without making changes click Close."'
+  ],
+  tokens: [
+    { token: '<field name>', means: 'The on-screen label, worded exactly as the user sees it — "Code Value", never "code-value".' },
+    { token: '<field name (n)>', means: 'The label plus its instance number, once a second copy of the field exists — "Question List (2)".' },
+    { token: '<error rule>', means: 'The business rule that failed, as a second sentence — "Date(s) must be later than start date."' },
+    { token: '<document name>', means: 'The uploaded file’s name, as the user named it.' },
+    { token: '<document type>', means: 'The required document’s type, from the configuration.' },
+    { token: '<count>', means: 'Which of several required documents this is.' },
+    { token: '<ID Type>', means: 'The configured custom ID’s label.' },
+    { token: '<format>', means: 'The expected format for that custom ID.' }
+  ]
+};
 
 function esc(s) { return String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c])); }
+
+function annFrag(f) {
+  return '<span class="lib-ann"><span class="lib-ann__n">' + f.n + '</span>' + esc(f.text) + '</span>';
+}
+
+function renderExample(ex, kind, title, key) {
+  return '<div class="lib-ex__card lib-ex--' + kind + '">' +
+    '<div class="lib-ex__head">' +
+      '<span class="lib-ex__badge lib-ex__badge--' + kind + '">' + (kind === 'bad' ? 'Avoid' : 'Use') + '</span>' +
+      '<span class="lib-ex__title">' + esc(title) + '</span></div>' +
+    '<div class="lib-ex__stage"><div class="usa-alert usa-alert--error"><div class="usa-alert__body">' +
+      '<h3 class="usa-alert__heading">' + ex.heading.map(annFrag).join(' ') + '</h3>' +
+      '<p class="usa-alert__text">' + ex.body.map(annFrag).join(' ') + '</p>' +
+    '</div></div></div>' +
+    '<ul class="lib-key">' + key.map(k =>
+      '<li><span class="lib-key__n">' + k.n + '</span><div>' +
+        '<div class="lib-key__name">' + esc(k.name) + '</div>' +
+        '<div class="lib-key__why">' + esc(k.why) + '</div>' +
+      '</div></li>').join('') + '</ul>' +
+  '</div>';
+}
+
+function renderGuidance() {
+  const g = ERR_GUIDANCE;
+  return '<div class="lib-pane"><h1>Error Messaging</h1>' +
+    '<p class="lib-intro">How to word an error in RLP, from the Confluence “Error Messaging ' +
+      'Standards/Specifics” doc. The per-component strings live on each component’s own page — ' +
+      'use those verbatim. This page is for the cases the matrix does not cover, and for the ' +
+      'top-of-page alert that collects them.</p>' +
+    '<div class="lib-ex">' +
+      renderExample(g.badExample, 'bad', 'Four ways an error message fails', g.avoid) +
+      renderExample(g.goodExample, 'good', 'Five things a good error message does', g.use) +
+    '</div>' +
+    '<p class="lib-floor">' + esc(g.floor) + '</p>' +
+    '<h2 class="lib-subhead">Top-of-page error alert</h2>' +
+    '<div class="lib-card" style="margin-bottom:34px"><ul class="lib-rules">' +
+      g.alertRules.map(r => '<li><span>' + esc(r) + '</span></li>').join('') +
+    '</ul></div>' +
+    '<h2 class="lib-subhead">Tokens</h2>' +
+    '<p class="lib-intro">Every string in the standard is written with placeholders. Substitute them ' +
+      'with real content — never ship a message with the angle brackets still in it.</p>' +
+    '<div class="lib-card">' + g.tokens.map(t => '<div class="lib-row--token">' +
+      '<div class="lib-mono">' + esc(t.token) + '</div>' +
+      '<div class="lib-cell">' + esc(t.means) + '</div></div>').join('') + '</div>' +
+  '</div>';
+}
 
 function renderErrors(c) {
   if (!c.errors || !c.errors.length) return '';
@@ -1375,6 +1512,7 @@ function renderIndex() {
       '</div>';
   }).join('') +
     '<div class="lib-group__head" style="position:static;border-bottom:none;padding-top:14px"><span>FOUNDATIONS</span></div>' +
+    '<button type="button" class="lib-item' + (state.view === 'errors' ? ' is-active' : '') + '" data-view="errors">Error Messaging</button>' +
     '<button type="button" class="lib-item' + (state.view === 'status' ? ' is-active' : '') + '" data-view="status">Status Colors</button>' +
     '<button type="button" class="lib-item' + (state.view === 'icons' ? ' is-active' : '') + '" data-view="icons">Icon Library</button>';
 
@@ -1384,6 +1522,7 @@ function renderIndex() {
 }
 
 function renderMain() {
+  if (state.view === 'errors') { main.innerHTML = renderGuidance(); return; }
   if (state.view === 'status') {
     main.innerHTML = '<div class="lib-pane"><h1>Status Colors</h1>' +
       '<p class="lib-intro">Semantic status-text mapping from <code>css/styles.css</code> (~line 836). Map a new status value to the closest group below \u2014 don\'t invent a new color.</p>' +
@@ -1469,6 +1608,7 @@ function buildAIMarkdown(c, p) {
 }
 
 function hashForView() {
+  if (state.view === 'errors') return '#__errors';
   if (state.view === 'status') return '#__status';
   if (state.view === 'icons') return '#__icons';
   return '#' + encodeURIComponent(state.sel);
@@ -1477,6 +1617,7 @@ function hashForView() {
 function applyHashFromLocation() {
   const raw = location.hash.slice(1);
   if (!raw) return;
+  if (raw === '__errors') { state.view = 'errors'; return; }
   if (raw === '__status') { state.view = 'status'; return; }
   if (raw === '__icons') { state.view = 'icons'; return; }
   const name = decodeURIComponent(raw);
