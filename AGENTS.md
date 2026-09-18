@@ -48,7 +48,7 @@ It is not decoration. Read it before you copy anything.
 | `unverified` | Came from a prototype. **Never checked against the live app.** | Confirm against RLP before shipping. Treat the markup as a starting point, not a spec. |
 | `proposed` | A design proposal that **deliberately differs** from the live app. | **Does not exist in the product yet.** Never build it as though it already ships. Raise it with the design owner first. |
 
-As of 2026-09-18: **26 verified, 9 unverified, 1 proposed** (36 entries).
+As of 2026-09-18: **30 verified, 8 unverified, 1 proposed** (39 entries).
 Assume unverified unless the badge says otherwise.
 
 ## Hard prohibitions
@@ -75,6 +75,8 @@ Assume unverified unless the badge says otherwise.
    | `.horizontal-tabs` / `.tab-panel` | `.sub-nav-content` → `.sub-tabs` → `ul`/`li`/`button.button-link` |
    | `.modal-overlay` / `.modal-content` / `.modal-header` | `.react-confirm-alert-overlay` + `.modal[role=dialog]` + `.alert-heading` |
    | `.profile-content` / `.inspection-content` | the USWDS grid plus `.sub-nav-content` |
+   | `.usa-textarea` | a Quill rich-text editor (`.ql-toolbar` + `.ql-container`) |
+   | `.questions-section` (0.5rem radius) | `.step-section__wrapper` (`#f0f0f0`, no radius) |
 
    **Name collision:** this repo's legacy `.modal` is a full-screen flex centring
    wrapper; RLP's `.modal` **is** the dialog box. The CSS here disambiguates with
@@ -141,6 +143,15 @@ tag (.usa-tag)        bg #565c65, #fff, 14px, weight 400, radius 2px,
 status text           #417505 approved | #8F5800 pending | #A34900 payment-in-process
                       #205493 rejected-for-resubmission | #13669A draft/in-review
                       all five verified byte-identical to the .status-* palette
+step section panel    bg #f0f0f0, NO radius, content padding 16px; numbered
+                      corner is two CSS border-triangles (white 85px behind,
+                      #fa9441 75px in front), number 18px/700/#444
+rich text editor      Quill. .ql-toolbar #fff + 1px #ccc + 8px padding;
+                      .ql-container #fff, 1px #ccc on R/B/L, 13px;
+                      .ql-editor padding 12px 15px
+character counter     span.usa-hint.usa-character-count__message, 16px, #5f5e5e,
+                      worded as a COUNTDOWN ("500 characters left")
+add-item list         items stack, accent-warm "Add More" BELOW them. No table.
 breadcrumb            16px, links #005ea2
 .usa-input            padding 8px, 1px border #565c65
 accordion button      #f0f0f0, 16px, 700, padding 16px 24px
@@ -176,17 +187,22 @@ QA agency pages used for the 2026-09-18 pass:
                                        accent-warm add-item button, red Cancel
 ```
 
-Still unverified (9): Textarea, File Input, Alert — Error (Form Validation),
-Field With Error Message, Add-Item List (Growing Rows), Document Upload —
-Attachment Panel, Empty State — Standalone Paragraph, Empty State — Table Row,
-Combobox (Long-List Select).
+Still unverified (8): Textarea, File Input, Alert — Error (Form Validation),
+Field With Error Message, Document Upload — Attachment Panel, Empty State —
+Standalone Paragraph, Empty State — Table Row, Combobox (Long-List Select).
+
+Two of these are probable NEGATIVES rather than gaps:
+- **Textarea** — the application builder has ZERO `<textarea>` elements. RLP uses
+  a Quill rich-text editor for every multi-line field. Don't assume `.usa-textarea`
+  is styled.
+- **File Input** — not found yet either. The "Document Upload" wizard step
+  configures document *types*; it does not contain an upload control.
 
 What each still needs:
 - Alert — Error / Field With Error Message: a form sitting in a validation-error
   state. Do NOT submit forms in QA to force this; ask the design owner first.
-- Textarea / File Input / Document Upload: a create or edit form with a free-text
-  field and an upload control. The profile Documents tab has Upload as a row
-  action, so it needs a record that already has documents.
+- File Input / Document Upload: an actual upload control. The profile Documents
+  tab has Upload as a row action, so it needs a record that already has documents.
 - Empty State variants: RLP's data-grid empty state is already verified as its own
   entry. These two are prototype-specific patterns for different contexts.
 

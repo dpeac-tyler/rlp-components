@@ -299,7 +299,7 @@ Every list page with a Controls column gets one of these, positioned above the t
 },
 {
   name: "Add-Item List (Growing Rows)",
-  fidelity: "unverified",
+  fidelity: "verified",
   preview: `<div id="demo-choices">
   <div class="usa-form-group" style="margin-bottom: 1.5rem;">
     <label class="usa-label" for="demo-choice-1">Choice 1 <span class="required"><em>Required</em></span></label>
@@ -324,11 +324,19 @@ Every list page with a Controls column gets one of these, positioned above the t
 <div style="margin-bottom: 2rem;">
   <button type="button" class="usa-button usa-button--accent-warm" id="addMCChoiceButton">Add Choice</button>
 </div>`,
-  notes: `SOURCE: rlp-packets/create-questions.html (MC choice builder)
+  notes: `SOURCE: rlp-packets/create-questions.html (MC choice builder); verified against qa.lnpweb.com/management/create-application/document-upload 2026-09-18
+
+VERIFIED - the structure in this entry is right. Items stack vertically and the accent-warm add button sits BELOW them, growing the list downward. RLP does exactly that.
+
+Live app specifics:
+- the add button is labelled "Add More" and is usa-button usa-button--accent-warm margin-top-2 (#fa9441 on #1b1b1b text) - the same class this entry already used
+- each repeated item is wrapped in a numbered step section, so it reads as a card titled "Document 1", "Document 2", ... with an orange numbered corner. See "Step Section (Numbered Panel)".
+- field labels inside a repeated item are prefixed with the item number: "1. Type", "1. Sub Type"
+- the cap is stated in the surrounding instructions ("up to the maximum of 25"), not enforced visually by the component
 
 The delete icon on each row is hidden until there are 2+ rows (can't delete the last one). Accent-warm button always sits directly below the growing list, never above it.
 
-GAP: your global standards describe a distinct "form sits above table, questions-section gray box, 70/15/15 grid" add-item pattern (example: adding secondary application types to a packet). The actual create-packet.html implementation uses a MODAL to add a secondary, not an inline 70/15/15 form — no page scanned so far implements that exact grid ratio. Worth confirming with Daniel whether to update the standard or point to the real source page.`
+GAP, now partly resolved: the global standards describe a separate "form sits ABOVE the table, questions-section grey box, 70/15/15 grid" add-item pattern. RLP has no table in this pattern at all - it is repeated numbered cards with the add button underneath, on a #f0f0f0 panel with NO border-radius. The 70/15/15 grid was not found in any prototype either (create-packet.html uses a modal). Recommend retiring that description in favour of this entry.`
 },
 {
   name: "Alert — Warning (Slim)",
@@ -536,6 +544,23 @@ Icon-only row actions are NOT this class. RLP uses a filled navy usa-button--act
 SOURCE: correspondence-email-template.html
 
 Icon-only or link-styled controls inside table cells / dense UI. Always give it an aria-label when the visible text alone wouldn't be enough context (e.g. repeated "Preview" across many rows).`
+},
+{
+  name: "Character Count",
+  fidelity: "verified",
+  preview: `<label class="usa-label" for="demo-cc">Application Subtitle</label>
+<input class="usa-input" id="demo-cc" type="text" style="max-width:100%;">
+<span class="usa-hint usa-character-count__message">500 characters left</span>`,
+  code: `<label class="usa-label" for="application-subtitle">Application Subtitle</label>
+<input class="usa-input" id="application-subtitle" name="application-subtitle" type="text">
+<span class="usa-hint usa-character-count__message">500 characters left</span>`,
+  notes: `SOURCE: qa.lnpweb.com/management/create-application/create
+
+Sits directly under the field it counts. RLP writes it as a COUNTDOWN of remaining characters ("500 characters left", "4991 characters left"), never as a used/total ratio like "9/500".
+
+Computed values from the live app: 1.6rem, colour #5f5e5e, display block. It carries both usa-hint and usa-character-count__message - the character-count class is what darkens it slightly from the plain .usa-hint colour (#697072).
+
+Used on plain text inputs and on rich-text editors alike. Limits observed in the application builder: 500, 5000 and 10000 characters.`
 },
 {
   name: "Checkbox",
@@ -1152,6 +1177,48 @@ RESOLVED 2026-09-17: the standard's Radio row reads "Select at least one of the 
   ]
 },
 {
+  name: "Rich Text Editor (Quill)",
+  fidelity: "verified",
+  preview: `<label class="usa-label" for="demo-rte">Application Description <span class="required"><em>Required</em></span></label>
+<div class="rich-text-input__wrapper">
+  <div class="rich-text-input full-width">
+    <div class="ql-toolbar ql-snow" style="font-size:1.3rem;">Normal &nbsp; <strong>B</strong> &nbsp; <em>I</em> &nbsp; <u>U</u> &nbsp; &#9782; &nbsp; &#8220;&#8221; &nbsp; &Sigma;</div>
+    <div class="quill-editor-container ql-container ql-snow">
+      <div class="ql-editor" contenteditable="true"><p>Test data</p></div>
+    </div>
+  </div>
+</div>
+<span class="usa-hint usa-character-count__message">4991 characters left</span>`,
+  code: `<!-- RLP uses Quill for every multi-line text field. The toolbar and editor
+     body are rendered by Quill; you supply the wrapper and the label. -->
+<label class="usa-label" for="application-description">
+  Application Description <span class="required"><em>Required</em></span>
+</label>
+<div class="rich-text-input__wrapper">
+  <div class="rich-text-input full-width">
+    <div class="ql-toolbar ql-snow"><!-- Quill renders the toolbar --></div>
+    <div class="quill-editor-container ql-container ql-snow">
+      <div class="ql-editor" contenteditable="true"></div>
+    </div>
+  </div>
+</div>
+<span class="usa-hint usa-character-count__message">4991 characters left</span>`,
+  notes: `SOURCE: qa.lnpweb.com/management/create-application/create and /document-upload
+
+THIS IS WHAT RLP USES INSTEAD OF A TEXTAREA. The application builder contains zero <textarea> elements - every multi-line field is a Quill editor. See the "Textarea" entry for the implication.
+
+Computed values from the live app:
+- .ql-toolbar: background #fff, 1px #ccc border, padding 8px
+- .ql-container: background #fff, 1px #ccc border on right/bottom/left only (the toolbar supplies the top edge), font-size 1.3rem
+- .ql-editor: padding 12px 15px, contenteditable
+
+Toolbar buttons observed: undo, redo, format dropdown ("Normal"), bold, italic, underline, text colour, link, ordered/unordered list, horizontal rule, indent/outdent, align, blockquote, clear formatting, and a special-character picker (the Sigma).
+
+NOTE the editor body renders at 1.3rem, which is below the 1.6rem minimum in the global standards. That is what RLP does - flagged rather than "corrected" here, since the standard is ours and the 1.3rem is theirs.
+
+Pair with a character counter - RLP always does.`
+},
+{
   name: "Section Heading",
   fidelity: "verified",
   preview: `<h2 class="font-family-sans text-bold margin-top-0 margin-bottom-1">Section Title</h2>`,
@@ -1224,6 +1291,47 @@ Colour mapping in css/styles.css (~line 836)
 Semantic class-per-status-value groups: active/approved/live/paid/completed · pending/open/assigned/approved-awaiting-payment · rejected/denied/cancelled/past-due/terminated · expired/revoked/withdrawn/decommissioned/retired · in-progress/rejected-for-resubmission/in-cart · inactive · on-hold/suspended/payment-in-process · in-review/draft/initiated · archived.
 
 When reproducing a NEW status value, map it to the closest existing semantic group — don't invent a new color.`
+},
+{
+  name: "Step Section (Numbered Panel)",
+  fidelity: "verified",
+  preview: `<fieldset style="border:0; padding:0; margin:0;">
+  <div class="position-relative display-flex step-section__wrapper">
+    <legend class="usa-legend step-section__num margin-0"><span>1<span class="visuallyhidden"> of 6</span></span></legend>
+    <div class="step-section__content">
+      <h3 style="font-size:1.9rem; margin:0 0 4px;">Document 1</h3>
+      <hr style="margin:0 0 16px;">
+      <label class="usa-label" for="demo-step-type">1. Type <span class="required"><em>Required</em></span></label>
+      <select class="usa-select" id="demo-step-type" style="max-width:320px;"><option>Certification Document</option></select>
+    </div>
+  </div>
+</fieldset>`,
+  code: `<fieldset>
+  <div class="position-relative display-flex step-section__wrapper margin-bottom-2">
+    <legend class="usa-legend step-section__num margin-0">
+      <span>1<span class="visuallyhidden"> of 6</span></span>
+    </legend>
+    <div class="step-section__content width-full padding-2">
+      <!-- section heading + fields -->
+    </div>
+  </div>
+</fieldset>`,
+  notes: `SOURCE: qa.lnpweb.com/management/create-application/document-upload and /management/license-type/create
+
+RLP wraps every group of fields on a wizard form in one of these. It is the single most recognisable piece of RLP form chrome and the library did not have it.
+
+Structure: a <fieldset> containing a flex .step-section__wrapper (background #f0f0f0, margin-bottom 16px), whose two children are the numbered <legend class="usa-legend step-section__num"> and a .step-section__content (width 100%, padding 16px).
+
+The numbered orange corner is NOT an image. It is two stacked CSS border-triangles:
+- .step-section__wrapper::before - 85px white triangle (the outer notch)
+- .step-section__num::before - 75px triangle in accent-warm #fa9441 (the visible badge)
+Both are position absolute at the top-left with border-width "Npx Npx 0 0" and only border-top-color set.
+
+The number itself sits above the triangle at 1.8rem / weight 700 / #444, with the accessible remainder of the label in a .visuallyhidden span (e.g. "1" visible, " of 6" hidden).
+
+Numbering is per-context: the outer form sections use one running sequence (observed up to 13) and repeated add-item cards restart at 1. Field labels inside a repeated card are themselves prefixed with the card number ("1. Type", "1. Sub Type").
+
+No border-radius - the global standards describe the add-item container as having 0.5rem radius, which RLP does not.`
 },
 {
   name: "Table — With Controls Bar",
@@ -1409,7 +1517,11 @@ The redesigned case-detail page is a stack of these tiles on an off-white #f9f9f
 <textarea class="usa-textarea" id="demo-textarea" style="max-width:100%;"></textarea>`,
   code: `<label class="usa-label" for="doc-description">Description</label>
 <textarea class="usa-textarea" id="doc-description" name="doc-description"></textarea>`,
-  notes: `SOURCE: create-case.html`
+  notes: `SOURCE: create-case.html
+
+CAUTION, 2026-09-18: RLP may not use <textarea> at all. The application builder (create-application: Application Details and Document Upload steps) contains ZERO textarea elements - every multi-line text field is a Quill rich-text editor instead. See "Rich Text Editor (Quill)".
+
+Left unverified rather than deleted: only the application builder was checked, and a plain textarea may well exist on a page not yet visited. But do not assume RLP has a styled .usa-textarea - confirm before using this, and reach for the rich text editor if you are mocking anything in the application builder.`
 }
 ];
 
