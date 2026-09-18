@@ -124,6 +124,7 @@
   .lib-stage { background: #fff; border: 1px solid #dfe1e2; border-radius: 5px; padding: 34px 32px; margin-bottom: 10px; overflow: auto; font-size: 1.6rem; }
   .lib-stage .usa-input, .lib-stage .usa-select, .lib-stage .usa-textarea { max-width: 100%; }
   .lib-stage__label { margin: 0 0 30px; font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase; color: #71767a; }
+  :root { interpolate-size: allow-keywords; }
   .lib-split { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(280px, 1fr); gap: 26px; align-items: start; }
   .lib-h2 { margin: 0; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #1b1b1b; }
   .lib-codehead { display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px; }
@@ -132,7 +133,26 @@
   .lib-copy:hover { background: #f0f3f8; }
   .lib-pane pre { margin: 0; background: #1b1b1b; color: #f0f0f0; font-family: ui-monospace, Menlo, Consolas, monospace;
     font-size: 12.5px; line-height: 1.6; padding: 20px; border-radius: 5px; overflow-x: auto; }
-  .lib-notes { background: #fff; border: 1px solid #dfe1e2; border-radius: 5px; padding: 18px; display: flex; flex-direction: column; gap: 12px; }
+  /* Notes accordion. Collapsed by default so a long entry is not a wall of
+     text; the open/closed choice is remembered in localStorage. When closed,
+     .lib-split drops to one column so the code block takes the full width. */
+  .lib-notes-acc { border: 1px solid #dfe1e2; border-radius: 5px; background: #fff; overflow: hidden; }
+  .lib-notes-acc > summary { display: flex; align-items: center; gap: 9px; cursor: pointer; list-style: none;
+    padding: 11px 14px; background: #f7f9fa; user-select: none; }
+  .lib-notes-acc > summary::-webkit-details-marker { display: none; }
+  .lib-notes-acc > summary::marker { content: ""; }
+  .lib-notes-acc > summary:hover { background: #eef2f5; }
+  .lib-notes-acc > summary:focus-visible { outline: 3px solid #2491ff; outline-offset: -3px; }
+  .lib-notes-acc__label { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #1b1b1b; }
+  .lib-notes-acc__count { font-size: 12.5px; color: #71767a; }
+  .lib-notes-acc__flagdot { width: 7px; height: 7px; border-radius: 50%; background: #c2850c; flex: none; }
+  .lib-notes-acc__chev { margin-left: auto; flex: none; color: #565c65; transition: transform 0.18s ease; }
+  .lib-notes-acc[open] > summary .lib-notes-acc__chev { transform: rotate(180deg); }
+  .lib-notes-acc::details-content { block-size: 0; overflow: hidden;
+    transition: block-size 0.22s ease, content-visibility 0.22s allow-discrete; }
+  .lib-notes-acc[open]::details-content { block-size: auto; }
+  .lib-notes { padding: 16px 14px 18px; display: flex; flex-direction: column; gap: 12px; border-top: 1px solid #dfe1e2; }
+  .lib-split:not(:has(.lib-notes-acc[open])) { grid-template-columns: minmax(0, 1fr); }
   .lib-notes p { margin: 0; font-size: 13.5px; line-height: 1.65; color: #3d4551; white-space: pre-wrap; text-wrap: pretty; }
   .lib-flag { background: #fef0c8; border-left: 3px solid #c2850c; color: #543a00; padding: 11px 13px; border-radius: 2px;
     font-size: 12.5px; line-height: 1.6; white-space: pre-wrap; }
@@ -2222,6 +2242,11 @@ function parseNotes(notes) {
   return { source: source || '\u2014', paras: paras, flags: flags };
 }
 
+const NOTES_KEY = 'rlp-lib-notes-open';
+function notesOpen() {
+  try { return localStorage.getItem(NOTES_KEY) === '1'; } catch (e) { return false; }
+}
+
 COMPONENTS.sort((a, b) => a.name.localeCompare(b.name));
 
 const state = { q: '', sel: COMPONENTS[0].name, view: 'component' };
@@ -2313,10 +2338,24 @@ function renderMain() {
       '</div></div>' +
       '<pre><code>' + esc(c.code) + '</code></pre>' +
     '</div><aside>' +
-      '<h2 class="lib-h2" style="margin-bottom:9px">Notes</h2><div class="lib-notes">' +
-      p.paras.map(t => '<p>' + esc(t) + '</p>').join('') +
-      p.flags.map(t => '<div class="lib-flag">' + esc(t) + '</div>').join('') +
-      '</div></aside></div>' + renderErrors(c) + '</div>';
+      '<details class="lib-notes-acc" id="lib-notes-acc"' + (notesOpen() ? ' open' : '') + '>' +
+        '<summary>' +
+          '<span class="lib-notes-acc__label">Notes</span>' +
+          '<span class="lib-notes-acc__count">' + (p.paras.length + p.flags.length) + '</span>' +
+          (p.flags.length ? '<span class="lib-notes-acc__flagdot" title="Contains a flag or gap"></span>' : '') +
+          '<svg class="lib-notes-acc__chev" width="14" height="14" viewBox="0 0 24 24" fill="none" ' +
+            'stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">' +
+            '<path d="M6 9l6 6 6-6"/></svg>' +
+        '</summary>' +
+        '<div class="lib-notes">' +
+        p.paras.map(t => '<p>' + esc(t) + '</p>').join('') +
+        p.flags.map(t => '<div class="lib-flag">' + esc(t) + '</div>').join('') +
+        '</div></details></aside></div>' + renderErrors(c) + '</div>';
+
+  const notesAcc = document.getElementById('lib-notes-acc');
+  notesAcc.addEventListener('toggle', () => {
+    try { localStorage.setItem(NOTES_KEY, notesAcc.open ? '1' : '0'); } catch (e) {}
+  });
 
   const copyBtn = document.getElementById('lib-copy');
   copyBtn.addEventListener('click', () => {
