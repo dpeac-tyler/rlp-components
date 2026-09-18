@@ -772,10 +772,12 @@ select:focus {
   color: #1b1b1b;
 }
 
+/* RLP's .usa-hint is body size and slightly darker than the USWDS default,
+   with no margin of its own. Verified 2026-09-18. */
 .usa-hint {
-  font-size: 1.4rem;
-  color: #71767a;
-  margin-bottom: 0.4rem;
+  font-size: 1.6rem;
+  color: #697072;
+  margin: 0;
 }
 
 .usa-select,
@@ -1595,16 +1597,14 @@ select:focus {
   position: relative;
 }
 
+/* Date input wrapper. RLP: display:flex, max-width 155px, nothing else - no
+   position:relative, no align-items, and NO extra padding on the input. The
+   calendar glyph is a sibling BESIDE the input, never inside it, so reserving
+   padding-right on the input is wrong and clipped the value.
+   Verified on qa.lnpweb.com/management/search/search-options 2026-09-18. */
 .date-picker-wrapper {
-  position: relative;
   display: flex;
-  align-items: center;
-  max-width: 200px;
-}
-
-.date-picker-wrapper .usa-input {
-  flex: 1;
-  padding-right: 4.4rem;
+  max-width: 15.5rem;
 }
 
 .date-input-custom,
@@ -1626,41 +1626,6 @@ input[type="date"].usa-input {
   background-color: #c9c9c9;
   color: #71767a;
   cursor: not-allowed;
-}
-
-.date-picker-button {
-  position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  width: 4rem;
-  background-color: #112e51;
-  border: none;
-  border-radius: 0;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  padding: 0;
-}
-
-.date-picker-button:hover {
-  background-color: #102f52;
-}
-
-.date-picker-button:disabled {
-  background-color: #c9c9c9;
-  cursor: not-allowed;
-}
-
-.date-picker-button:disabled:hover {
-  background-color: #c9c9c9;
-}
-
-.date-picker-button svg {
-  width: 20px;
-  height: 20px;
 }
 
 /* Profile Page
@@ -3240,21 +3205,48 @@ input[type="date"].usa-input {
   height: 16px;
 }
 
-/* Date input. RLP uses a custom wrapper with a trailing calendar glyph,
-   not the USWDS date-picker widget and not <input type="date">. */
-.date-picker-input {
-  max-width: 11.2rem;
+/* RLP's hook around a labelled text/date field. It has no styling of its own -
+   it only re-scopes the label. In RLP the label's bottom margin is 0 and the
+   8px gap down to the control comes from the control's own margin-top, and
+   .usa-form-group .usa-label:first-child trims the top margin to 4px.
+   Verified 2026-09-18. */
+.text-field-wrapper {
+  display: block;
 }
 
-.date-picker-icon {
-  color: #1b1b1b;
+.text-field-wrapper label.usa-label {
+  max-width: 100%;
+  margin-top: 0.4rem;
+  margin-bottom: 0;
+  line-height: 1.4;
+}
+
+/* Date input. RLP uses a custom wrapper with a trailing calendar glyph beside
+   the input - not the USWDS date-picker widget, not <input type="date">, and
+   not an icon inside the input. There is no placeholder; the mm/dd/yyyy mask
+   is a .usa-hint between the label and the input.
+   Exact values from qa.lnpweb.com/management/search/search-options 2026-09-18. */
+.date-picker-input {
+  margin-top: 0.8rem;
 }
 
 .date-picker-icon-wrapper {
-  margin-left: 0.8rem;
-  font-size: 1.8rem;
-  line-height: 1;
-  color: #1b1b1b;
+  display: inline-block;
+  position: relative;
+  margin-top: 0.7rem;
+  margin-left: 1rem;
+}
+
+/* RLP sizes the Font Awesome glyph purely with font-size; FA's own
+   .svg-inline--fa gives it height 1em and width 0.875em (448/512 viewBox).
+   Those two are restated here so a plain inline <svg> lands at the same
+   32.8 x 37.5px as production. */
+.date-picker-icon {
+  font-size: 3.75rem;
+  line-height: 1.3;
+  color: #112e51;
+  height: 1em;
+  width: 0.875em;
 }
 
 /* Pagination. State lives on the <li>, not the <a>. */

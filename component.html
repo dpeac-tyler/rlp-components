@@ -688,38 +688,66 @@ Text input + hidden input (holds the real value) + filtered <ul role="listbox">.
 {
   name: "Date Input",
   fidelity: "verified",
-  preview: `<label class="usa-label" for="demo-date">Target Completion Date</label>
-<div class="date-picker-wrapper" style="max-width:155px;">
-  <input type="text" class="date-picker-input usa-input" id="demo-date" placeholder="mm/dd/yyyy" aria-label="Target Completion Date">
-  <span class="date-picker-icon-wrapper" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7 2v2H5a2 2 0 0 0-2 2v2h18V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zM3 10v9a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-9H3zm4 3h3v3H7v-3z"/></svg></span>
-</div>`,
-  code: `<div class="date-picker-wrapper">
-  <input type="text" class="date-picker-input usa-input" id="target-completion-date"
-    name="target-completion-date" placeholder="mm/dd/yyyy" aria-label="Target Completion Date"
-    aria-invalid="false">
-  <div class="date-picker-icon-wrapper">
-    <!-- RLP renders a Font Awesome SVG here: data-icon="calendar-days" -->
-    <svg class="svg-inline--fa fa-calendar-days date-picker-icon" aria-hidden="true"><!-- ... --></svg>
+  preview: `<div class="text-field-wrapper usa-form-group">
+  <label class="usa-label maxw-full" id="demo-date-label" for="demo-date"><div class="display-inline">Submission Start Date</div></label>
+  <span class="usa-hint" id="input-hint-demo-date">mm/dd/yyyy</span>
+  <div class="date-picker-wrapper">
+    <input type="text" class="date-picker-input usa-input" id="demo-date" name="submissionStartDate" aria-invalid="false" aria-label="Submission Start Date" aria-labelledby="demo-date-label" value="">
+    <div class="date-picker-icon-wrapper">
+      <svg class="date-picker-icon" aria-hidden="true" focusable="false" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M128 0c17.7 0 32 14.3 32 32l0 32 128 0 0-32c0-17.7 14.3-32 32-32s32 14.3 32 32l0 32 48 0c26.5 0 48 21.5 48 48l0 48L0 160l0-48C0 85.5 21.5 64 48 64l48 0 0-32c0-17.7 14.3-32 32-32zM0 192l448 0 0 272c0 26.5-21.5 48-48 48L48 512c-26.5 0-48-21.5-48-48L0 192zm64 80l0 32c0 8.8 7.2 16 16 16l32 0c8.8 0 16-7.2 16-16l0-32c0-8.8-7.2-16-16-16l-32 0c-8.8 0-16 7.2-16 16zm128 0l0 32c0 8.8 7.2 16 16 16l32 0c8.8 0 16-7.2 16-16l0-32c0-8.8-7.2-16-16-16l-32 0c-8.8 0-16 7.2-16 16zm144-16c-8.8 0-16 7.2-16 16l0 32c0 8.8 7.2 16 16 16l32 0c8.8 0 16-7.2 16-16l0-32c0-8.8-7.2-16-16-16l-32 0zM64 400l0 32c0 8.8 7.2 16 16 16l32 0c8.8 0 16-7.2 16-16l0-32c0-8.8-7.2-16-16-16l-32 0c-8.8 0-16 7.2-16 16zm144-16c-8.8 0-16 7.2-16 16l0 32c0 8.8 7.2 16 16 16l32 0c8.8 0 16-7.2 16-16l0-32c0-8.8-7.2-16-16-16l-32 0zm112 16l0 32c0 8.8 7.2 16 16 16l32 0c8.8 0 16-7.2 16-16l0-32c0-8.8-7.2-16-16-16l-32 0c-8.8 0-16 7.2-16 16z"></path></svg>
+    </div>
   </div>
 </div>`,
-  notes: `SOURCE: qa.lnpweb.com/management/search/search-options; wording per Confluence "Error Messaging Standards/Specifics"
+  code: `<div class="text-field-wrapper usa-form-group">
+  <label class="usa-label maxw-full" id="submission_start_date_text_id-label" for="submission_start_date_text_id">
+    <div class="display-inline">Submission Start Date</div>
+  </label>
+  <span class="usa-hint" id="input-hint-submission_start_date_text_id">mm/dd/yyyy</span>
+  <div class="date-picker-wrapper">
+    <input type="text" class="date-picker-input usa-input" id="submission_start_date_text_id"
+      name="submissionStartDate" aria-invalid="false" aria-label="Submission Start Date"
+      aria-labelledby="submission_start_date_text_id-label" value="">
+    <div class="date-picker-icon-wrapper">
+      <!-- Font Awesome solid calendar-days, sized only by font-size -->
+      <svg class="svg-inline--fa fa-calendar-days date-picker-icon fa-3x" aria-hidden="true"
+        focusable="false" data-prefix="fas" data-icon="calendar-days" role="img"
+        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="..."></path></svg>
+      <div><!-- calendar popup mounts here --></div>
+    </div>
+  </div>
+</div>`,
+  notes: `SOURCE: qa.lnpweb.com/management/search/search-options ("Submission Start Date" / "Submission End Date"). Re-measured from the live DOM 2026-09-18; wording for the error states per Confluence "Error Messaging Standards/Specifics".
 
-CORRECTED 2026-09-18. This entry previously specified a native <input type="date">. RLP does not use one, and does not use the USWDS date-picker widget either.
+RE-VERIFIED 2026-09-18, second pass. The first pass got the wrapper right but two things wrong, and the preview rendered badly because of them:
 
-RLP uses a custom wrapper: <div class="date-picker-wrapper"> containing a TEXT input (class="date-picker-input usa-input", placeholder mm/dd/yyyy) plus a trailing <div class="date-picker-icon-wrapper"> holding a Font Awesome calendar-days SVG. Clicking the glyph opens a custom calendar (rendered as table.calendar-table).
+1. THERE IS NO PLACEHOLDER. The input has no placeholder attribute at all. The mm/dd/yyyy mask is a separate &lt;span class="usa-hint" id="input-hint-&lt;inputId&gt;"&gt; sitting BETWEEN the label and the .date-picker-wrapper. The old entry put it in the input, where the icon padding then clipped it.
+2. THE CALENDAR GLYPH IS OUTSIDE THE INPUT, not overlaid on it. .date-picker-wrapper is a flex row; the input is the first item and .date-picker-icon-wrapper is the second, offset with margin-left 10px. The library's CSS had been reserving padding-right: 4.4rem on the input for an inside icon - that rule is gone, along with the prototype-only .date-picker-button it served.
 
-Computed values from the live app: wrapper 155px x 48px; input 112px x 40px, 1.6rem, padding 8px, 1px border #565c65. The input carries aria-label and aria-invalid, and is labelled via aria-labelledby rather than a for/id pair.
+Not a native &lt;input type="date"&gt; and not the USWDS date-picker widget. Clicking the glyph opens a custom calendar (rendered as table.calendar-table) into the empty div that follows the SVG.
 
-The date field is the one component whose invalid message is not "…is not valid." — it names the fix instead ("Enter a valid date in…"). When a business rule is what failed rather than the format, append the rule as a second sentence.
+Exact computed values from the live app:
 
-GAP: the standard writes the required message as "The field <date field> is required." — <date field> rather than the <field name> token every other component uses. Read here as the same token; confirm with Daniel whether the doc should be corrected.`,
+- .text-field-wrapper.usa-form-group - plain block wrapper around the whole field
+- label.usa-label.maxw-full - 1.6rem / 400 / #1b1b1b, and the label text is wrapped in a &lt;div class="display-inline"&gt;
+- span.usa-hint - 1.6rem / #697072 / no margin of its own (RLP's .usa-hint is body size and slightly darker than the USWDS default)
+- .date-picker-wrapper - display:flex, max-width 155px, 155 x 48px. Nothing else: no position:relative, no align-items
+- input.date-picker-input.usa-input - 112 x 40px, 1.6rem, padding 8px, 1px solid #565c65, radius 0, margin-top 8px. The 112px is not authored - the input is width:100% and simply shrinks into what the 155px wrapper leaves after the icon
+- .date-picker-icon-wrapper - display:inline-block, position:relative, margin 7px 0 0 10px
+- .date-picker-icon - font-size 3.75rem, line-height 1.3, color #112e51 (navy), rendering at 32.8 x 37.5px
+
+RLP sizes the glyph with font-size alone and lets Font Awesome's .svg-inline--fa supply height:1em / width:0.875em (the 448/512 viewBox ratio). This library restates those two in .date-picker-icon so a plain inline &lt;svg&gt; lands at the same size without pulling in Font Awesome.
+
+The input is labelled twice over - aria-label AND aria-labelledby pointing at the label id - and carries aria-invalid, flipped to "true" on error.
+
+The date field is the one component whose invalid message is not "…is not valid." - it names the fix instead ("Enter a valid date in…"). When a business rule is what failed rather than the format, append the rule as a second sentence.
+
+GAP: the standard writes the required message as "The field &lt;date field&gt; is required." - &lt;date field&gt; rather than the &lt;field name&gt; token every other component uses. Read here as the same token; confirm with Daniel whether the doc should be corrected.`,
   errors: [
     { trigger: 'Empty field', message: 'The field <field name> is required.', placement: 'Inline, between label and input' },
     { trigger: 'Unparseable / invalid date', message: 'Enter a valid date in the <field name>.', placement: 'Inline, between label and input' },
     { trigger: 'Fails a business rule', message: 'Enter a valid date in the <field name>. <error rule>', placement: 'Inline, between label and input' },
     { trigger: 'Rule example', message: 'Enter a valid date in the <field name>. Date(s) must be later than start date.', placement: 'Inline, between label and input' }
   ]
-
 },
 {
   name: "Document Upload — Attachment Panel (Two-Step Save)",
