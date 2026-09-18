@@ -26,7 +26,8 @@ Composition and page-level patterns, which are written down nowhere else:
 - Which components combine to form a page, and in what order
 - Icon Key accordion sits above the table controls bar
 - Action bars are left-aligned, primary action first — **except** step/wizard
-  pages, which use `justify-content: space-between` (Back left, Next right)
+  pages, which split (Back/Cancel left, Next/Save right) via a USWDS 6/6 grid:
+  `grid-row` → `grid-col-6` + `grid-col-6 text-right`
 - Add-item forms sit *above* the table they grow
 - Save/Cancel sit outside `profile-content`, directly in `<main>`
 - Naming conventions: "Create New [Thing]", "All [Things]", "Please Select"
@@ -46,8 +47,8 @@ It is not decoration. Read it before you copy anything.
 | `unverified` | Came from a prototype. **Never checked against the live app.** | Confirm against RLP before shipping. Treat the markup as a starting point, not a spec. |
 | `proposed` | A design proposal that **deliberately differs** from the live app. | **Does not exist in the product yet.** Never build it as though it already ships. Raise it with the design owner first. |
 
-As of 2026-09-18: **11 verified, 23 unverified, 1 proposed.** Most of this library
-is unverified. Assume unverified unless the badge says otherwise.
+As of 2026-09-18: **21 verified, 13 unverified, 1 proposed.** Assume unverified
+unless the badge says otherwise.
 
 ## Hard prohibitions
 
@@ -66,7 +67,14 @@ is unverified. Assume unverified unless the badge says otherwise.
    | `.section-heading` | `<h2 class="font-family-sans text-bold margin-top-0 margin-bottom-1">` |
    | `.field-required` | `<span class="required"><em>Required</em></span>` |
    | `.task-container` | `.simple-card bg-base-lightest padding-2 height-full` |
-   | `.usa-table--striped` | RLP list tables are not striped |
+   | `.icon-button` + 30×30 PNG | `<button class="usa-button usa-button--active">` + 16×16 Font Awesome SVG |
+   | `.usa-pagination__*` | `.pagination-container` → `ul.pagination` → bare `li`/`a`, state on the `li` |
+   | `<input type="date">` | `.date-picker-wrapper` + `.date-picker-input usa-input` + FA `calendar-days` |
+   | `.combo-box__*` | a plain native `<select class="usa-select">`, even at 100+ options |
+
+   `.usa-table--striped` is the exception: it is prototype-only, but RLP *is* striped
+   (via its own `data-grid-table`), so keep using it — it reproduces the real
+   appearance. Just drop `data-grid-table` unless you're using that component.
 
 3. **Never treat a `proposed` entry as an existing feature.**
 
@@ -96,6 +104,18 @@ primary button        #005ea2, 16px, 700, #fff, padding 12px 24px, radius 4px
 button hover          #1a4480          <-- navy is HOVER, not the base colour
 button disabled       #c9c9c9
 outline button        inset 0 0 0 2px #005ea2
+secondary button      #d83933 RED on #fff  <-- NOT an outline; RLP's Cancel
+accent-warm button    #fa9441 with DARK #1b1b1b text, padding 12px 24px
+row-action button     #162e51, 32x28, radius 4px, padding 6px 8px, 16px FA glyph
+status text (green)   #417505  approved/active/live/paid/completed
+status text (amber)   #8F5800  pending/open/assigned
+hint text             #697072, 16px
+checkbox label        padding-left 32px
+radio label           padding-left 42px, margin-top 12px; .usa-radio margin-right 15px
+table rows            striped: odd #fff, even #f0f0f0
+pagination link       #112e51 (not #005ea2); active = #fff on #112e51, padding 4px 10px
+controls bar count    "Showing 1 to 10 of 152 Entries"  <-- "to", not a hyphen
+wizard action bar     grid-row > grid-col-6 + grid-col-6.text-right (not space-between)
 breadcrumb            16px, links #005ea2
 .usa-input            padding 8px, 1px border #565c65
 accordion button      #f0f0f0, 16px, 700, padding 16px 24px
@@ -124,10 +144,20 @@ QA agency pages used for the 2026-09-18 pass:
 /management/dashboard                  header, nav, page title, tiles
 /management/license-type/view-all      data table, Icon Key accordion, controls bar
 /management/cases/open                 breadcrumb, segmented filter tabs, form fields
+/management/search/search-options      populated 152-row grid: striping, row-action
+                                       buttons, status text, pagination, date input,
+                                       horizontal radios, hint text
+/management/license-type/create        wizard action bar, vertical radios, checkboxes,
+                                       accent-warm add-item button, red Cancel
 ```
 
-Tables on both list pages returned zero rows, so row-level styling and the
-Controls-column icon buttons are still unverified.
+Still unverified (13): Modal / Dialog, Tabs — Horizontal, Textarea, Alert — Error
+(Form Validation), Field With Error Message, File Input, Button — Unstyled, Tag,
+Add-Item List (Growing Rows), Document Upload — Attachment Panel, Empty State —
+Standalone Paragraph, Empty State — Table Row, Combobox (Long-List Select).
+
+Reaching those needs a page with a modal, a tabbed detail view, and a form in a
+validation-error state. Note: do not submit forms in QA to trigger validation.
 
 ## If you find a discrepancy
 

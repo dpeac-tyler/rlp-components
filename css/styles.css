@@ -1579,8 +1579,10 @@ select:focus {
   color: #b50909;
 }
 
+/* Verified against RLP 2026-09-18: production is #d83933 (red), used for Cancel
+   on wizard/step pages. This is NOT an outline button. */
 .usa-button--secondary {
-  background-color: #d54309;
+  background-color: #d83933;
   color: #fff;
 }
 
@@ -3178,4 +3180,98 @@ input[type="date"].usa-input {
   font-size: 1.4rem;
   font-weight: normal;
   color: #1b1b1b;
+}
+
+/* Production parity additions - round 2
+   ==========================================================================
+   Verified against qa.lnpweb.com on 2026-09-18 from the agency submission
+   search, case list and Create License Type pages.
+   ========================================================================== */
+
+.flex-no-wrap {
+  flex-wrap: nowrap;
+}
+
+.flex-justify-start {
+  justify-content: flex-start;
+}
+
+/* Table-row action buttons. RLP renders these as small filled navy buttons
+   with a 16x16 Font Awesome glyph - NOT bare icon images. */
+.usa-button--active {
+  background-color: #162e51;
+  color: #fff;
+}
+
+.usa-button--active:hover {
+  background-color: #112e51;
+  color: #fff;
+}
+
+.icon-action {
+  width: 32px;
+  height: 28px;
+  padding: 0.6rem 0.8rem;
+  margin-right: 0.4rem;
+  border-radius: 0.4rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-action svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+/* Date input. RLP uses a custom wrapper with a trailing calendar glyph,
+   not the USWDS date-picker widget and not <input type="date">. */
+.date-picker-input {
+  max-width: 11.2rem;
+}
+
+.date-picker-icon-wrapper {
+  margin-left: 0.8rem;
+  font-size: 1.8rem;
+  line-height: 1;
+  color: #1b1b1b;
+}
+
+/* Pagination. State lives on the <li>, not the <a>. */
+.pagination-container {
+  margin-top: 1.6rem;
+}
+
+ul.pagination {
+  display: inline-block;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+ul.pagination li {
+  display: inline-block;
+  padding: 0.6rem 1.2rem;
+}
+
+ul.pagination li a {
+  font-size: 1.6rem;
+  color: #112e51;
+  text-decoration: none;
+}
+
+ul.pagination li.active {
+  padding: 0.6rem;
+}
+
+ul.pagination li.active a {
+  background-color: #112e51;
+  color: #fff;
+  padding: 0.4rem 1rem;
+  border-radius: 0;
+}
+
+ul.pagination li.disabled a {
+  cursor: not-allowed;
 }

@@ -46,7 +46,13 @@
       .section-heading      (RLP uses h2.font-family-sans.text-bold)
       .field-required       (RLP uses span.required wrapping an <em>)
       .task-container       (RLP uses .simple-card; task-container is proposed)
-      .usa-table--striped   (RLP list tables are not striped)
+      .icon-button + PNG    (RLP uses button.usa-button--active + 16px FA SVG)
+      .usa-pagination__*    (RLP uses .pagination-container > ul.pagination > li)
+      .combo-box__*         (RLP uses a native select, even at 100+ options)
+      input[type=date]      (RLP uses .date-picker-wrapper + .date-picker-input)
+    EXCEPTION: .usa-table--striped is prototype-only but KEEP USING IT - RLP list
+    tables ARE striped (#fff / #f0f0f0), it just gets the stripe from its own
+    .data-grid-table class. usa-table--striped reproduces the real appearance.
 
   See AGENTS.md and README.md in this repo for the full contract.
   ============================================================================
@@ -285,6 +291,10 @@ document.querySelectorAll('.usa-accordion__button').forEach(button => {
 </` + `script>`,
   notes: `SOURCE: view-cases.html
 
+VERIFIED against qa.lnpweb.com 2026-09-18 - present on both list pages checked, positioned above the table-controls bar exactly as described. Button heading text is literally "Icon Key"; the inner heading is literally "Options and Control Types"; each item is the icon followed by "- Label".
+
+Two small structural differences in RLP, neither visual: the accordion root is a <ul class="usa-accordion usa-accordion--bordered icon-key"> rather than a <div>, and the inner heading is a bare <strong> rather than <p class="text-bold">. Accordion button computed as #f0f0f0 / 1.6rem / weight 700 / padding 16px 24px, which matches.
+
 Every list page with a Controls column gets one of these, positioned above the table-controls bar. Icons render 24×24 here vs. 30×30 in the actual table row. aria-controls / content id must be unique per instance — a page can have several (e.g. per-tab icon keys in view-case-detail.html).`
 },
 {
@@ -404,12 +414,14 @@ Required on any page deeper than one level. Final crumb is a plain <span>, never
 },
 {
   name: "Button — Accent-Warm",
-  fidelity: "unverified",
+  fidelity: "verified",
   preview: `<button type="button" class="usa-button usa-button--accent-warm">Add Choice</button>`,
   code: `<button type="button" class="usa-button usa-button--accent-warm" id="addMCChoiceButton">Add Choice</button>`,
-  notes: `SOURCE: create-questions.html
+  notes: `SOURCE: create-questions.html; verified against qa.lnpweb.com/management/license-type/create ("Add Affiliation") 2026-09-18
 
-Orange #fa9441. Use only for add-item actions within a form section (never as a general primary action).`
+VERIFIED exactly, including the usage rule. Live app: background rgb(250,148,65) = #fa9441 with DARK text rgb(27,27,27) = #1b1b1b, 1.6rem, weight 700, padding 12px 24px, radius 4px - byte-identical to css/styles.css.
+
+RLP uses it precisely as this entry describes: the "Add Affiliation" button inside the Affiliations section of the Create License Type form. Add-item actions within a form section only, never as a general primary action.`
 },
 {
   name: "Button — Group, Segmented (Filter Tabs)",
@@ -470,12 +482,20 @@ Primary actions only — Save, Create New, Submit.`
 },
 {
   name: "Button — Secondary",
-  fidelity: "unverified",
+  fidelity: "verified",
   preview: `<button type="button" class="usa-button usa-button--secondary">Cancel</button>`,
   code: `<button type="button" class="usa-button usa-button--secondary" id="cancel-edit-letter">Cancel</button>`,
-  notes: `SOURCE: rlp-affiliations/edit-letter.html
+  notes: `SOURCE: qa.lnpweb.com/management/license-type/create (Cancel, bottom-left of the wizard bar)
 
-A real <button type="button">, not a link — only used for Cancel next to Save/Submit. A handful of older pages (e.g. add-denial-code.html) still use an <a> styled as this class; that's legacy drift, not a second real pattern.`
+CORRECTED 2026-09-18. This is NOT an outline button. The global standards table described it that way and it was wrong.
+
+RLP renders usa-button--secondary as a SOLID RED button with white text: background rgb(216,57,51) = #d83933, 1.6rem, weight 700, padding 12px 24px, radius 4px. css/styles.css had #d54309 (a more orange red) and has been corrected to #d83933.
+
+Usage in RLP matches what this entry said: it is the Cancel button sitting next to Save/Submit. So "red Cancel" is correct and intentional in RLP - do not swap it for an outline button to make it look calmer.
+
+If you want a genuinely outlined button, that is usa-button--outline, which is a separate entry.
+
+A real <button type="button">, not a link. A handful of older prototypes (e.g. add-denial-code.html) use an <a> styled with this class; that is legacy drift, not a second real pattern.`
 },
 {
   name: "Button — Unstyled",
@@ -490,7 +510,7 @@ Icon-only or link-styled controls inside table cells / dense UI. Always give it 
 },
 {
   name: "Checkbox",
-  fidelity: "unverified",
+  fidelity: "verified",
   preview: `<div class="usa-checkbox">
   <input class="usa-checkbox__input" id="demo-checkbox" type="checkbox">
   <label class="usa-checkbox__label" for="demo-checkbox">Application</label>
@@ -501,7 +521,11 @@ Icon-only or link-styled controls inside table cells / dense UI. Always give it 
 </div>`,
   notes: `SOURCE: add-inspection-type.html; wording per Confluence "Error Messaging Standards/Specifics"
 
-A standard USWDS checkbox component.
+VERIFIED against qa.lnpweb.com/management/license-type/create 2026-09-18 (the "Please select all that apply" Application Type group). A standard USWDS checkbox component, stacked vertically.
+
+Live app: .usa-checkbox wrapper, input.usa-checkbox__input, label.usa-checkbox__label at 1.6rem / #1b1b1b with padding-left 32px. Note RLP wraps the label TEXT in <div class="display-inline"> - harmless, and not needed in a prototype.
+
+Checkbox label indent (32px) is deliberately narrower than the radio label indent (42px) - see the Radio Group entry.
 
 Checkbox is the one component whose required message changes with the number of boxes: a single box must be checked ("Check the box for…"), a group needs at least one ("Check at least one of the options for…"). Both use "Check", not "Select" — "Select" belongs to Select and Radio.
 
@@ -540,17 +564,36 @@ For a group, the message goes under the <legend> and <field name> is the legend 
 </` + `script>`,
   notes: `SOURCE: rlp-packets/create-packet.html — does NOT exist anywhere in rlp-case-management despite being documented in the global standards as the long-list (10+ item) dropdown pattern.
 
+CAUTION, 2026-09-18: RLP does NOT appear to use this pattern. The submission search page has a "License Type" dropdown with well over 100 options and it is a plain native <select class="usa-select">, not a combobox. That directly contradicts the global standard's "10+ items means use a combobox" rule.
+
+Left as unverified rather than deleted - this was built for rlp-packets and may be a deliberate improvement on RLP's native long select. But do not ship it into production as though RLP already works this way; confirm with the design owner first.
+
 Text input + hidden input (holds the real value) + filtered <ul role="listbox">. Often starts disabled until a parent select (e.g. license type) picks a value. The CSS for .combo-box/.combo-box__input/.combo-box__list was NOT in the compiled styles.css of either source project — it was inline <style> in create-packet.html. It has been copied into this library's css/styles.css; consider backporting it into every project's base stylesheet instead of re-inlining it per page.`
 },
 {
   name: "Date Input",
-  fidelity: "unverified",
+  fidelity: "verified",
   preview: `<label class="usa-label" for="demo-date">Target Completion Date</label>
-<input class="usa-input" id="demo-date" type="date" style="max-width:240px;">`,
-  code: `<input class="usa-input" id="target-completion-date" name="target-completion-date" type="date" required>`,
-  notes: `SOURCE: create-investigation.html; wording per Confluence "Error Messaging Standards/Specifics"
+<div class="date-picker-wrapper" style="max-width:155px;">
+  <input type="text" class="date-picker-input usa-input" id="demo-date" placeholder="mm/dd/yyyy" aria-label="Target Completion Date">
+  <span class="date-picker-icon-wrapper" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M7 2v2H5a2 2 0 0 0-2 2v2h18V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zM3 10v9a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-9H3zm4 3h3v3H7v-3z"/></svg></span>
+</div>`,
+  code: `<div class="date-picker-wrapper">
+  <input type="text" class="date-picker-input usa-input" id="target-completion-date"
+    name="target-completion-date" placeholder="mm/dd/yyyy" aria-label="Target Completion Date"
+    aria-invalid="false">
+  <div class="date-picker-icon-wrapper">
+    <!-- RLP renders a Font Awesome SVG here: data-icon="calendar-days" -->
+    <svg class="svg-inline--fa fa-calendar-days date-picker-icon" aria-hidden="true"><!-- ... --></svg>
+  </div>
+</div>`,
+  notes: `SOURCE: qa.lnpweb.com/management/search/search-options; wording per Confluence "Error Messaging Standards/Specifics"
 
-Plain native <input type="date"> styled with usa-input — no USWDS date-picker JS widget in use anywhere scanned so far.
+CORRECTED 2026-09-18. This entry previously specified a native <input type="date">. RLP does not use one, and does not use the USWDS date-picker widget either.
+
+RLP uses a custom wrapper: <div class="date-picker-wrapper"> containing a TEXT input (class="date-picker-input usa-input", placeholder mm/dd/yyyy) plus a trailing <div class="date-picker-icon-wrapper"> holding a Font Awesome calendar-days SVG. Clicking the glyph opens a custom calendar (rendered as table.calendar-table).
+
+Computed values from the live app: wrapper 155px x 48px; input 112px x 40px, 1.6rem, padding 8px, 1px border #565c65. The input carries aria-label and aria-invalid, and is labelled via aria-labelledby rather than a for/id pair.
 
 The date field is the one component whose invalid message is not "…is not valid." — it names the fix instead ("Enter a valid date in…"). When a business rule is what failed rather than the format, append the rule as a second sentence.
 
@@ -683,7 +726,7 @@ Use this on any list page backed by a data grid. For the JS-toggled whole-table 
   preview: `<p style="padding: 3rem 0; color: #71767a; font-size: 1.6rem;">
   No email templates found. <a href="#" class="usa-link">Create your first email template.</a>
 </p>`,
-  code: `<table class="usa-table usa-table--borderless width-full minw-tablet">
+  code: `<table class="usa-table usa-table--borderless usa-table--striped width-full minw-tablet">
   ...
   <tbody id="email-tbody"></tbody>
 </table>
@@ -698,7 +741,7 @@ Whole-table empty state: the <table> and this <p> toggle opposite display values
 {
   name: "Empty State — Table Row",
   fidelity: "unverified",
-  preview: `<table class="usa-table usa-table--borderless width-full" style="margin:0;">
+  preview: `<table class="usa-table usa-table--borderless usa-table--striped width-full" style="margin:0;">
   <tbody><tr><td>No investigations on record for this case.</td></tr></tbody>
 </table>`,
   code: `<tbody id="investigations-tbody">
@@ -778,18 +821,35 @@ Flag to Daniel: this bare input is a prototyping shortcut only, used for speed w
 },
 {
   name: "Icon Button (Table Row Action)",
-  fidelity: "unverified",
-  preview: `<a href="#" class="icon-button" aria-label="View Task"><img src="assets/eye-icon.png" alt="" width="30" height="30"></a>
-<a href="#" class="icon-button" aria-label="Claim Task"><img src="assets/claim-task.png" alt="" width="30" height="30"></a>`,
-  code: `<a href="task-detail.html?id=1" class="icon-button" aria-label="View Task">
-  <img src="assets/eye-icon.png" alt="" width="30" height="30">
-</a>
-<a href="#" class="icon-button" aria-label="Claim Task">
-  <img src="assets/claim-task.png" alt="" width="30" height="30">
-</a>`,
-  notes: `SOURCE: queues.html
+  fidelity: "verified",
+  preview: `<div class="grid-row flex-justify-start flex-no-wrap">
+  <button type="button" class="usa-button usa-button--active icon-action" aria-label="View Submission" title="View Submission"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M2 4h20v3.2l-10 6.3L2 7.2V4zm0 5.6 10 6.3 10-6.3V20H2V9.6z"/></svg></button>
+  <button type="button" class="usa-button usa-button--active icon-action" aria-label="Download Certificate" title="Download Certificate"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11 3h2v9.2l3.6-3.6L18 10l-6 6-6-6 1.4-1.4L11 12.2V3zM4 19h16v2H4z"/></svg></button>
+  <button type="button" class="usa-button usa-button--active icon-action" aria-label="View Applicant Profile" title="View Applicant Profile"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zm0 2c-4 0-7 2-7 4.5V21h14v-2.5C19 16 16 14 12 14z"/></svg></button>
+</div>`,
+  code: `<div class="grid-row flex-justify-start flex-no-wrap">
+  <button type="button" class="cursor-pointer usa-button usa-button--active"
+    aria-label="View Submission" title="View Submission">
+    <!-- RLP renders a Font Awesome SVG here: 16x16, currentColor (white) -->
+    <svg class="svg-inline--fa fa-envelope-open" aria-hidden="true" width="16" height="16"><!-- ... --></svg>
+  </button>
+</div>`,
+  notes: `SOURCE: qa.lnpweb.com/management/search/search-options (Controls column)
 
-30×30 in tables (vs. 24×24 in the Icon Key accordion). alt="" (decorative) — the accessible name lives in aria-label on the wrapping <a>.`
+CORRECTED 2026-09-18, and this was the single biggest visual gap found. This entry previously specified a bare <a class="icon-button"> wrapping a 30x30 PNG with no button chrome. RLP does not do that.
+
+RLP renders each row action as a small FILLED NAVY BUTTON with a white glyph inside:
+- <button class="cursor-pointer usa-button usa-button--active"> - background #162e51
+- 32px wide x 28px high, padding 6px 8px, border-radius 4px
+- glyph is a Font Awesome SVG at 16x16 in currentColor (white)
+- BOTH aria-label and title are set, with the same text
+- all buttons in the cell sit inside <div class="grid-row flex-justify-start flex-no-wrap">
+
+RLP's icon vocabulary is Font Awesome, not the PNGs in assets/. Observed on the submission grid: envelope-open (View Submission), download (Download Certificate), briefcase (Review Task), user (View Applicant Profile). Note there is no eye icon for "view" in this module.
+
+The preview above substitutes assets/*.png inverted to white so it renders here without pulling in Font Awesome. Production markup in the HTML column is the authoritative version.
+
+Icon Key accordion still renders at 24x24.`
 },
 {
   name: "Modal / Dialog",
@@ -866,7 +926,7 @@ This is only the primary nav list — the full page chrome also includes a banne
 },
 {
   name: "Page Action Bar — Standard (Left-Aligned)",
-  fidelity: "unverified",
+  fidelity: "verified",
   preview: `<div class="usa-form-group" style="max-width:300px;">
   <label class="usa-label" for="demo-doc-search">Search</label>
   <div style="display:flex; gap:1rem;">
@@ -890,13 +950,17 @@ This is only the primary nav list — the full page chrome also includes a banne
 </div>`,
   notes: `SOURCE: rlp-document-locker/individual-profile.html (Documents tab), rlp-case-management/add-denial-code.html (Save), rlp-affiliations/edit-letter.html (Cancel)
 
-THE RLP STANDARD for normal pages (detail views, forms, tabs). No flex/justify-content wrapper at all — plain block flow. Primary action always comes first/leftmost (Save before Cancel; a lone action like "Upload Document" just sits left under whatever it acts on).
+VERIFIED against qa.lnpweb.com 2026-09-18. THE RLP STANDARD for normal pages (detail views, forms, tabs). No flex/justify-content wrapper at all - plain block flow. Primary action always comes first/leftmost (Save before Cancel; a lone action like "Upload Document" just sits left under whatever it acts on).
+
+Confirmed in the live app on:
+- /management/license-type/view-all - a lone "Create New License" button, left-aligned above the table controls bar
+- /management/cases/open - "Search" (primary) then "Clear" (outline), left-aligned, with "Create New Case" on its own line below, also left
 
 Do NOT right-align or use justify-content: flex-end here — that's a common default AI tools reach for, but it is not the RLP convention. Right-alignment is reserved for the step/wizard pattern only — see that entry.`
 },
 {
   name: "Page Action Bar — Step/Wizard (Split)",
-  fidelity: "unverified",
+  fidelity: "verified",
   preview: `<div style="background:#f0f0f0; padding:1rem; border-radius:0.5rem; display:flex; justify-content:space-between;">
   <button type="button" class="usa-button usa-button--outline">Back</button>
   <div style="display:flex; gap:1rem;">
@@ -904,7 +968,21 @@ Do NOT right-align or use justify-content: flex-end here — that's a common def
     <button type="button" class="usa-button">Next</button>
   </div>
 </div>`,
-  code: `<div class="app-builder-button-container">
+  code: `<!-- RLP production idiom (verified 2026-09-18) - a USWDS 6/6 grid split.
+     Cancel left, forward progress right. No wrapper background. -->
+<div class="grid-row">
+  <div class="grid-col-6">
+    <button type="button" class="cursor-pointer usa-button usa-button--secondary">Cancel</button>
+  </div>
+  <div class="grid-col-6 text-right">
+    <button type="button" class="cursor-pointer usa-button">Save &amp; Create Application</button>
+    <button type="button" class="cursor-pointer usa-button">Save &amp; Finish</button>
+  </div>
+</div>
+
+<!-- Packet-builder variant (rlp-packets): same split, but inside a grey
+     container and using Back / Skip / Next. Unverified against RLP. -->
+<div class="app-builder-button-container">
   <a href="application-license-fees.html" class="usa-button usa-button--outline">Back</a>
   <div style="display:flex; gap:1rem;">
     <a href="endorsements.html" class="usa-button usa-button--outline">Skip</a>
@@ -922,7 +1000,20 @@ Do NOT right-align or use justify-content: flex-end here — that's a common def
 }`,
   notes: `SOURCE: rlp-packets/additional-items.html + css/styles.css (.app-builder-button-container)
 
-ONLY use this split/right-aligned layout for multi-step application/packet wizards. Back (or Cancel) stays left; forward progress (Next / Save & Continue), optionally grouped with Skip, sits right via justify-content: space-between. Do not use this pattern on normal detail/form pages — see "Page Action Bar — Standard" for those.`
+VERIFIED against qa.lnpweb.com/management/license-type/create 2026-09-18. The split is real and correct - Cancel bottom-left, "Save & Create Application" + "Save & Finish" bottom-right.
+
+One implementation difference: RLP does NOT use justify-content: space-between. It uses a USWDS 6/6 grid split:
+
+  <div class="grid-row">
+    <div class="grid-col-6">           <- Cancel
+    <div class="grid-col-6 text-right"> <- Save & Continue / Save & Finish
+  </div>
+
+Visually identical, so space-between is not wrong - but grid-row + grid-col-6 + text-right is the production idiom, and it is what the HTML column above now shows.
+
+Note RLP's Cancel here is the RED usa-button--secondary, not an outline button - see that entry.
+
+ONLY use this split layout for multi-step wizards. Do not use it on normal detail/form pages - see "Page Action Bar - Standard" for those.`
 },
 {
   name: "Page Title",
@@ -933,45 +1024,46 @@ ONLY use this split/right-aligned layout for multi-step application/packet wizar
 },
 {
   name: "Pagination",
-  fidelity: "unverified",
-  preview: `<nav aria-label="Pagination" class="usa-pagination" style="display:flex; justify-content:center;">
-  <ul class="usa-pagination__list">
-    <li class="usa-pagination__item usa-pagination__arrow"><a href="#" class="usa-pagination__link usa-pagination__previous-page" aria-label="Previous page"><span>‹</span><span class="usa-pagination__link-text">Previous</span></a></li>
-    <li class="usa-pagination__item usa-pagination__page-no"><a href="#" class="usa-pagination__button usa-current" aria-label="Page 1" aria-current="page">1</a></li>
-    <li class="usa-pagination__item usa-pagination__page-no"><a href="#" class="usa-pagination__button" aria-label="Page 2">2</a></li>
-    <li class="usa-pagination__item usa-pagination__page-no"><a href="#" class="usa-pagination__button" aria-label="Page 3">3</a></li>
-    <li class="usa-pagination__item usa-pagination__arrow"><a href="#" class="usa-pagination__link usa-pagination__next-page" aria-label="Next page"><span class="usa-pagination__link-text">Next</span><span>›</span></a></li>
+  fidelity: "verified",
+  preview: `<div class="pagination-container">
+  <ul class="pagination">
+    <li class="disabled"><a href="#">Previous</a></li>
+    <li class="active"><a href="#">1</a></li>
+    <li><a href="#">2</a></li>
+    <li><a href="#">3</a></li>
+    <li><a href="#">Next</a></li>
   </ul>
-</nav>`,
-  code: `<nav aria-label="Pagination" class="usa-pagination" style="display: flex; justify-content: center; margin-top: 2rem;">
-  <ul class="usa-pagination__list">
-    <li class="usa-pagination__item usa-pagination__arrow">
-      <a href="#" class="usa-pagination__link usa-pagination__previous-page" aria-label="Previous page">
-        <span>‹</span>
-        <span class="usa-pagination__link-text">Previous</span>
-      </a>
-    </li>
-    <li class="usa-pagination__item usa-pagination__page-no">
-      <a href="#" class="usa-pagination__button usa-current" aria-label="Page 1" aria-current="page">1</a>
-    </li>
-    <li class="usa-pagination__item usa-pagination__page-no">
-      <a href="#" class="usa-pagination__button" aria-label="Page 2">2</a>
-    </li>
-    <li class="usa-pagination__item usa-pagination__arrow">
-      <a href="#" class="usa-pagination__link usa-pagination__next-page" aria-label="Next page">
-        <span class="usa-pagination__link-text">Next</span>
-        <span>›</span>
-      </a>
-    </li>
+</div>`,
+  code: `<div class="pagination-container">
+  <ul class="pagination">
+    <li class="disabled"><a href="#" aria-label="Previous page">Previous</a></li>
+    <li class="active"><a href="#" aria-label="Page 1" aria-current="page">1</a></li>
+    <li><a href="#" aria-label="Page 2">2</a></li>
+    <li><a href="#" aria-label="Page 3">3</a></li>
+    <li><a href="#" aria-label="Next page">Next</a></li>
   </ul>
-</nav>`,
-  notes: `SOURCE: queues.html
+</div>`,
+  notes: `SOURCE: qa.lnpweb.com/management/search/search-options (152-entry result set)
 
-Standard USWDS pagination markup, used as-is. Current page gets usa-current + aria-current="page" on the <a>, not the <li>.`
+CORRECTED 2026-09-18. This entry previously used the USWDS pagination pattern (nav.usa-pagination > ul.usa-pagination__list > .usa-pagination__item / __link / __button, centred, links #005ea2). RLP does not use any of that.
+
+Real RLP pagination is a plain <div class="pagination-container"> wrapping <ul class="pagination"> with bare <li> and <a>. State lives on the <li>, not the link: li.active and li.disabled.
+
+Computed values from the live app:
+- container: margin-top 16px
+- ul.pagination: display inline-block (left-aligned, NOT centred)
+- li: padding 6px 12px
+- a: 1.6rem, colour #112e51 (the header navy - NOT #005ea2), no underline
+- li.active: padding 6px; its <a> is white on #112e51, padding 4px 10px, no border-radius
+- li.disabled: padding 6px 12px, same colour, not visibly greyed
+
+First and last items are Previous / Next as text labels, with no chevron glyphs.
+
+Pair with the table controls bar: RLP writes the count as "Showing 1 to 10 of 152 Entries" - the word "to", not a hyphen.`
 },
 {
   name: "Radio Group",
-  fidelity: "unverified",
+  fidelity: "verified",
   preview: `<fieldset class="usa-fieldset">
   <legend class="usa-legend">Status <span class="required"><em>Required</em></span></legend>
   <div class="usa-radio"><input class="usa-radio__input" id="demo-radio-active" type="radio" name="demo-status" checked><label class="usa-radio__label" for="demo-radio-active">Active</label></div>
@@ -989,6 +1081,14 @@ Standard USWDS pagination markup, used as-is. Current page gets usa-current + ar
   </div>
 </fieldset>`,
   notes: `SOURCE: add-denial-code.html; wording per Confluence "Error Messaging Standards/Specifics"
+
+VERIFIED against qa.lnpweb.com 2026-09-18 - both orientations. Live app: .usa-radio wrapper (margin-right 15px), input.usa-radio__input, label.usa-radio__label at 1.6rem / #1b1b1b with padding-left 42px and margin-top 12px.
+
+RLP uses BOTH orientations and the class list is identical either way:
+- HORIZONTAL on the submission search "Search Type" row (Constituent / Invoice / License / Submission) - the 15px right margin on .usa-radio is what spaces them
+- VERTICAL on Create License Type "Is the licensee an Individual, Business or Asset?"
+
+Pick the orientation from available width, not from a rule. RLP wraps the label TEXT in <div class="display-inline">; harmless, not needed in a prototype.
 
 The message goes directly under the <legend>, not under an individual radio. The whole fieldset is the field, so <field name> is the legend text.
 
@@ -1043,10 +1143,18 @@ When a page has two or more selects that share a label stem, the instance number
 },
 {
   name: "Status Tag / Badge",
-  fidelity: "unverified",
+  fidelity: "verified",
   preview: `<div style="display:flex; gap:2rem;"><span class="status-pending">Pending</span><span class="status-active">Active</span><span class="status-rejected">Rejected</span></div>`,
   code: `<span class="status-pending">Pending</span>`,
-  notes: `SOURCE: view-case-detail.html; color mapping in css/styles.css (~line 836)
+  notes: `SOURCE: view-case-detail.html; verified against qa.lnpweb.com/management/search/search-options 2026-09-18
+
+VERIFIED and the colours are exact. RLP renders status as PLAIN COLOURED TEXT - no pill, no background, no border, no padding, no uppercasing. Despite the "Badge" in this entry's name, that is what this entry already does, so it is correct as-is.
+
+Live app: "Approved" is rgb(65,117,5) = #417505 and "Pending" is rgb(143,88,0) = #8F5800 - byte-identical to .status-approved and .status-pending in css/styles.css. RLP adds text-transform: capitalize.
+
+RLP's own class names are per-column (e.g. .submission-cell__status), not semantic per-value. The semantic .status-* system below is a prototype abstraction over the same palette - keep using it, the rendered colour is what matters.
+
+Colour mapping in css/styles.css (~line 836)
 
 Semantic class-per-status-value groups: active/approved/live/paid/completed · pending/open/assigned/approved-awaiting-payment · rejected/denied/cancelled/past-due/terminated · expired/revoked/withdrawn/decommissioned/retired · in-progress/rejected-for-resubmission/in-cart · inactive · on-hold/suspended/payment-in-process · in-review/draft/initiated · archived.
 
@@ -1062,7 +1170,7 @@ When reproducing a NEW status value, map it to the closest existing semantic gro
     <select class="usa-select table-controls__select" id="demo-entries"><option>100</option><option>50</option></select>
   </div>
 </div>
-<table class="usa-table usa-table--borderless width-full" style="margin:0;">
+<table class="usa-table usa-table--borderless usa-table--striped width-full" style="margin:0;">
   <thead><tr><th scope="col">Application Title</th><th scope="col">Controls</th></tr></thead>
   <tbody><tr><td>Business Application 123</td><td><a href="#" class="icon-button" aria-label="View Task"><img src="assets/eye-icon.png" alt="" width="30" height="30"></a></td></tr></tbody>
 </table>`,
@@ -1081,7 +1189,7 @@ When reproducing a NEW status value, map it to the closest existing semantic gro
   </div>
 </div>
 
-<table class="usa-table usa-table--borderless width-full minw-tablet">
+<table class="usa-table usa-table--borderless usa-table--striped width-full minw-tablet">
   <thead>
     <tr>
       <th scope="col" role="columnheader" aria-sort="none">Application Title <span class="sort-arrows"></span></th>
@@ -1101,11 +1209,15 @@ When reproducing a NEW status value, map it to the closest existing semantic gro
 </table>`,
   notes: `SOURCE: queues.html; verified against qa.lnpweb.com/management/cases/open and /management/license-type/view-all
 
-CORRECTED 2026-09-18. This entry previously specified usa-table--striped. RLP list tables are NOT striped - the real class list is "usa-table usa-table--borderless width-full minw-tablet data-grid-table" (data-grid-table is added by RLP's data-grid component; omit it if you are not using that component).
+RLP list tables ARE striped. An earlier pass of this entry claimed they were not, based on two empty tables; a populated 152-row grid settled it.
+
+Real RLP class list: "usa-table usa-table--borderless width-full minw-tablet data-grid-table". Striping is NOT applied via usa-table--striped - it comes from data-grid-table's own CSS. Rows alternate #fff and rgb(240,240,240) = #f0f0f0, odd rows white.
+
+In a prototype you will not have the data-grid component, so keep usa-table--striped: css/styles.css renders it as tbody tr:nth-child(even) td { background-color: #f0f0f0 }, which reproduces RLP's appearance exactly. Drop data-grid-table unless you are actually using that component.
 
 Computed values from the live app: th 1.6rem / weight 700 / bg #f0f0f0 / padding 8px 16px; td 1.6rem / padding 20px 5px 20px 10px; both with a 1px #aeb0b5 bottom border.
 
-Caveat: verified on two list pages, both of which returned zero rows, so row-level striping could not be observed directly - but neither table carried the striped class and no striped element was present on either page.
+Controls bar count text in RLP is "Showing 1 to 10 of 152 Entries" - the word "to", not a hyphen. The count sits in a plain <p>. The entries-per-page select offers 10/25/50/100 and RLP also has a "Set Column Headers" select to its left on the search grid.
 
 Sortable headers get role="columnheader" aria-sort="none" + an empty <span class="sort-arrows">. Controls column has no sort arrows and is always last, with white-space: nowrap to prevent icon wrapping. Precede with the Icon Key accordion when a Controls column is present.`
 },

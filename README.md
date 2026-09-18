@@ -35,11 +35,10 @@ coloured dot in the index:
 - 🟣 **Proposed — not in RLP yet** — a design proposal that deliberately differs
   from the live app. Does not exist in the product. Not a spec.
 
-Current state: **11 verified · 23 unverified · 1 proposed**.
+Current state: **21 verified · 13 unverified · 1 proposed**.
 
-Most of the library is still unverified. That is a statement about how much
-checking has been done, not a judgement on the components — verification is
-manual and ongoing.
+The remainder is a statement about how much checking has been done, not a
+judgement on the components — verification is manual and ongoing.
 
 ## For engineers and AI agents
 
@@ -53,8 +52,10 @@ The two things that matter most:
    prototype-grown approximation — faithful to production in places, wrong in
    others. It is not a drop-in replacement.
 2. **Never ship a class from here without confirming RLP defines it.**
-   `.section-heading`, `.field-required`, `.task-container` and
-   `.usa-table--striped` are prototype-only and do not exist in RLP.
+   `.section-heading`, `.field-required`, `.task-container`, `.icon-button`,
+   `.usa-pagination__*` and `.combo-box__*` are prototype-only and do not exist
+   in RLP. (`.usa-table--striped` is also prototype-only, but keep it — RLP
+   *is* striped, just via a different class.)
 
 ## Stack
 
@@ -67,17 +68,20 @@ Static HTML + vanilla JS. Built on **USWDS** (US Web Design System);
 
 | Date | What was checked | Result |
 |---|---|---|
-| 2026-09-18 | 14 components against QA (`qa.lnpweb.com`), agency-side | 11 verified identical; 4 real drifts found and corrected (section heading, table striping, required indicator, data-grid empty state); 1 documentation error fixed (primary button is `#005ea2`, navy `#1a4480` is hover) |
+| 2026-09-18 (pass 1) | 14 components against QA (`qa.lnpweb.com`), agency-side | 11 verified identical; 3 real drifts corrected (section heading, required indicator, data-grid empty state); 1 documentation error fixed (primary button is `#005ea2`, navy `#1a4480` is hover) |
+| 2026-09-18 (pass 2) | 10 more components, incl. a populated 152-row grid | 21 verified total. Corrected an error from pass 1: RLP list tables **are** striped. Found the largest visual gap yet — row-action icon buttons are filled navy buttons with Font Awesome glyphs, not bare PNG links. Also corrected: `usa-button--secondary` is red `#d83933` (not an outline), pagination uses `.pagination-container` not `usa-pagination__*`, date inputs use a custom wrapper not `<input type="date">`. Status-text colours and the accent-warm button verified byte-identical. |
 
 Production inlines ~2.5 MB of CSS in a single `<style>` tag with no external
 stylesheet, so there is no CSS file to diff. Verification is done by reading
 computed styles off real elements in the browser — see AGENTS.md for the method
 and the pages used.
 
-Still unverified: modal, tabs, status tags, icon buttons, checkbox, radio group,
-date input, textarea, file input, combobox, add-item list, document upload panel,
-error alert, pagination internals. Both list pages checked returned zero rows, so
-row-level table styling and Controls-column icons need a populated table.
+Still unverified (13): modal / dialog, horizontal tabs, textarea, error alert,
+field-with-error-message, file input, unstyled button, tag, add-item list,
+document upload panel, both empty-state variants, and the combobox.
+
+Reaching those needs a page with a modal, a tabbed detail view, and a form sitting
+in a validation-error state.
 
 ## Maintaining this library
 
