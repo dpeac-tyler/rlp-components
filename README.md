@@ -35,7 +35,7 @@ coloured dot in the index:
 - 🟣 **Proposed — not in RLP yet** — a design proposal that deliberately differs
   from the live app. Does not exist in the product. Not a spec.
 
-Current state: **21 verified · 13 unverified · 1 proposed**.
+Current state: **25 verified · 10 unverified · 1 proposed** (36 entries).
 
 The remainder is a statement about how much checking has been done, not a
 judgement on the components — verification is manual and ongoing.
@@ -53,9 +53,11 @@ The two things that matter most:
    others. It is not a drop-in replacement.
 2. **Never ship a class from here without confirming RLP defines it.**
    `.section-heading`, `.field-required`, `.task-container`, `.icon-button`,
-   `.usa-pagination__*` and `.combo-box__*` are prototype-only and do not exist
-   in RLP. (`.usa-table--striped` is also prototype-only, but keep it — RLP
-   *is* striped, just via a different class.)
+   `.usa-pagination__*`, `.combo-box__*`, `.horizontal-tabs`, `.modal-overlay`
+   and `.profile-content` are prototype-only and do not exist in RLP.
+   (`.usa-table--striped` is also prototype-only, but keep it — RLP *is*
+   striped, just via a different class.) Watch out for `.modal`: this repo's
+   legacy one is a centring wrapper, RLP's **is** the dialog box.
 
 ## Stack
 
@@ -69,6 +71,7 @@ Static HTML + vanilla JS. Built on **USWDS** (US Web Design System);
 | Date | What was checked | Result |
 |---|---|---|
 | 2026-09-18 (pass 1) | 14 components against QA (`qa.lnpweb.com`), agency-side | 11 verified identical; 3 real drifts corrected (section heading, required indicator, data-grid empty state); 1 documentation error fixed (primary button is `#005ea2`, navy `#1a4480` is hover) |
+| 2026-09-18 (pass 3) | 4 more components on the Individual Profile, incl. a live modal | 25 verified total. Horizontal tabs are RLP's `.sub-tabs` (equal-width flex, grey inactive, blue underline on active), not a custom `.horizontal-tabs`. Modals are `.react-confirm-alert-overlay` + `.modal[role=dialog]` + `.alert-heading`, with a **white 90%** scrim, not a dark one — and `.modal` collides with a legacy class in this repo. Alert left border corrected 5px → 8px; added a verified warning variant. `usa-button--unstyled` verified, but RLP uses it as a text link, not for icon-only controls. Noted that `.profile-content` / `.inspection-content` don't exist in RLP. |
 | 2026-09-18 (pass 2) | 10 more components, incl. a populated 152-row grid | 21 verified total. Corrected an error from pass 1: RLP list tables **are** striped. Found the largest visual gap yet — row-action icon buttons are filled navy buttons with Font Awesome glyphs, not bare PNG links. Also corrected: `usa-button--secondary` is red `#d83933` (not an outline), pagination uses `.pagination-container` not `usa-pagination__*`, date inputs use a custom wrapper not `<input type="date">`. Status-text colours and the accent-warm button verified byte-identical. |
 
 Production inlines ~2.5 MB of CSS in a single `<style>` tag with no external
@@ -76,12 +79,14 @@ stylesheet, so there is no CSS file to diff. Verification is done by reading
 computed styles off real elements in the browser — see AGENTS.md for the method
 and the pages used.
 
-Still unverified (13): modal / dialog, horizontal tabs, textarea, error alert,
-field-with-error-message, file input, unstyled button, tag, add-item list,
-document upload panel, both empty-state variants, and the combobox.
+Still unverified (10): textarea, file input, tag, error alert,
+field-with-error-message, add-item list, document upload panel, both
+prototype-specific empty-state variants, and the combobox.
 
-Reaching those needs a page with a modal, a tabbed detail view, and a form sitting
-in a validation-error state.
+The error alert and field-error entries need a form sitting in a validation-error
+state — which means deliberately failing a save in QA, so that's a call for the
+design owner rather than something to do unprompted. `Tag` hasn't been spotted
+anywhere in RLP yet and may genuinely not exist.
 
 ## Maintaining this library
 

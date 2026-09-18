@@ -1941,11 +1941,13 @@ input[type="date"].usa-input {
    ========================================================================== */
 
 /* Error Alert */
+/* Border width verified against RLP 2026-09-18 (warning variant in the Change
+   Email modal): RLP uses an 8px left border, not 5px. */
 .usa-alert {
   position: relative;
   padding: 1.6rem 1.6rem 1.6rem 6rem;
   background-color: #f4e3db;
-  border-left: 0.5rem solid #d54309;
+  border-left: 0.8rem solid #d54309;
   margin-bottom: 2.4rem;
 }
 
@@ -3274,4 +3276,121 @@ ul.pagination li.active a {
 
 ul.pagination li.disabled a {
   cursor: not-allowed;
+}
+
+/* Production parity additions - round 3
+   ==========================================================================
+   Verified against qa.lnpweb.com/management/applicant-profile on 2026-09-18.
+   ========================================================================== */
+
+/* Alert - warning variant. RLP uses this inside modals to flag side effects.
+   usa-alert--slim drops the large icon gutter and tightens the body padding. */
+.usa-alert--warning {
+  background-color: #faf3d1;
+  border-left-color: #ffbe2e;
+}
+
+.usa-alert--slim {
+  padding: 0;
+}
+
+.usa-alert--slim .usa-alert__body {
+  padding: 0.8rem 2rem;
+}
+
+.usa-alert--slim::before,
+.usa-alert--slim::after {
+  content: none;
+}
+
+/* Record-detail tabs. RLP's real tab component - equal-width flex items,
+   grey inactive, white active with a blue underline. NOT USWDS tabs. */
+.sub-nav-content {
+  background: #fff;
+}
+
+.sub-tabs {
+  display: flex;
+  background: #fff;
+}
+
+.sub-tabs ul {
+  display: flex;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sub-tabs li {
+  flex: 1 1 0%;
+  font-weight: 700;
+}
+
+.sub-tabs .button-link {
+  width: 100%;
+  padding: 1.3rem 0 1.5rem;
+  background-color: #d7d7d7;
+  color: #4c4c4c;
+  border: 0;
+  border-top: 3px solid #d7d7d7;
+  cursor: pointer;
+  font: inherit;
+  font-size: 1.6rem;
+}
+
+.sub-tabs .button-link strong {
+  font-weight: 700;
+}
+
+.sub-tabs .button-link.sub-tabs-active {
+  background-color: #fff;
+  border-top: 3px solid #fff;
+  border-bottom: 3px solid #13669a;
+}
+
+.sub-tabs li.first-tab-border-radius .button-link {
+  border-top-left-radius: 0.4rem;
+}
+
+/* Modal. RLP's overlay is WHITE at 90% opacity, not a dark scrim. */
+.react-confirm-alert-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(255, 255, 255, 0.9);
+  z-index: 99;
+}
+
+/* NOTE: this repo already has a legacy .modal (a full-screen flex centring
+   wrapper, ~line 1469). RLP's .modal IS the dialog box itself, so display must
+   be reset here or the legacy flex rule lays the title bar and body side by
+   side. Keep the [role="dialog"] qualifier - it is what separates the two. */
+.modal[role="dialog"] {
+  display: block;
+  height: auto;
+  top: auto;
+  left: auto;
+  position: fixed;
+  background-color: #fff;
+  width: 100%;
+  max-width: 100rem;
+  z-index: 100;
+  border-radius: 0;
+  box-shadow: 0 0 10px 0 #112e51;
+  overflow-x: hidden;
+}
+
+/* Modal title bar */
+.alert-heading {
+  background-color: #112e51;
+  color: #fff;
+  font-size: 2rem;
+  font-weight: 700;
+  padding: 1.6rem;
+}
+
+/* Destructive outline action, e.g. "Delete Account" in a panel header. */
+.delete-acct-btn {
+  color: #990f00;
+  box-shadow: inset 0 0 0 2px #990f00;
 }

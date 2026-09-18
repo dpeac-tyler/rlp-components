@@ -331,6 +331,27 @@ The delete icon on each row is hidden until there are 2+ rows (can't delete the 
 GAP: your global standards describe a distinct "form sits above table, questions-section gray box, 70/15/15 grid" add-item pattern (example: adding secondary application types to a packet). The actual create-packet.html implementation uses a MODAL to add a secondary, not an inline 70/15/15 form — no page scanned so far implements that exact grid ratio. Worth confirming with Daniel whether to update the standard or point to the real source page.`
 },
 {
+  name: "Alert — Warning (Slim)",
+  fidelity: "verified",
+  preview: `<div class="usa-alert usa-alert--slim usa-alert--warning margin-top-0">
+  <div class="usa-alert__body">Warning: Updating the account&rsquo;s email address may affect ongoing business that the constituent has with other State of Illinois organizations.</div>
+</div>`,
+  code: `<div class="usa-alert usa-alert--slim margin-top-0 usa-alert--warning">
+  <div class="usa-alert__body">Warning: ...</div>
+</div>`,
+  notes: `SOURCE: qa.lnpweb.com/management/applicant-profile - inside the "Change Email" dialog
+
+The only alert variant actually observed in RLP so far, and the reason this entry exists separately from "Alert - Error (Form Validation)".
+
+Computed values from the live app: background #faf3d1, text #1b1b1b, border-left 8px solid #ffbe2e, body padding 8px 20px, 1.6rem. No heading element and no icon - the word "Warning:" is just the first word of the body text.
+
+usa-alert--slim is what drops the large left icon gutter, so the body sits close to the coloured border. RLP pairs it with margin-top-0.
+
+IMPORTANT: this verified an 8px left border on .usa-alert. css/styles.css previously had 0.5rem and has been corrected to 0.8rem, which affects every alert variant.
+
+Use for a side effect the user should know about before confirming - not for validation failures, which use the error alert.`
+},
+{
   name: "Alert — Error (Form Validation)",
   fidelity: "unverified",
   preview: `<div class="usa-alert usa-alert--error">
@@ -499,12 +520,20 @@ A real <button type="button">, not a link. A handful of older prototypes (e.g. a
 },
 {
   name: "Button — Unstyled",
-  fidelity: "unverified",
+  fidelity: "verified",
   preview: `<button type="button" class="usa-button usa-button--unstyled">Preview</button>`,
   code: `<button type="button" class="usa-button usa-button--unstyled"
         onclick="openVersionPreview(1)"
         aria-label="Preview version 1">Preview</button>`,
-  notes: `SOURCE: correspondence-email-template.html
+  notes: `SOURCE: verified against qa.lnpweb.com/management/applicant-profile 2026-09-18
+
+VERIFIED. Live app: <button class="cursor-pointer usa-button usa-button--unstyled margin-x-1"> computes to 1.6rem, font-weight 400, colour #005ea2, padding 0 - matching css/styles.css exactly.
+
+One correction to usage, though: the global standards table lists this as being for "icon-only controls". RLP does not use it that way. In RLP it is a TEXT LINK styled as a button - the "Change Email" trigger next to the email address on the Individual Profile is the canonical example.
+
+Icon-only row actions are NOT this class. RLP uses a filled navy usa-button--active for those - see "Icon Button (Table Row Action)".
+
+SOURCE: correspondence-email-template.html
 
 Icon-only or link-styled controls inside table cells / dense UI. Always give it an aria-label when the visible text alone wouldn't be enough context (e.g. repeated "Preview" across many rows).`
 },
@@ -712,11 +741,13 @@ Reused existing real patterns rather than inventing new ones: .tooltip-icon (cir
 {
   name: "Empty State — Data Grid (No Data Found)",
   fidelity: "verified",
-  preview: `<h2 class="h3" style="margin:1.66rem 0;">No data found</h2>`,
+  preview: `<h2 class="h3" style="margin:1.66rem 0; text-align:center;">No data found</h2>`,
   code: `<h2 class="h3">No data found</h2>`,
   notes: `SOURCE: qa.lnpweb.com/management/cases/open and /management/license-type/view-all
 
-This is what RLP itself renders when a list-page data grid returns zero rows. Computed in production as 2rem / weight 400 / #4c4c4c — NOT the bold 2.4rem of a section heading, and not a <p>.
+This is what RLP itself renders when a list-page data grid returns zero rows. Computed in production as 2rem / weight 400 / #4c4c4c / text-align CENTRE / margin 16.6px 0 — NOT the bold 2.4rem of a section heading, and not a <p>.
+
+Confirmed on three separate grids (license types, open cases, and the profile Documents tab), so this is the standard data-grid empty state rather than a one-off.
 
 Use this on any list page backed by a data grid. For the JS-toggled whole-table empty state on a detail page, see "Empty State — Standalone Paragraph" instead — that pattern has not been verified against production.`
 },
@@ -853,41 +884,64 @@ Icon Key accordion still renders at 24x24.`
 },
 {
   name: "Modal / Dialog",
-  fidelity: "unverified",
-  preview: `<button type="button" class="usa-button" data-modal-open="demo-modal">Open Modal</button>
-<div id="demo-modal" class="modal-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="demo-modal-title">
-  <div class="modal-content" style="max-width:420px;">
-    <div class="modal-header">
-      <h2 class="modal-title" id="demo-modal-title">Upload Document</h2>
-      <button type="button" class="modal-close" data-modal-close aria-label="Close modal">&times;</button>
+  fidelity: "verified",
+  preview: `<div class="react-confirm-alert-overlay" style="position:relative; inset:auto; padding:2rem; z-index:auto;">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="demo-modal-title" style="position:relative; max-width:100%;">
+    <div class="alert-heading">
+      <div class="grid-row flex-align-center flex-justify"><span id="demo-modal-title">Change Email</span></div>
     </div>
-    <div class="modal-body"><p style="font-size:1.6rem;">Form fields go here.</p></div>
-    <div class="modal-footer">
-      <button type="button" class="usa-button">Upload Document</button>
-      <button type="button" class="usa-button usa-button--secondary" data-modal-close>Cancel</button>
-    </div>
+    <div><div class="padding-1">
+      <p style="font-size:1.6rem; margin-top:0;"><strong>Current Email Address:</strong> lisa.benavides@tylertech.com</p>
+      <div class="usa-alert usa-alert--slim usa-alert--warning margin-top-0">
+        <div class="usa-alert__body">Warning: Updating the account&rsquo;s email address may affect ongoing business that the constituent has with other State of Illinois organizations.</div>
+      </div>
+      <button type="button" class="usa-button">Change Email</button>
+      <button type="button" class="usa-button usa-button--secondary">Close</button>
+    </div></div>
   </div>
 </div>`,
-  code: `<div id="upload-document-modal" class="modal-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="upload-document-modal-title">
-  <div class="modal-content" style="max-width: 600px;">
-    <div class="modal-header">
-      <h2 class="modal-title" id="upload-document-modal-title">Upload Document</h2>
-      <button type="button" class="modal-close" id="upload-document-modal-close" aria-label="Close modal">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </button>
-    </div>
-    <div class="modal-body"><!-- form fields --></div>
-    <div class="modal-footer">
-      <button type="button" class="usa-button" id="upload-document-submit-btn">Upload Document</button>
-      <button type="button" class="usa-button usa-button--secondary" id="upload-document-cancel-btn">Cancel</button>
-    </div>
-  </div>
-</div>`,
-  notes: `SOURCE: create-case.html
+  code: `<!-- Overlay. RLP's scrim is WHITE at 90% opacity, not the usual dark wash. -->
+<div class="react-confirm-alert-overlay">
+  <div class="modal overflow-x-hidden width-full tablet:maxw-tablet height-full
+              maxh-full tablet:height-auto width-tablet maxw-tablet"
+       role="dialog" aria-modal="true" aria-labelledby="dialog-modal__title">
 
-Custom implementation (not USWDS usa-modal) — toggled via the hidden attribute, not a class. max-width is set inline per-modal instance. Not documented in global standards.`
+    <div class="alert-heading">
+      <div class="grid-row flex-align-center flex-justify">
+        <span id="dialog-modal__title">Change Email</span>
+      </div>
+    </div>
+
+    <div>
+      <div class="padding-1">
+        <!-- body content -->
+        <div class="usa-alert usa-alert--slim margin-top-0 usa-alert--warning">
+          <div class="usa-alert__body">Warning: ...</div>
+        </div>
+        <button type="button" class="cursor-pointer usa-button">Change Email</button>
+        <button type="button" class="cursor-pointer usa-button usa-button--secondary">Close</button>
+      </div>
+    </div>
+  </div>
+</div>`,
+  notes: `SOURCE: qa.lnpweb.com/management/applicant-profile - the "Change Email" dialog
+
+CORRECTED 2026-09-18. This entry previously described a custom .modal-overlay / .modal-content / .modal-header / .modal-title / .modal-close / .modal-body / .modal-footer component toggled by the hidden attribute. RLP has none of those classes.
+
+RLP's real modal (rendered by the react-confirm-alert library):
+- overlay .react-confirm-alert-overlay - position fixed, background rgba(255,255,255,0.9), z-index 99. NOTE this is a WHITE 90% scrim, not a dark one. Do not darken it.
+- dialog .modal with role="dialog", aria-modal="true", aria-labelledby="dialog-modal__title" - position fixed, width and max-width 1000px, background #fff, z-index 100, box-shadow 0 0 10px 0 #112e51, NO border-radius
+- title bar .alert-heading - background #112e51, white text, 2rem, weight 700, padding 16px. There is no separate .modal-title class and no X close button in this dialog.
+- body is a bare <div> wrapping <div class="padding-1">
+- footer buttons sit inline at the end of the body - there is no dedicated footer element, and they are LEFT-aligned, primary first, matching the standard action bar rule
+
+Close is the RED usa-button--secondary, not an outline - third independent confirmation of that colour.
+
+CLASS COLLISION - important. This repo already carries a legacy .modal from the old prototype pattern (css/styles.css ~line 1469) which is a FULL-SCREEN FLEX CENTRING WRAPPER. RLP's .modal is the opposite: it IS the dialog box. If both rules are in scope the legacy display:flex lays the title bar and body side by side. css/styles.css now resets display on .modal[role="dialog"], and that role qualifier is the only thing separating the two - do not drop it.
+
+If you are writing production code, be aware the name is already overloaded in the prototypes; check which .modal you inherited.
+
+The preview above is de-fixed (position relative, overlay inset removed) so it renders inline in this catalog. The HTML column is the authoritative version.`
 },
 {
   name: "Navigation — Primary Nav",
@@ -1250,28 +1304,50 @@ Note the canonical tag is uppercase, so a version badge renders as V2, not v2. F
 },
 {
   name: "Tabs — Horizontal",
-  fidelity: "unverified",
-  preview: `<div class="horizontal-tabs">
-  <button type="button" class="horizontal-tab demo-tab active" data-tab="demo-a">Inspections</button>
-  <button type="button" class="horizontal-tab demo-tab" data-tab="demo-b">Investigations</button>
-</div>
-<div class="tab-content">
-  <div class="tab-panel demo-panel active" data-panel="demo-a" style="padding-top:1rem; font-size:1.6rem;">Inspections panel content.</div>
-  <div class="tab-panel demo-panel" data-panel="demo-b" style="padding-top:1rem; font-size:1.6rem; display:none;">Investigations panel content.</div>
+  fidelity: "verified",
+  preview: `<div class="sub-nav-content">
+  <div class="sub-tabs u-font-size-sm">
+    <ul>
+      <li class="first-tab-border-radius"><button type="button" class="cursor-pointer button-link"><strong>Certificate/License/Permit</strong></button></li>
+      <li><button type="button" class="cursor-pointer button-link sub-tabs-active"><strong>Submissions</strong></button></li>
+      <li><button type="button" class="cursor-pointer button-link"><strong>Documents</strong></button></li>
+      <li><button type="button" class="cursor-pointer button-link"><strong>Affiliations</strong></button></li>
+    </ul>
+  </div>
 </div>`,
-  code: `<div class="horizontal-tabs" style="margin-top: 3rem;">
-  <button type="button" class="horizontal-tab case-detail-tab active" data-tab="inspections">Inspections</button>
-  <button type="button" class="horizontal-tab case-detail-tab" data-tab="investigations">Investigations</button>
-  <button type="button" class="horizontal-tab case-detail-tab" data-tab="hearings" id="hearings-tab" hidden>Hearings</button>
+  code: `<div class="sub-nav-content">
+  <div class="sub-tabs u-font-size-sm">
+    <ul>
+      <li class="first-tab-border-radius">
+        <button type="button" class="cursor-pointer button-link"><strong>Certificate/License/Permit</strong></button>
+      </li>
+      <li>
+        <button type="button" class="cursor-pointer button-link sub-tabs-active"><strong>Submissions</strong></button>
+      </li>
+      <li>
+        <button type="button" class="cursor-pointer button-link"><strong>Documents</strong></button>
+      </li>
+    </ul>
+  </div>
 </div>
 
-<div class="tab-content">
-  <div class="tab-panel case-detail-panel active" id="inspections-panel"><!-- panel content --></div>
-  <div class="tab-panel case-detail-panel" id="investigations-panel"><!-- panel content --></div>
-</div>`,
-  notes: `SOURCE: view-case-detail.html
+<!-- Panels are swapped by the router, not toggled in the DOM: each tab sets
+     ?landingTab=<key> on the URL and the page re-renders. -->`,
+  notes: `SOURCE: qa.lnpweb.com/management/applicant-profile?landingTab=submissions
 
-Custom implementation (not USWDS) — .horizontal-tab.active / .tab-panel.active toggled by matching data-tab, JS-driven. A tab can be pre-hidden (e.g. "Hearings" only shows for Appeal case type) and revealed conditionally.`
+CORRECTED 2026-09-18. This entry previously described a custom .horizontal-tabs / .horizontal-tab.active / .tab-panel.active component with JS data-tab toggling. RLP has none of those classes.
+
+RLP's real record-detail tabs are .sub-tabs inside .sub-nav-content: a flex <ul> whose <li> are flex: 1 1 0% so every tab is EQUAL WIDTH across the full container. Each tab is a <button class="cursor-pointer button-link"> with its label wrapped in <strong>.
+
+Computed values from the live app:
+- inactive: background #d7d7d7, colour #4c4c4c, border-top 3px solid #d7d7d7, padding 13px 0 15px
+- active (.sub-tabs-active): background #fff, border-top 3px solid #fff, and a border-BOTTOM of 3px solid #13669a - the blue underline is the active marker
+- label colour is the same in both states; only background and the underline change
+- first <li> carries .first-tab-border-radius
+
+Tabs do not toggle panels in the DOM. Each tab navigates, setting ?landingTab=<key> on the URL, and the page re-renders. Observed keys: submissions, documents.
+
+A second, nested tab row appears inside some panels (e.g. "My Submissions" / "Payment Requests (0)") using the same markup - note RLP puts a live count in the label.`
 },
 {
   name: "Task Container (Tile)",

@@ -29,7 +29,8 @@ Composition and page-level patterns, which are written down nowhere else:
   pages, which split (Back/Cancel left, Next/Save right) via a USWDS 6/6 grid:
   `grid-row` → `grid-col-6` + `grid-col-6 text-right`
 - Add-item forms sit *above* the table they grow
-- Save/Cancel sit outside `profile-content`, directly in `<main>`
+- Save/Cancel sit outside the form content wrapper, directly in `<main>` (the
+  prototypes call that wrapper `profile-content`; RLP does not have that class)
 - Naming conventions: "Create New [Thing]", "All [Things]", "Please Select"
 - Error-message wording and tone (see the Error Messaging foundations page)
 
@@ -47,8 +48,8 @@ It is not decoration. Read it before you copy anything.
 | `unverified` | Came from a prototype. **Never checked against the live app.** | Confirm against RLP before shipping. Treat the markup as a starting point, not a spec. |
 | `proposed` | A design proposal that **deliberately differs** from the live app. | **Does not exist in the product yet.** Never build it as though it already ships. Raise it with the design owner first. |
 
-As of 2026-09-18: **21 verified, 13 unverified, 1 proposed.** Assume unverified
-unless the badge says otherwise.
+As of 2026-09-18: **25 verified, 10 unverified, 1 proposed** (36 entries).
+Assume unverified unless the badge says otherwise.
 
 ## Hard prohibitions
 
@@ -71,6 +72,13 @@ unless the badge says otherwise.
    | `.usa-pagination__*` | `.pagination-container` → `ul.pagination` → bare `li`/`a`, state on the `li` |
    | `<input type="date">` | `.date-picker-wrapper` + `.date-picker-input usa-input` + FA `calendar-days` |
    | `.combo-box__*` | a plain native `<select class="usa-select">`, even at 100+ options |
+   | `.horizontal-tabs` / `.tab-panel` | `.sub-nav-content` → `.sub-tabs` → `ul`/`li`/`button.button-link` |
+   | `.modal-overlay` / `.modal-content` / `.modal-header` | `.react-confirm-alert-overlay` + `.modal[role=dialog]` + `.alert-heading` |
+   | `.profile-content` / `.inspection-content` | the USWDS grid plus `.sub-nav-content` |
+
+   **Name collision:** this repo's legacy `.modal` is a full-screen flex centring
+   wrapper; RLP's `.modal` **is** the dialog box. The CSS here disambiguates with
+   `.modal[role="dialog"]` — keep that qualifier.
 
    `.usa-table--striped` is the exception: it is prototype-only, but RLP *is* striped
    (via its own `data-grid-table`), so keep using it — it reproduces the real
@@ -116,6 +124,17 @@ table rows            striped: odd #fff, even #f0f0f0
 pagination link       #112e51 (not #005ea2); active = #fff on #112e51, padding 4px 10px
 controls bar count    "Showing 1 to 10 of 152 Entries"  <-- "to", not a hyphen
 wizard action bar     grid-row > grid-col-6 + grid-col-6.text-right (not space-between)
+tab inactive          bg #d7d7d7, border-top 3px #d7d7d7, padding 13px 0 15px
+tab active            bg #fff, border-BOTTOM 3px #13669a  <-- blue underline marks it
+tab layout            li { flex: 1 1 0% } - every tab equal width, full container
+modal dialog          .modal[role=dialog], 1000px, #fff, shadow 0 0 10px #112e51
+modal scrim           rgba(255,255,255,0.9)  <-- WHITE 90%, not a dark wash
+modal title bar       .alert-heading, bg #112e51, #fff, 20px/700, padding 16px
+alert left border     8px  (0.8rem, not 0.5rem)
+alert warning         bg #faf3d1, border-left #ffbe2e, body padding 8px 20px
+unstyled button       #005ea2, weight 400, padding 0 - used as a TEXT LINK in RLP
+destructive outline   #990f00 (.delete-acct-btn), right-aligned in a panel header
+empty state           centred
 breadcrumb            16px, links #005ea2
 .usa-input            padding 8px, 1px border #565c65
 accordion button      #f0f0f0, 16px, 700, padding 16px 24px
@@ -151,13 +170,21 @@ QA agency pages used for the 2026-09-18 pass:
                                        accent-warm add-item button, red Cancel
 ```
 
-Still unverified (13): Modal / Dialog, Tabs — Horizontal, Textarea, Alert — Error
-(Form Validation), Field With Error Message, File Input, Button — Unstyled, Tag,
-Add-Item List (Growing Rows), Document Upload — Attachment Panel, Empty State —
-Standalone Paragraph, Empty State — Table Row, Combobox (Long-List Select).
+Still unverified (10): Textarea, File Input, Tag, Alert — Error (Form Validation),
+Field With Error Message, Add-Item List (Growing Rows), Document Upload —
+Attachment Panel, Empty State — Standalone Paragraph, Empty State — Table Row,
+Combobox (Long-List Select).
 
-Reaching those needs a page with a modal, a tabbed detail view, and a form in a
-validation-error state. Note: do not submit forms in QA to trigger validation.
+What each still needs:
+- Alert — Error / Field With Error Message: a form sitting in a validation-error
+  state. Do NOT submit forms in QA to force this; ask the design owner first.
+- Textarea / File Input / Document Upload: a create or edit form with a free-text
+  field and an upload control. The profile Documents tab has Upload as a row
+  action, so it needs a record that already has documents.
+- Tag: not seen anywhere in RLP yet. It may genuinely not exist — if a sweep
+  confirms that, the honest outcome is a note saying so, not a verification.
+- Empty State variants: RLP's data-grid empty state is already verified as its own
+  entry. These two are prototype-specific patterns for different contexts.
 
 ## If you find a discrepancy
 
