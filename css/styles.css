@@ -3546,3 +3546,69 @@ ul.pagination li.disabled a {
   height: 2.4rem;
   color: #71767a;
 }
+
+/* Production parity additions - round 7
+   ==========================================================================
+   From the constituent-facing rendered application (management/preview-all).
+   .usa-textarea itself already matched RLP exactly - only these per-instance
+   USWDS utilities were missing. Verified 2026-09-18.
+   ========================================================================== */
+
+.height-15 {
+  height: 12rem;
+}
+
+.margin-left-05 {
+  margin-left: 0.4rem;
+}
+
+@media all and (min-width: 640px) {
+  .tablet\:width-mobile-lg {
+    width: 48rem;
+  }
+}
+
+/* Help icon sitting after a field label. RLP uses the Font Awesome
+   circle-question glyph; the PNG fallback below keeps previews working. */
+.label-help-icon {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 0.4rem;
+  color: #005ea2;
+  vertical-align: middle;
+}
+
+/* Native file input is hidden; an outline "Upload" button drives it. */
+.usa-form-group input[type="file"].is-hidden-input {
+  display: none;
+}
+
+/* Constituent-facing form chrome (management/preview-all). Verified 2026-09-18. */
+
+/* Navy section bar that heads each block on a rendered application. Same navy
+   as the modal title bar, but padded wider. */
+.block-header {
+  background-color: #112e51;
+  padding: 1.25rem 3rem;
+}
+
+.block-header legend,
+.block-header .usa-legend {
+  color: #fff;
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* USWDS spacing/colour utilities RLP uses on these panels */
+.bg-base-lighter {
+  background-color: #dfe1e2;
+}
+
+.padding-3 {
+  padding: 2.4rem;
+}
+
+.margin-bottom-205 {
+  margin-bottom: 2rem;
+}

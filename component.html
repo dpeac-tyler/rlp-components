@@ -450,6 +450,41 @@ RESOLVED 2026-09-17: replaced the old "Error status" / "Please correct the follo
 Required on any page deeper than one level. Final crumb is a plain <span>, never a link.`
 },
 {
+  name: "Block Header (Section Bar)",
+  fidelity: "verified",
+  preview: `<fieldset class="usa-fieldset" style="border:0; padding:0; margin:0;">
+  <div class="block-header margin-bottom-2"><legend class="margin-0">Document Upload</legend></div>
+  <p style="font-size:1.6rem; margin-top:0;">Test data</p>
+  <div class="usa-form-group padding-3 bg-base-lighter">
+    <label class="usa-label" for="demo-bh">Certification Document</label>
+    <input class="usa-input" id="demo-bh" type="text" style="max-width:280px;">
+  </div>
+</fieldset>`,
+  code: `<fieldset class="usa-fieldset">
+  <div class="block-header margin-bottom-2">
+    <legend class="margin-0">Document Upload</legend>
+  </div>
+
+  <!-- intro copy and constraints sit between the bar and the panel -->
+
+  <div class="usa-form-group padding-3 bg-base-lighter margin-bottom-205">
+    <!-- fields -->
+  </div>
+</fieldset>`,
+  notes: `SOURCE: qa.lnpweb.com/management/preview-all (each block on a rendered application)
+
+Heads every block on the CONSTITUENT-FACING rendered application. The library did not have this.
+
+Computed values from the live app:
+- .block-header: background #112e51, padding 12.5px 30px - the same navy as the modal title bar, but padded wider
+- the <legend> inside is white, 2rem, weight 700, margin 0
+- the field panel below is .usa-form-group.padding-3.bg-base-lighter: background #dfe1e2 (USWDS base-lighter), padding 24px, NO border-radius
+
+NOTE the panel is #dfe1e2, NOT the #f0f0f0 used by the agency-side questions-section / step-section panels. Constituent-facing blocks are a slightly cooler, darker grey. Do not mix the two up.
+
+Distinct from "Section Heading" (a plain agency-side h2) and from "Step Section (Numbered Panel)" (the agency-side grey panel with the orange numbered corner). This is the constituent-side navy bar.`
+},
+{
   name: "Button — Accent-Warm",
   fidelity: "verified",
   preview: `<button type="button" class="usa-button usa-button--accent-warm">Add Choice</button>`,
@@ -564,7 +599,10 @@ Icon-only or link-styled controls inside table cells / dense UI. Always give it 
 <span class="usa-hint usa-character-count__message">500 characters left</span>`,
   notes: `SOURCE: qa.lnpweb.com/management/create-application/create
 
-Sits directly under the field it counts. RLP writes it as a COUNTDOWN of remaining characters ("500 characters left", "4991 characters left"), never as a used/total ratio like "9/500".
+Sits directly under the field it counts. RLP always writes it as a COUNTDOWN, never as a used/total ratio like "9/500" - but it uses TWO different wordings depending on where you are:
+- agency application builder: "500 characters left" / "4991 characters left"
+- constituent-facing rendered form: "100 of 100 remaining"
+Both verified in the live app. Match whichever side of the product you are mocking.
 
 Computed values from the live app: 1.6rem, colour #5f5e5e, display block. It carries both usa-hint and usa-character-count__message - the character-count class is what darkens it slightly from the plain .usa-hint colour (#697072).
 
@@ -758,7 +796,22 @@ GAP: the standard writes the required message as "The field <date field> is requ
   });
 })();
 </` + `script>`,
-  notes: `SOURCE: reference screenshot provided by Daniel (2026-08-28) documenting the real production upload flow — not yet implemented in any prototype. Every existing prototype upload modal (rlp-document-locker, rlp-packets, etc.) uses a simpler single-step "Document Title + pick file + Save" pattern and calls the name field "Document Title," not "Attachment Name."
+  notes: `PARTIALLY VERIFIED against qa.lnpweb.com/management/preview-all 2026-09-18. The initial state is confirmed and this entry got most of it right from the screenshot alone. Still unverified: the button-state sequence in steps 2 and 3, which needs a real file to be uploaded.
+
+CONFIRMED in the live app:
+- the <input type="file"> is display:none and clicked programmatically; there is no visible "Choose File" control
+- the accept list is .txt,.csv,.png,.jpg,.jpeg,.pdf,.doc,.xls,.docx,.xlsx, 50 MB cap, stated in a <p> at 1.4rem / #71767a above the control
+- the notes field is a real .usa-textarea labelled "Document Notes", with a Font Awesome circle-question help icon after the label text
+- the counter wording is "X of Y remaining" ("100 of 100 remaining") - exactly as this entry predicted
+- the initial button is a single "Upload", and it is the OUTLINE variant (usa-button--outline), not primary
+
+TWO CORRECTIONS:
+- Panel background is #dfe1e2 (usa-form-group padding-3 bg-base-lighter, padding 24px), NOT the #f0f0f0 questions-section tone this entry assumed. Constituent-facing panels are a cooler, darker grey than agency-side ones. See "Block Header (Section Bar)".
+- There is no generic "Attachment Name" label. The first field is labelled with the DOCUMENT TYPE configured in the application builder - observed "Certification Document" and "Court Doc".
+
+The help icon is a real Font Awesome circle-question, not the .tooltip-icon this entry borrowed from rlp-packets. Still no wired-up popover content observed.
+
+ORIGINAL SOURCE: reference screenshot provided by Daniel (2026-08-28) documenting the real production upload flow — not yet implemented in any prototype. Every existing prototype upload modal (rlp-document-locker, rlp-packets, etc.) uses a simpler single-step "Document Title + pick file + Save" pattern and calls the name field "Document Title," not "Attachment Name."
 
 Flag to Daniel: building a new feature against document upload should follow THIS flow, not the older single-step ones already in rlp-document-locker/rlp-packets.
 
@@ -876,20 +929,36 @@ On a rich-text field the usa-input--error class goes on the .rich-text-input wra
 },
 {
   name: "File Input",
-  fidelity: "unverified",
-  preview: `<div>
-  <label class="usa-label" for="demo-file">File <span class="required"><em>Required</em></span></label>
-  <input type="file" id="demo-file" style="font-size: 1.6rem; display: block; width: 100%;">
-</div>`,
-  code: `<div class="margin-bottom-2">
-  <label class="usa-label" for="doc-file">File <span class="required"><em>Required</em></span></label>
-  <input type="file" id="doc-file" name="doc-file" style="font-size: 1.6rem; display: block; width: 100%;">
-</div>`,
-  notes: `SOURCE: create-case.html
+  fidelity: "verified",
+  preview: `<label class="usa-label" for="demo-file">Certification Document</label>
+<input class="usa-input" id="demo-file" type="text" style="max-width:280px;" readonly>
+<input type="file" id="demo-file-hidden" class="is-hidden-input" accept=".txt,.csv,.png,.jpg,.jpeg,.pdf,.doc,.xls,.docx,.xlsx">
+<button type="button" class="usa-button usa-button--outline margin-top-2">Upload</button>`,
+  code: `<!-- The native input is HIDDEN and clicked programmatically by the
+     outline "Upload" button. There is no visible "Choose File" control. -->
+<label class="usa-label" for="doc-file-name">Certification Document</label>
+<input class="usa-input" id="doc-file-name" type="text" readonly>
 
-Plain native file input with inline sizing styles — no USWDS drag-and-drop usa-file-input widget in use.
+<input type="file" id="hidden-file-doc-0" class="is-hidden-input"
+  accept=".txt,.csv,.png,.jpg,.jpeg,.pdf,.doc,.xls,.docx,.xlsx">
 
-Flag to Daniel: this bare input is a prototyping shortcut only, used for speed when mocking up a page. RLP uses the "Document Upload — Attachment Panel (Two-Step Save)" component exclusively for real document upload — use that one instead.`
+<button type="button" class="usa-button usa-button--outline"
+  onclick="document.getElementById('hidden-file-doc-0').click()">Upload</button>
+
+<p style="font-size:1.4rem; color:#71767a;">File size and type limitations per attachment:
+  50 MB for txt,csv,png,jpg, jpeg,pdf,doc,xls,docx,xlsx</p>`,
+  notes: `SOURCE: qa.lnpweb.com/management/preview-all (Document Upload block on a rendered application)
+
+CORRECTED 2026-09-18. This entry previously showed a bare visible native file input with inline sizing styles. RLP does not expose a native file picker at all.
+
+What RLP actually does:
+- the <input type="file"> is present but styled display:none, with a generated id (observed: "hidden-file-tbl-doc-TABLE851568-...FIELD851467-0") and NO name attribute
+- it carries an accept list: .txt,.csv,.png,.jpg,.jpeg,.pdf,.doc,.xls,.docx,.xlsx, and multiple is false
+- the visible trigger is a <button class="usa-button usa-button--outline">Upload</button> - the OUTLINE button, not the primary. It clicks the hidden input programmatically, which opens the OS picker directly.
+- constraints are stated in a plain <p> above the control at 1.4rem / #71767a: "File size and type limitations per attachment: 50 MB for ..."
+- the field label is the DOCUMENT TYPE configured in the application builder (observed "Certification Document", "Court Doc"), not a generic "File" or "Attachment Name"
+
+No USWDS usa-file-input drag-and-drop widget anywhere - that part of the old note was right.`
 },
 {
   name: "Icon Button (Table Row Action)",
@@ -1583,16 +1652,27 @@ The redesigned case-detail page is a stack of these tiles on an off-white #f9f9f
 },
 {
   name: "Textarea",
-  fidelity: "unverified",
-  preview: `<label class="usa-label" for="demo-textarea">Description</label>
-<textarea class="usa-textarea" id="demo-textarea" style="max-width:100%;"></textarea>`,
-  code: `<label class="usa-label" for="doc-description">Description</label>
-<textarea class="usa-textarea" id="doc-description" name="doc-description"></textarea>`,
-  notes: `SOURCE: create-case.html
+  fidelity: "verified",
+  preview: `<label class="usa-label" for="demo-textarea">Document Notes</label>
+<textarea class="tablet:width-mobile-lg height-15 usa-textarea" id="demo-textarea" rows="2" maxlength="100"></textarea>
+<span class="usa-hint usa-character-count__message">100 of 100 remaining</span>`,
+  code: `<label class="usa-label" for="doc-notes">Document Notes</label>
+<textarea class="tablet:width-mobile-lg height-15 usa-textarea" id="doc-notes"
+  name="doc-notes" rows="2" maxlength="100"></textarea>
+<span class="usa-hint usa-character-count__message width-full text-left">100 of 100 remaining</span>`,
+  notes: `SOURCE: create-case.html; verified against qa.lnpweb.com/management/preview-all 2026-09-18
 
-CAUTION, 2026-09-18: RLP may not use <textarea> at all. The application builder (create-application: Application Details and Document Upload steps) contains ZERO textarea elements - every multi-line text field is a Quill rich-text editor instead. See "Rich Text Editor (Quill)".
+CORRECTION to an earlier pass. This entry was previously flagged as a probable negative - "RLP may not use <textarea> at all" - on the basis that the agency application BUILDER has none. That was too strong a conclusion from one area of the product.
 
-Left unverified rather than deleted: only the application builder was checked, and a plain textarea may well exist on a page not yet visited. But do not assume RLP has a styled .usa-textarea - confirm before using this, and reach for the rich text editor if you are mocking anything in the application builder.`
+RLP does use <textarea>, on the CONSTITUENT-FACING rendered application. The split is:
+- agency application builder -> Quill rich-text editor (see "Rich Text Editor (Quill)")
+- constituent-facing rendered form -> a real .usa-textarea
+
+.usa-textarea in css/styles.css is a BYTE-LEVEL MATCH with the live app: 1.6rem, 1px #565c65 border, no radius, #1b1b1b on #fff, padding 8px, display block. Nothing needed changing.
+
+Sizing is done per-instance with USWDS utilities rather than in the base rule - RLP uses tablet:width-mobile-lg (480px) and height-15 (120px), with rows="2" and a maxlength. Both utilities were missing from css/styles.css and have been added. resize is left at the browser default (both).
+
+Always paired with a character counter - see "Character Count".`
 }
 ];
 

@@ -35,7 +35,7 @@ coloured dot in the index:
 - 🟣 **Proposed — not in RLP yet** — a design proposal that deliberately differs
   from the live app. Does not exist in the product. Not a spec.
 
-Current state: **32 verified · 7 unverified · 1 proposed** (40 entries).
+Current state: **35 verified · 5 unverified · 1 proposed** (41 entries).
 
 The remainder is a statement about how much checking has been done, not a
 judgement on the components — verification is manual and ongoing.
@@ -71,6 +71,7 @@ Static HTML + vanilla JS. Built on **USWDS** (US Web Design System);
 | Date | What was checked | Result |
 |---|---|---|
 | 2026-09-18 (pass 1) | 14 components against QA (`qa.lnpweb.com`), agency-side | 11 verified identical; 3 real drifts corrected (section heading, required indicator, data-grid empty state); 1 documentation error fixed (primary button is `#005ea2`, navy `#1a4480` is hover) |
+| 2026-09-18 (pass 7) | The constituent-facing rendered application | 35 verified. Cleared the two "probable negatives" — RLP **does** use `<textarea>` and **does** have a file input, just on the constituent side rather than the agency builder. `.usa-textarea` turned out to be a byte-level match already. File input is `display:none` with an outline "Upload" button clicking it. Added a **Block Header** entry (navy `#112e51` section bar). Key discovery: agency panels are `#f0f0f0`, constituent panels are `#dfe1e2` — two different greys. |
 | 2026-09-18 (pass 6) | A genuine validation-error state | 32 verified. Inline field errors verified — colour, size and weight were already exact. Three corrections: the error message is a child of the `<label>` (not a sibling), RLP switches the state with `usa-label--error` rather than `usa-form-group--error` (which it doesn't have at all), and the error border is 4px not 3px. **No error summary alert appeared** — RLP showed inline errors only. Also added a **Step Indicator** entry; the CSS was already in the stylesheet but had no catalog entry. |
 | 2026-09-18 (pass 5) | The application builder (create-application) | 30 verified, and **three new components added** that the library was missing entirely: the numbered **Step Section** panel (RLP's signature form chrome — orange CSS-triangle corner on a `#f0f0f0` panel), the **Quill rich-text editor** RLP uses in place of every textarea, and the **character counter**. Add-Item List verified — items stack with an accent-warm "Add More" below, no table. |
 | 2026-09-18 (pass 4) | Tag, plus three more status values | 26 verified. `.usa-tag` had the right colours but five wrong properties — RLP's is 14px/weight 400/radius 2px/padding 1px 8px/display inline, not the stock-USWDS 12px/700/square. Corrected. All **five** status colours now verified byte-identical to the `.status-*` palette (`#417505`, `#8F5800`, `#A34900`, `#205493`, `#13669A`). |
@@ -82,8 +83,8 @@ stylesheet, so there is no CSS file to diff. Verification is done by reading
 computed styles off real elements in the browser — see AGENTS.md for the method
 and the pages used.
 
-Still unverified (7): textarea, file input, the error *summary* alert,
-document upload panel, both prototype-specific empty-state variants, and the
+Still unverified (5): the error *summary* alert, the document upload panel's
+later button states, both prototype-specific empty-state variants, and the
 combobox.
 
 Two are probably **negatives** rather than gaps: RLP's application builder has
