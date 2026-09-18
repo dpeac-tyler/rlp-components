@@ -1071,14 +1071,20 @@ Icon Key accordion still renders at 24x24.`
     <div class="alert-heading">
       <div class="grid-row flex-align-center flex-justify"><span id="demo-modal-title">Change Email</span></div>
     </div>
-    <div><div class="padding-1">
-      <p style="font-size:1.6rem; margin-top:0;"><strong>Current Email Address:</strong> lisa.benavides@tylertech.com</p>
-      <div class="usa-alert usa-alert--slim usa-alert--warning margin-top-0">
+    <div><div class="padding-1"><div class="grid-container">
+      <p style="font-size:1.6rem; margin-top:0;"><strong>Current Email Address:</strong> lisa.benavides@egov.com</p>
+      <hr style="border:0; border-top:1px solid #dfe1e2; margin:0 0 1.6rem;">
+      <p style="font-size:1.6rem; margin-top:0;">Please enter the new email address below and click Change Email to change the account&rsquo;s email.</p>
+      <label class="usa-label" for="demo-modal-email">New Email Address <span class="required">Required</span></label>
+      <input class="usa-input" id="demo-modal-email" type="text" style="max-width:37rem;">
+      <div class="usa-alert usa-alert--slim usa-alert--warning margin-top-2">
         <div class="usa-alert__body">Warning: Updating the account&rsquo;s email address may affect ongoing business that the constituent has with other State of Illinois organizations.</div>
       </div>
-      <button type="button" class="usa-button">Change Email</button>
-      <button type="button" class="usa-button usa-button--secondary">Close</button>
-    </div></div>
+      <div class="margin-top-2">
+        <button type="button" class="usa-button">Change Email</button>
+        <button type="button" class="usa-button usa-button--secondary">Close</button>
+      </div>
+    </div></div></div>
   </div>
 </div>`,
   code: `<!-- Overlay. RLP's scrim is WHITE at 90% opacity, not the usual dark wash. -->
@@ -1095,34 +1101,42 @@ Icon Key accordion still renders at 24x24.`
 
     <div>
       <div class="padding-1">
-        <!-- body content -->
-        <div class="usa-alert usa-alert--slim margin-top-0 usa-alert--warning">
-          <div class="usa-alert__body">Warning: ...</div>
+        <div class="grid-container">
+          <!-- body content -->
+          <div class="usa-alert usa-alert--slim margin-top-0 usa-alert--warning">
+            <div class="usa-alert__body">Warning: ...</div>
+          </div>
+          <button type="button" class="cursor-pointer usa-button">Change Email</button>
+          <button type="button" class="cursor-pointer usa-button usa-button--secondary">Close</button>
         </div>
-        <button type="button" class="cursor-pointer usa-button">Change Email</button>
-        <button type="button" class="cursor-pointer usa-button usa-button--secondary">Close</button>
       </div>
     </div>
   </div>
 </div>`,
-  notes: `SOURCE: qa.lnpweb.com/management/applicant-profile - the "Change Email" dialog
-
-CORRECTED 2026-09-18. This entry previously described a custom .modal-overlay / .modal-content / .modal-header / .modal-title / .modal-close / .modal-body / .modal-footer component toggled by the hidden attribute. RLP has none of those classes.
+  notes: `SOURCE: qa.lnpweb.com/management/applicant-profile - the "Change Email" dialog (reached via Search > Constituent > View Applicant Profile > Change Email). Padding and border re-measured from the open dialog 2026-09-18.
 
 RLP's real modal (rendered by the react-confirm-alert library):
 - overlay .react-confirm-alert-overlay - position fixed, background rgba(255,255,255,0.9), z-index 99. NOTE this is a WHITE 90% scrim, not a dark one. Do not darken it.
-- dialog .modal with role="dialog", aria-modal="true", aria-labelledby="dialog-modal__title" - position fixed, width and max-width 1000px, background #fff, z-index 100, box-shadow 0 0 10px 0 #112e51, NO border-radius
+- dialog .modal with role="dialog", aria-modal="true", aria-labelledby="dialog-modal__title" - position fixed, width and max-width 1000px, background #fff, z-index 100, a 2px solid #112e51 BORDER, box-shadow 0 0 10px 0 #112e51, NO border-radius, box-sizing border-box
 - title bar .alert-heading - background #112e51, white text, 2rem, weight 700, padding 16px. There is no separate .modal-title class and no X close button in this dialog.
-- body is a bare <div> wrapping <div class="padding-1">
+- body is a bare &lt;div&gt; wrapping &lt;div class="padding-1"&gt; wrapping &lt;div class="grid-container"&gt;
 - footer buttons sit inline at the end of the body - there is no dedicated footer element, and they are LEFT-aligned, primary first, matching the standard action bar rule
 
-Close is the RED usa-button--secondary, not an outline - third independent confirmation of that colour.
+PADDING - measured, because it is not a single round number and the first version of this entry got it wrong:
 
-CLASS COLLISION - important. This repo already carries a legacy .modal from the old prototype pattern (css/styles.css ~line 1469) which is a FULL-SCREEN FLEX CENTRING WRAPPER. RLP's .modal is the opposite: it IS the dialog box. If both rules are in scope the legacy display:flex lays the title bar and body side by side. css/styles.css now resets display on .modal[role="dialog"], and that role qualifier is the only thing separating the two - do not drop it.
+The modal itself has padding 0. Every inset is contributed by a nested element, so from the dialog's OUTER edge:
 
-If you are writing production code, be aware the name is already overloaded in the prototypes; check which .modal you inherited.
+| | contributions | total |
+|---|---|---|
+| title bar text | 2px border + 16px .alert-heading | 18px |
+| body, left/right | 2px border + 8px .padding-1 + 32px .grid-container | 42px |
+| body, top/bottom | 2px border + 8px .padding-1 | 10px |
 
-The preview above is de-fixed (position relative, overlay inset removed) so it renders inline in this catalog. The HTML column is the authoritative version.`
+The 32px is not modal-specific - it is USWDS's own .grid-container padding at the &ge;1024px breakpoint (1.6rem below it, 3.2rem above). So the body's horizontal inset narrows to 26px on a small screen while the vertical stays at 10px.
+
+It is NOT 20px all round, and it is deliberately asymmetric: the body is inset further horizontally (42px) than the title bar (18px), and much less vertically (10px). This entry previously omitted the .grid-container, which left body content sitting 10px from the edge - visibly tighter than the 18px title above it, and the reason the preview looked wrong.
+
+Close is the RED usa-button--secondary, not an outline - third independent confirmation of that colour.`
 
 },
 {

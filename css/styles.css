@@ -3384,9 +3384,11 @@ ul.pagination li.disabled a {
   width: 100%;
   max-width: 100rem;
   z-index: 100;
+  border: 2px solid #112e51;
   border-radius: 0;
   box-shadow: 0 0 10px 0 #112e51;
   overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 /* Modal title bar */
