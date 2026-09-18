@@ -117,6 +117,16 @@
   .lib-fid--proposed { background: #ede3fa; border-color: #b69fd4; color: #2e2251; }
   .lib-fid--proposed .lib-fid__dot { background: #7849b8; }
   .lib-fid b { font-weight: 700; }
+  /* As-built vs as-designed. A recorded, accepted divergence between the Figma
+     spec and what the app actually ships. Sits outside the Notes accordion so
+     it cannot be missed, and is deliberately NOT styled as a warning - the
+     entry is correct; the divergence is just being logged. */
+  .lib-intent { display: flex; gap: 10px; align-items: flex-start; margin: 0 0 18px;
+    background: #eff6fb; border: 1px solid #a1c6e7; border-left: 4px solid #2672b8;
+    border-radius: 3px; padding: 11px 13px; }
+  .lib-intent__badge { flex: 0 0 auto; font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em;
+    text-transform: uppercase; color: #fff; background: #2672b8; border-radius: 2px; padding: 3px 6px; margin-top: 1px; }
+  .lib-intent__text { font-size: 12.5px; line-height: 1.6; color: #14456d; white-space: pre-wrap; text-wrap: pretty; }
   .lib-item .lib-dot { width: 6px; height: 6px; border-radius: 50%; flex: 0 0 auto; }
   .lib-dot--verified { background: #00a91c; }
   .lib-dot--unverified { background: #c2850c; }
@@ -1134,7 +1144,9 @@ The modal itself has padding 0. Every inset is contributed by a nested element, 
 
 The 32px is not modal-specific - it is USWDS's own .grid-container padding at the &ge;1024px breakpoint (1.6rem below it, 3.2rem above). So the body's horizontal inset narrows to 26px on a small screen while the vertical stays at 10px.
 
-It is NOT 20px all round, and it is deliberately asymmetric: the body is inset further horizontally (42px) than the title bar (18px), and much less vertically (10px). This entry previously omitted the .grid-container, which left body content sitting 10px from the edge - visibly tighter than the 18px title above it, and the reason the preview looked wrong.
+It is deliberately asymmetric: the body is inset further horizontally (42px) than the title bar (18px), and much less vertically (10px). This entry previously omitted the .grid-container, which left body content sitting 10px from the edge - visibly tighter than the 18px title above it, and the reason the preview looked wrong.
+
+DESIGN INTENT: Figma specifies 30px padding on all four sides of the dialog body. The app has never done that - it ships 42px left/right and 10px top/bottom, assembled out of a 2px border, .padding-1 and .grid-container rather than one authored value, which is why it drifted. Reviewed with Daniel 2026-09-18: the divergence is accepted and will NOT be raised with dev at this time. This entry therefore records the AS-BUILT values so a prototype matches what a stakeholder sees in the product today. Do not change this entry to 30px, and do not treat 30px as a production requirement until Daniel reopens it with dev.
 
 Close is the RED usa-button--secondary, not an outline - third independent confirmation of that colour.`
 
@@ -2249,11 +2261,14 @@ function parseNotes(notes) {
   let source = '', rest = notes || '';
   const m = rest.match(/^SOURCE[^\n]*/);
   if (m) { source = m[0].replace(/^SOURCE(\s*\(canonical\))?:\s*/, ''); rest = rest.slice(m[0].length).trim(); }
-  const paras = [], flags = [];
+  const paras = [], flags = [], intents = [];
   rest.split(/\n\s*\n/).filter(Boolean).forEach(t => {
-    (/^(GAP:|RESOLVED|Flag to Daniel)/.test(t.trim()) ? flags : paras).push(t.trim());
+    const v = t.trim();
+    if (/^DESIGN INTENT:/.test(v)) intents.push(v.replace(/^DESIGN INTENT:\s*/, ''));
+    else if (/^(GAP:|RESOLVED|Flag to Daniel)/.test(v)) flags.push(v);
+    else paras.push(v);
   });
-  return { source: source || '\u2014', paras: paras, flags: flags };
+  return { source: source || '\u2014', paras: paras, flags: flags, intents: intents };
 }
 
 const NOTES_KEY = 'rlp-lib-notes-open';
@@ -2341,6 +2356,9 @@ function renderMain() {
   main.innerHTML = '<div class="lib-pane">' +
     '<h1>' + esc(c.name) + '</h1>' +
     renderFidelity(c) +
+    p.intents.map(t => '<div class="lib-intent">' +
+      '<span class="lib-intent__badge">As built \u2260 as designed</span>' +
+      '<span class="lib-intent__text">' + esc(t) + '</span></div>').join('') +
     '<p class="lib-source"><span class="lib-source__badge">SOURCE</span>' + esc(p.source) +
       '<button type="button" class="lib-copy" id="lib-copy-link" style="margin-left:auto;">Copy link</button></p>' +
     '<div class="lib-stage">' + c.preview + '</div>' +
@@ -2404,6 +2422,11 @@ function buildAIMarkdown(c, p) {
       '| Trigger | Message | Placement |\n|---|---|---|\n' +
       c.errors.map(e => '| ' + e.trigger + ' | ' + e.message + ' | ' + e.placement + ' |').join('\n') + '\n';
   }
+  if (p.intents.length) md += '\n## As built \u2260 as designed\n\n' +
+    'The values in this entry are the AS-BUILT values read off the live app. A design ' +
+    'spec disagrees, and the divergence has been reviewed and accepted for now. Build ' +
+    'what this entry says. Do not implement the design value without asking the design owner.\n\n' +
+    p.intents.map(t => '- ' + t).join('\n') + '\n';
   if (p.paras.length) md += '\n## Notes\n' + p.paras.join('\n\n') + '\n';
   if (p.flags.length) md += '\n' + p.flags.map(t => '> ⚠ ' + t).join('\n\n') + '\n';
   return md;

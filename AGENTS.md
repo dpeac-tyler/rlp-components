@@ -51,6 +51,35 @@ It is not decoration. Read it before you copy anything.
 As of 2026-09-18: **35 verified, 5 unverified, 1 proposed** (41 entries).
 Assume unverified unless the badge says otherwise.
 
+## Recorded divergences: "As built ≠ as designed"
+
+Some entries carry a **`DESIGN INTENT:`** block in their notes. It renders as a
+blue band directly under the fidelity badge, outside the collapsible Notes, and
+means exactly one thing:
+
+> A design spec (usually Figma) disagrees with what the application actually
+> ships. The divergence has been looked at, and the decision was to **leave the
+> app alone for now**.
+
+What you do with it:
+
+- **Build what the entry says.** The measured, as-built values are the body of
+  the entry; the `DESIGN INTENT:` block is context, not an instruction.
+- **Do not "correct" the entry toward the design value.** It is not a bug in
+  this repo, and it is not a TODO.
+- **Do not raise it as a defect, open a ticket, or change production**, unless
+  the design owner (Daniel) has reopened it. The block says who decided and when.
+
+This keeps the two facts separate: what the product does today (what a prototype
+must match, so stakeholders see something familiar) and what it was designed to
+do (worth remembering, not worth churn right now). It is deliberately *not*
+styled as a warning — the entry is correct.
+
+Current records:
+- **Modal / Dialog** — Figma specifies 30px padding on all four sides of the
+  dialog body. The app ships 42px left/right and 10px top/bottom. Accepted
+  2026-09-18; not being raised with dev at this time.
+
 ## Hard prohibitions
 
 1. **Never copy `css/styles.css` over the application's stylesheet.** It is a
