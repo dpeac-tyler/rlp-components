@@ -232,6 +232,24 @@ What each still needs:
 - Empty State variants: RLP's data-grid empty state is already verified as its own
   entry. These two are prototype-specific patterns for different contexts.
 
+## If you edit component.html, run the audit
+
+```
+python3 audit-previews.py
+```
+
+`component.html` is one large JS array inside a single `<script>`, so a single
+stray character blanks the entire catalog. The audit checks for the three ways
+that actually happens (an undefined preview class, a literal `</script>` inside
+a template literal, a broken entry), plus alphabetical order and valid
+`fidelity` values. Exit code 0 means clean.
+
+Two file-specific traps:
+- Write `</` + `script>` inside template literals, never a literal `</script>`.
+- A class used in a `preview` but missing from `css/styles.css` renders the
+  preview wrong while the HTML column stays correct — the worst failure mode
+  here, because it misleads anyone comparing the two.
+
 ## If you find a discrepancy
 
 Do not silently change either side. Add a note to the entry in `component.html`

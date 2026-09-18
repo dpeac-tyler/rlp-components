@@ -3246,6 +3246,10 @@ input[type="date"].usa-input {
   max-width: 11.2rem;
 }
 
+.date-picker-icon {
+  color: #1b1b1b;
+}
+
 .date-picker-icon-wrapper {
   margin-left: 0.8rem;
   font-size: 1.8rem;
@@ -3578,8 +3582,11 @@ ul.pagination li.disabled a {
   vertical-align: middle;
 }
 
-/* Native file input is hidden; an outline "Upload" button drives it. */
-.usa-form-group input[type="file"].is-hidden-input {
+/* Native file input is hidden; an outline "Upload" button drives it.
+   Deliberately NOT scoped to an ancestor - the class alone must be enough,
+   or the catalog preview shows a visible "Choose File" control and contradicts
+   the entry it is illustrating. */
+.is-hidden-input {
   display: none;
 }
 
@@ -3611,4 +3618,89 @@ ul.pagination li.disabled a {
 
 .margin-bottom-205 {
   margin-bottom: 2rem;
+}
+
+/* USWDS utility classes used by real RLP markup that this stylesheet was
+   missing. Without these the catalog previews render wrong - e.g. a label's
+   "Required" span dropping onto its own line because .display-inline was
+   undefined and the label text stayed a block-level <div>.
+   Audited and added 2026-09-18. */
+
+.display-inline {
+  display: inline;
+}
+
+.position-relative {
+  position: relative;
+}
+
+.maxw-full {
+  max-width: 100%;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.padding-1 {
+  padding: 0.8rem;
+}
+
+.flex-align-center {
+  align-items: center;
+}
+
+.flex-justify {
+  justify-content: space-between;
+}
+
+.u-font-size-sm {
+  font-size: 1.4rem;
+}
+
+.usa-prose {
+  max-width: 68ex;
+}
+
+.usa-prose > * + * {
+  margin-top: 1.6rem;
+}
+
+/* .usa-form-group was referenced by markup throughout this library but never
+   defined, so form groups had no spacing in the previews. Value below is the
+   USWDS default - NOT yet measured against RLP, so treat the exact margin as
+   unverified even though the class itself is definitely used in production. */
+.usa-form-group {
+  margin-top: 1.6rem;
+}
+
+.usa-form-group:first-child {
+  margin-top: 0;
+}
+
+/* Responsive utilities that appear on RLP's modal markup. Present so that
+   markup copied out of this library keeps working in a prototype. */
+.overflow-x-hidden {
+  overflow-x: hidden;
+}
+
+.maxh-full {
+  max-height: 100%;
+}
+
+.width-tablet {
+  width: 64rem;
+}
+
+.maxw-tablet {
+  max-width: 64rem;
+}
+
+@media all and (min-width: 640px) {
+  .tablet\:maxw-tablet {
+    max-width: 64rem;
+  }
+  .tablet\:height-auto {
+    height: auto;
+  }
 }

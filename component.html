@@ -296,6 +296,7 @@ VERIFIED against qa.lnpweb.com 2026-09-18 - present on both list pages checked, 
 Two small structural differences in RLP, neither visual: the accordion root is a <ul class="usa-accordion usa-accordion--bordered icon-key"> rather than a <div>, and the inner heading is a bare <strong> rather than <p class="text-bold">. Accordion button computed as #f0f0f0 / 1.6rem / weight 700 / padding 16px 24px, which matches.
 
 Every list page with a Controls column gets one of these, positioned above the table-controls bar. Icons render 24×24 here vs. 30×30 in the actual table row. aria-controls / content id must be unique per instance — a page can have several (e.g. per-tab icon keys in view-case-detail.html).`
+
 },
 {
   name: "Add-Item List (Growing Rows)",
@@ -337,27 +338,7 @@ Live app specifics:
 The delete icon on each row is hidden until there are 2+ rows (can't delete the last one). Accent-warm button always sits directly below the growing list, never above it.
 
 GAP, now partly resolved: the global standards describe a separate "form sits ABOVE the table, questions-section grey box, 70/15/15 grid" add-item pattern. RLP has no table in this pattern at all - it is repeated numbered cards with the add button underneath, on a #f0f0f0 panel with NO border-radius. The 70/15/15 grid was not found in any prototype either (create-packet.html uses a modal). Recommend retiring that description in favour of this entry.`
-},
-{
-  name: "Alert — Warning (Slim)",
-  fidelity: "verified",
-  preview: `<div class="usa-alert usa-alert--slim usa-alert--warning margin-top-0">
-  <div class="usa-alert__body">Warning: Updating the account&rsquo;s email address may affect ongoing business that the constituent has with other State of Illinois organizations.</div>
-</div>`,
-  code: `<div class="usa-alert usa-alert--slim margin-top-0 usa-alert--warning">
-  <div class="usa-alert__body">Warning: ...</div>
-</div>`,
-  notes: `SOURCE: qa.lnpweb.com/management/applicant-profile - inside the "Change Email" dialog
 
-The only alert variant actually observed in RLP so far, and the reason this entry exists separately from "Alert - Error (Form Validation)".
-
-Computed values from the live app: background #faf3d1, text #1b1b1b, border-left 8px solid #ffbe2e, body padding 8px 20px, 1.6rem. No heading element and no icon - the word "Warning:" is just the first word of the body text.
-
-usa-alert--slim is what drops the large left icon gutter, so the body sits close to the coloured border. RLP pairs it with margin-top-0.
-
-IMPORTANT: this verified an 8px left border on .usa-alert. css/styles.css previously had 0.5rem and has been corrected to 0.8rem, which affects every alert variant.
-
-Use for a side effect the user should know about before confirming - not for validation failures, which use the error alert.`
 },
 {
   name: "Alert — Error (Form Validation)",
@@ -421,33 +402,29 @@ RESOLVED 2026-09-17: replaced the old "Error status" / "Please correct the follo
     { trigger: 'Heading, 2+ errors', message: 'Error - <count> errors on this page.', placement: 'h3.usa-alert__heading' },
     { trigger: 'Each error listed', message: '(the field-level message, verbatim)', placement: 'One p.usa-alert__text per error, input order' }
   ]
+
 },
 {
-  name: "Breadcrumb",
+  name: "Alert — Warning (Slim)",
   fidelity: "verified",
-  preview: `<nav class="usa-breadcrumb" aria-label="Breadcrumbs">
-  <ol class="usa-breadcrumb__list">
-    <li class="usa-breadcrumb__list-item"><a href="#" class="usa-breadcrumb__link">Home</a></li>
-    <li class="usa-breadcrumb__list-item"><a href="#" class="usa-breadcrumb__link">View Cases</a></li>
-    <li class="usa-breadcrumb__list-item usa-current" aria-current="page"><span>CM-2026-0347</span></li>
-  </ol>
-</nav>`,
-  code: `<nav class="usa-breadcrumb margin-top-2" aria-label="Breadcrumbs">
-  <ol class="usa-breadcrumb__list">
-    <li class="usa-breadcrumb__list-item">
-      <a href="index.html" class="usa-breadcrumb__link">Home</a>
-    </li>
-    <li class="usa-breadcrumb__list-item">
-      <a href="view-cases.html" class="usa-breadcrumb__link">View Cases</a>
-    </li>
-    <li class="usa-breadcrumb__list-item usa-current" aria-current="page">
-      <span id="breadcrumb-case-number">CM-2026-0347</span>
-    </li>
-  </ol>
-</nav>`,
-  notes: `SOURCE: view-case-detail.html
+  preview: `<div class="usa-alert usa-alert--slim usa-alert--warning margin-top-0">
+  <div class="usa-alert__body">Warning: Updating the account&rsquo;s email address may affect ongoing business that the constituent has with other State of Illinois organizations.</div>
+</div>`,
+  code: `<div class="usa-alert usa-alert--slim margin-top-0 usa-alert--warning">
+  <div class="usa-alert__body">Warning: ...</div>
+</div>`,
+  notes: `SOURCE: qa.lnpweb.com/management/applicant-profile - inside the "Change Email" dialog
 
-Required on any page deeper than one level. Final crumb is a plain <span>, never a link.`
+The only alert variant actually observed in RLP so far, and the reason this entry exists separately from "Alert - Error (Form Validation)".
+
+Computed values from the live app: background #faf3d1, text #1b1b1b, border-left 8px solid #ffbe2e, body padding 8px 20px, 1.6rem. No heading element and no icon - the word "Warning:" is just the first word of the body text.
+
+usa-alert--slim is what drops the large left icon gutter, so the body sits close to the coloured border. RLP pairs it with margin-top-0.
+
+IMPORTANT: this verified an 8px left border on .usa-alert. css/styles.css previously had 0.5rem and has been corrected to 0.8rem, which affects every alert variant.
+
+Use for a side effect the user should know about before confirming - not for validation failures, which use the error alert.`
+
 },
 {
   name: "Block Header (Section Bar)",
@@ -483,6 +460,35 @@ Computed values from the live app:
 NOTE the panel is #dfe1e2, NOT the #f0f0f0 used by the agency-side questions-section / step-section panels. Constituent-facing blocks are a slightly cooler, darker grey. Do not mix the two up.
 
 Distinct from "Section Heading" (a plain agency-side h2) and from "Step Section (Numbered Panel)" (the agency-side grey panel with the orange numbered corner). This is the constituent-side navy bar.`
+
+},
+{
+  name: "Breadcrumb",
+  fidelity: "verified",
+  preview: `<nav class="usa-breadcrumb" aria-label="Breadcrumbs">
+  <ol class="usa-breadcrumb__list">
+    <li class="usa-breadcrumb__list-item"><a href="#" class="usa-breadcrumb__link">Home</a></li>
+    <li class="usa-breadcrumb__list-item"><a href="#" class="usa-breadcrumb__link">View Cases</a></li>
+    <li class="usa-breadcrumb__list-item usa-current" aria-current="page"><span>CM-2026-0347</span></li>
+  </ol>
+</nav>`,
+  code: `<nav class="usa-breadcrumb margin-top-2" aria-label="Breadcrumbs">
+  <ol class="usa-breadcrumb__list">
+    <li class="usa-breadcrumb__list-item">
+      <a href="index.html" class="usa-breadcrumb__link">Home</a>
+    </li>
+    <li class="usa-breadcrumb__list-item">
+      <a href="view-cases.html" class="usa-breadcrumb__link">View Cases</a>
+    </li>
+    <li class="usa-breadcrumb__list-item usa-current" aria-current="page">
+      <span id="breadcrumb-case-number">CM-2026-0347</span>
+    </li>
+  </ol>
+</nav>`,
+  notes: `SOURCE: view-case-detail.html
+
+Required on any page deeper than one level. Final crumb is a plain <span>, never a link.`
+
 },
 {
   name: "Button — Accent-Warm",
@@ -494,6 +500,7 @@ Distinct from "Section Heading" (a plain agency-side h2) and from "Step Section 
 VERIFIED exactly, including the usage rule. Live app: background rgb(250,148,65) = #fa9441 with DARK text rgb(27,27,27) = #1b1b1b, 1.6rem, weight 700, padding 12px 24px, radius 4px - byte-identical to css/styles.css.
 
 RLP uses it precisely as this entry describes: the "Add Affiliation" button inside the Affiliations section of the Create License Type form. Add-item actions within a form section only, never as a general primary action.`
+
 },
 {
   name: "Button — Group, Segmented (Filter Tabs)",
@@ -527,6 +534,7 @@ Based on the USWDS segmented button group, used for status-category filtering ab
 "active" marks the current selection, toggled by a plain click handler. Selection is exclusive: clicking the already-selected segment must keep it selected, not clear it — a filter group has no unfiltered state.
 
 FIXED 2026-09-04: this preview used a demo-only .demo-segment class that had no CSS, so it rendered as all-blue and misrepresented the component.`
+
 },
 {
   name: "Button — Outline",
@@ -536,6 +544,7 @@ FIXED 2026-09-04: this preview used a demo-only .demo-segment class that had no 
   notes: `SOURCE: view-cases.html, queues.html, create-case.html
 
 Also NOT in the documented 4-class table, but used consistently for "Clear/Back/Skip" actions (also seen in rlp-packets as Back/Skip step-buttons). Flag to Daniel: formalize as a 5th button standard, or fold into usa-button--secondary?`
+
 },
 {
   name: "Button — Primary",
@@ -551,6 +560,7 @@ Computed values from the live app: 1.6rem / weight 700 / #fff on #005ea2 / paddi
 css/styles.css has this at padding 1.1rem 2.4rem and radius 0.35rem — 1px and 0.5px under the real values. Left alone deliberately rather than churn every prototype for a sub-pixel difference; match the production numbers in new production code.
 
 Primary actions only — Save, Create New, Submit.`
+
 },
 {
   name: "Button — Secondary",
@@ -568,6 +578,7 @@ Usage in RLP matches what this entry said: it is the Cancel button sitting next 
 If you want a genuinely outlined button, that is usa-button--outline, which is a separate entry.
 
 A real <button type="button">, not a link. A handful of older prototypes (e.g. add-denial-code.html) use an <a> styled with this class; that is legacy drift, not a second real pattern.`
+
 },
 {
   name: "Button — Unstyled",
@@ -587,6 +598,7 @@ Icon-only row actions are NOT this class. RLP uses a filled navy usa-button--act
 SOURCE: correspondence-email-template.html
 
 Icon-only or link-styled controls inside table cells / dense UI. Always give it an aria-label when the visible text alone wouldn't be enough context (e.g. repeated "Preview" across many rows).`
+
 },
 {
   name: "Character Count",
@@ -607,6 +619,7 @@ Both verified in the live app. Match whichever side of the product you are mocki
 Computed values from the live app: 1.6rem, colour #5f5e5e, display block. It carries both usa-hint and usa-character-count__message - the character-count class is what darkens it slightly from the plain .usa-hint colour (#697072).
 
 Used on plain text inputs and on rich-text editors alike. Limits observed in the application builder: 500, 5000 and 10000 characters.`
+
 },
 {
   name: "Checkbox",
@@ -634,6 +647,7 @@ For a group, the message goes under the <legend> and <field name> is the legend 
     { trigger: 'Unchecked (single box)', message: 'Check the box for <field name>.', placement: 'Inline, above the checkbox' },
     { trigger: 'None checked (2+ boxes)', message: 'Check at least one of the options for <field name>.', placement: 'Inline, directly under the legend' }
   ]
+
 },
 {
   name: "Combobox (Long-List Select)",
@@ -669,6 +683,7 @@ CAUTION, 2026-09-18: RLP does NOT appear to use this pattern. The submission sea
 Left as unverified rather than deleted - this was built for rlp-packets and may be a deliberate improvement on RLP's native long select. But do not ship it into production as though RLP already works this way; confirm with the design owner first.
 
 Text input + hidden input (holds the real value) + filtered <ul role="listbox">. Often starts disabled until a parent select (e.g. license type) picks a value. The CSS for .combo-box/.combo-box__input/.combo-box__list was NOT in the compiled styles.css of either source project — it was inline <style> in create-packet.html. It has been copied into this library's css/styles.css; consider backporting it into every project's base stylesheet instead of re-inlining it per page.`
+
 },
 {
   name: "Date Input",
@@ -704,6 +719,7 @@ GAP: the standard writes the required message as "The field <date field> is requ
     { trigger: 'Fails a business rule', message: 'Enter a valid date in the <field name>. <error rule>', placement: 'Inline, between label and input' },
     { trigger: 'Rule example', message: 'Enter a valid date in the <field name>. Date(s) must be later than start date.', placement: 'Inline, between label and input' }
   ]
+
 },
 {
   name: "Document Upload — Attachment Panel (Two-Step Save)",
@@ -823,6 +839,7 @@ Real interaction sequence (three button states swapped via JS, not CSS, matching
 The outer "Save and Close" referenced in the instructional text is a separate, higher-level action on the parent window/modal this panel lives inside (e.g. closing out of a multi-attachment list) — it is not part of this panel itself.
 
 Reused existing real patterns rather than inventing new ones: .tooltip-icon (circle "?" — from rlp-packets/question-builder.html; note it has no wired-up popover content anywhere in the codebase, just cursor:help styling) and .character-counter / "X of Y remaining" (from rlp-affiliations/task-detail-denied.html). The grey panel background reuses the established questions-section convention (#f0f0f0) rather than matching the screenshot's exact tone.`
+
 },
 {
   name: "Empty State — Data Grid (No Data Found)",
@@ -836,6 +853,7 @@ This is what RLP itself renders when a list-page data grid returns zero rows. Co
 Confirmed on three separate grids (license types, open cases, and the profile Documents tab), so this is the standard data-grid empty state rather than a one-off.
 
 Use this on any list page backed by a data grid. For the JS-toggled whole-table empty state on a detail page, see "Empty State — Standalone Paragraph" instead — that pattern has not been verified against production.`
+
 },
 {
   name: "Empty State — Standalone Paragraph",
@@ -854,6 +872,7 @@ Use this on any list page backed by a data grid. For the JS-toggled whole-table 
   notes: `SOURCE: correspondence.html
 
 Whole-table empty state: the <table> and this <p> toggle opposite display values via JS once data loads/clears. Different from the row-level empty state — see that entry for the distinction.`
+
 },
 {
   name: "Empty State — Table Row",
@@ -874,6 +893,7 @@ document.getElementById('investigations-empty-row').remove();
   notes: `SOURCE: view-case-detail.html
 
 A single <tr> with colspan spanning all columns, removed (not hidden) once real rows exist. Use this inside an existing table; use the standalone-paragraph pattern when the whole table should disappear.`
+
 },
 {
   name: "Field With Error Message",
@@ -926,6 +946,7 @@ STRUCTURE: the error <span> is a CHILD OF THE LABEL, placed after the Required s
 RLP does not set aria-invalid on the errored field here (the date input elsewhere does carry aria-invalid="false"), so screen-reader users get the message through the label association only. Worth keeping aria-invalid in new work even though RLP omits it.
 
 On a rich-text field the usa-input--error class goes on the .rich-text-input wrapper, giving the whole editor a 4px red border.`
+
 },
 {
   name: "File Input",
@@ -959,6 +980,7 @@ What RLP actually does:
 - the field label is the DOCUMENT TYPE configured in the application builder (observed "Certification Document", "Court Doc"), not a generic "File" or "Attachment Name"
 
 No USWDS usa-file-input drag-and-drop widget anywhere - that part of the old note was right.`
+
 },
 {
   name: "Icon Button (Table Row Action)",
@@ -991,6 +1013,7 @@ RLP's icon vocabulary is Font Awesome, not the PNGs in assets/. Observed on the 
 The preview above substitutes assets/*.png inverted to white so it renders here without pulling in Font Awesome. Production markup in the HTML column is the authoritative version.
 
 Icon Key accordion still renders at 24x24.`
+
 },
 {
   name: "Modal / Dialog",
@@ -1052,6 +1075,7 @@ CLASS COLLISION - important. This repo already carries a legacy .modal from the 
 If you are writing production code, be aware the name is already overloaded in the prototypes; check which .modal you inherited.
 
 The preview above is de-fixed (position relative, overlay inset removed) so it renders inline in this catalog. The HTML column is the authoritative version.`
+
 },
 {
   name: "Navigation — Primary Nav",
@@ -1087,6 +1111,7 @@ The preview above is de-fixed (position relative, overlay inset removed) so it r
   notes: `SOURCE: view-case-detail.html
 
 This is only the primary nav list — the full page chrome also includes a banner/logo/utility row above it. Every page copies the whole shell verbatim; mark the current page's item with class "active".`
+
 },
 {
   name: "Page Action Bar — Standard (Left-Aligned)",
@@ -1121,6 +1146,7 @@ Confirmed in the live app on:
 - /management/cases/open - "Search" (primary) then "Clear" (outline), left-aligned, with "Create New Case" on its own line below, also left
 
 Do NOT right-align or use justify-content: flex-end here — that's a common default AI tools reach for, but it is not the RLP convention. Right-alignment is reserved for the step/wizard pattern only — see that entry.`
+
 },
 {
   name: "Page Action Bar — Step/Wizard (Split)",
@@ -1178,6 +1204,7 @@ Visually identical, so space-between is not wrong - but grid-row + grid-col-6 + 
 Note RLP's Cancel here is the RED usa-button--secondary, not an outline button - see that entry.
 
 ONLY use this split layout for multi-step wizards. Do not use it on normal detail/form pages - see "Page Action Bar - Standard" for those.`
+
 },
 {
   name: "Page Title",
@@ -1185,6 +1212,7 @@ ONLY use this split layout for multi-step wizards. Do not use it on normal detai
   preview: `<h1 class="page-title page-title--underlined">Case Details: CM-2026-0347</h1>`,
   code: `<h1 class="page-title page-title--underlined" id="case-detail-title">Case Details: CM-2026-0347</h1>`,
   notes: `SOURCE: view-case-detail.html`
+
 },
 {
   name: "Pagination",
@@ -1224,6 +1252,7 @@ Computed values from the live app:
 First and last items are Previous / Next as text labels, with no chevron glyphs.
 
 Pair with the table controls bar: RLP writes the count as "Showing 1 to 10 of 152 Entries" - the word "to", not a hyphen.`
+
 },
 {
   name: "Radio Group",
@@ -1260,6 +1289,7 @@ RESOLVED 2026-09-17: the standard's Radio row reads "Select at least one of the 
   errors: [
     { trigger: 'Nothing selected', message: 'Select an option for <field name>.', placement: 'Inline, directly under the legend' }
   ]
+
 },
 {
   name: "Rich Text Editor (Quill)",
@@ -1302,6 +1332,7 @@ Toolbar buttons observed: undo, redo, format dropdown ("Normal"), bold, italic, 
 NOTE the editor body renders at 1.3rem, which is below the 1.6rem minimum in the global standards. That is what RLP does - flagged rather than "corrected" here, since the standard is ours and the 1.3rem is theirs.
 
 Pair with a character counter - RLP always does.`
+
 },
 {
   name: "Section Heading",
@@ -1315,6 +1346,7 @@ CORRECTED 2026-09-18. This entry previously specified <h2 class="section-heading
 Real RLP section heading, read from computed styles: 2.4rem / weight 700 / #4c4c4c / margin-bottom 8px / NO bottom border.
 
 Older prototypes across the rlp-* directories still use .section-heading. They will look different from the product until they are updated - that is expected, and this entry is the correct pattern.`
+
 },
 {
   name: "Select — Short List",
@@ -1346,6 +1378,7 @@ When a page has two or more selects that share a label stem, the instance number
     { trigger: 'Nothing selected', message: 'Select an option for <field name>.', placement: 'Inline, between label and select' },
     { trigger: 'Nothing selected (2+ selects)', message: 'Select an option for <field name (n)>.', placement: 'Inline, between label and select' }
   ]
+
 },
 {
   name: "Status Tag / Badge",
@@ -1376,6 +1409,7 @@ Colour mapping in css/styles.css (~line 836)
 Semantic class-per-status-value groups: active/approved/live/paid/completed · pending/open/assigned/approved-awaiting-payment · rejected/denied/cancelled/past-due/terminated · expired/revoked/withdrawn/decommissioned/retired · in-progress/rejected-for-resubmission/in-cart · inactive · on-hold/suspended/payment-in-process · in-review/draft/initiated · archived.
 
 When reproducing a NEW status value, map it to the closest existing semantic group — don't invent a new color.`
+
 },
 {
   name: "Step Indicator (Progress)",
@@ -1431,6 +1465,7 @@ RLP-specific variants on the same page:
 - blocked-step-indicator__icon - a blocked glyph shown instead of the number on a disabled step (two present on the observed page, on "Getting Started" and "Application Type")
 
 Do not confuse with "Step Section (Numbered Panel)" - that is the grey field-group panel with the orange numbered corner. This is the progress rail.`
+
 },
 {
   name: "Step Section (Numbered Panel)",
@@ -1472,6 +1507,7 @@ The number itself sits above the triangle at 1.8rem / weight 700 / #444, with th
 Numbering is per-context: the outer form sections use one running sequence (observed up to 13) and repeated add-item cards restart at 1. Field labels inside a repeated card are themselves prefixed with the card number ("1. Type", "1. Sub Type").
 
 No border-radius - the global standards describe the add-item container as having 0.5rem radius, which RLP does not.`
+
 },
 {
   name: "Table — With Controls Bar",
@@ -1533,48 +1569,7 @@ Computed values from the live app: th 1.6rem / weight 700 / bg #f0f0f0 / padding
 Controls bar count text in RLP is "Showing 1 to 10 of 152 Entries" - the word "to", not a hyphen. The count sits in a plain <p>. The entries-per-page select offers 10/25/50/100 and RLP also has a "Set Column Headers" select to its left on the search grid.
 
 Sortable headers get role="columnheader" aria-sort="none" + an empty <span class="sort-arrows">. Controls column has no sort arrows and is always last, with white-space: nowrap to prevent icon wrapping. Precede with the Icon Key accordion when a Controls column is present.`
-},
-{
-  name: "Tag",
-  fidelity: "verified",
-  preview: `<span class="usa-tag">Agency</span> <span class="usa-tag">Primary</span> <span class="usa-tag">Asset</span>`,
-  code: `<span class="usa-tag">Agency</span>
 
-.usa-tag {
-  background-color: #565c65;
-  border-radius: 0.2rem;
-  color: #fff;
-  display: inline;
-  font-size: 1.4rem;
-  font-weight: 400;
-  letter-spacing: normal;
-  line-height: 1.6;
-  padding: 0.1rem 0.8rem;
-  text-transform: uppercase;
-}`,
-  notes: `SOURCE: qa.lnpweb.com/management/applicant-profile?landingTab=submissions - the "Agency" tag in the Submitted By column (10 instances on that grid)
-
-CORRECTED 2026-09-18. The class name and colours were right; five other properties were not. This entry previously carried the stock-USWDS values, which are smaller and bolder than RLP's.
-
-What matched: background #565c65, colour #fff, text-transform uppercase, letter-spacing normal, font-family Public Sans Web.
-
-What did NOT match, now corrected in css/styles.css:
-- font-size   RLP 1.4rem   was 1.2rem
-- font-weight RLP 400      was 700
-- radius      RLP 0.2rem   was 0
-- padding     RLP 0.1rem 0.8rem   was 0.3rem 0.7rem
-- display     RLP inline   was inline-block
-- line-height RLP 1.6      was 1
-
-Net effect: RLP's tag is a bit larger, noticeably lighter (not bold), slightly rounded rather than a hard square, and much tighter vertically. The old values read as a small bold chip; RLP's reads as a quiet inline label.
-
-Note this contradicts the 2026-08-27 note that the tag is a hard square - RLP does round it, just barely (2px). It is still not a pill.
-
-HEADS UP: rlp-correspondence uses this tag for version badges ("V2", "Current"). Those will now render larger and non-bold. That is correct per RLP, but it is a visible change to those pages.
-
-Markup casing: write the label in normal case ("Agency"); CSS uppercases it. RLP does exactly that.
-
-For coloured status text in list tables, use the .status-* text classes instead - that is a separate pattern, not a tag. See "Status Tag / Badge".`
 },
 {
   name: "Tabs — Horizontal",
@@ -1622,6 +1617,50 @@ Computed values from the live app:
 Tabs do not toggle panels in the DOM. Each tab navigates, setting ?landingTab=<key> on the URL, and the page re-renders. Observed keys: submissions, documents.
 
 A second, nested tab row appears inside some panels (e.g. "My Submissions" / "Payment Requests (0)") using the same markup - note RLP puts a live count in the label.`
+
+},
+{
+  name: "Tag",
+  fidelity: "verified",
+  preview: `<span class="usa-tag">Agency</span> <span class="usa-tag">Primary</span> <span class="usa-tag">Asset</span>`,
+  code: `<span class="usa-tag">Agency</span>
+
+.usa-tag {
+  background-color: #565c65;
+  border-radius: 0.2rem;
+  color: #fff;
+  display: inline;
+  font-size: 1.4rem;
+  font-weight: 400;
+  letter-spacing: normal;
+  line-height: 1.6;
+  padding: 0.1rem 0.8rem;
+  text-transform: uppercase;
+}`,
+  notes: `SOURCE: qa.lnpweb.com/management/applicant-profile?landingTab=submissions - the "Agency" tag in the Submitted By column (10 instances on that grid)
+
+CORRECTED 2026-09-18. The class name and colours were right; five other properties were not. This entry previously carried the stock-USWDS values, which are smaller and bolder than RLP's.
+
+What matched: background #565c65, colour #fff, text-transform uppercase, letter-spacing normal, font-family Public Sans Web.
+
+What did NOT match, now corrected in css/styles.css:
+- font-size   RLP 1.4rem   was 1.2rem
+- font-weight RLP 400      was 700
+- radius      RLP 0.2rem   was 0
+- padding     RLP 0.1rem 0.8rem   was 0.3rem 0.7rem
+- display     RLP inline   was inline-block
+- line-height RLP 1.6      was 1
+
+Net effect: RLP's tag is a bit larger, noticeably lighter (not bold), slightly rounded rather than a hard square, and much tighter vertically. The old values read as a small bold chip; RLP's reads as a quiet inline label.
+
+Note this contradicts the 2026-08-27 note that the tag is a hard square - RLP does round it, just barely (2px). It is still not a pill.
+
+HEADS UP: rlp-correspondence uses this tag for version badges ("V2", "Current"). Those will now render larger and non-bold. That is correct per RLP, but it is a visible change to those pages.
+
+Markup casing: write the label in normal case ("Agency"); CSS uppercases it. RLP does exactly that.
+
+For coloured status text in list tables, use the .status-* text classes instead - that is a separate pattern, not a tag. See "Status Tag / Badge".`
+
 },
 {
   name: "Task Container (Tile)",
@@ -1649,6 +1688,7 @@ A second, nested tab row appears inside some panels (e.g. "My Submissions" / "Pa
   notes: `SOURCE: view-case-detail.html (product-approved redesign, 2026-05-28)
 
 The redesigned case-detail page is a stack of these tiles on an off-white #f9f9f7 page background, 30px top margin between tiles.`
+
 },
 {
   name: "Textarea",
@@ -1673,6 +1713,7 @@ RLP does use <textarea>, on the CONSTITUENT-FACING rendered application. The spl
 Sizing is done per-instance with USWDS utilities rather than in the base rule - RLP uses tablet:width-mobile-lg (480px) and height-15 (120px), with rows="2" and a maxlength. Both utilities were missing from css/styles.css and have been added. resize is left at the browser default (both).
 
 Always paired with a character counter - see "Character Count".`
+
 }
 ];
 

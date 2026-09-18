@@ -96,6 +96,23 @@ The error alert and field-error entries need a form sitting in a validation-erro
 state — which means deliberately failing a save in QA, so that's a call for the
 design owner rather than something to do unprompted.
 
+## Before you commit a change: run the audit
+
+```
+python3 audit-previews.py
+```
+
+The catalog's middle column is a **live preview**. If a class used in a preview
+isn't defined in `css/styles.css`, the preview silently renders wrong while the
+HTML column still shows correct markup — so anyone comparing the two is
+actively misled, which is worse than having no preview at all.
+
+That is not hypothetical. `.display-inline` was undefined, so every label using
+the production structure rendered its "Required" tag on its own line instead of
+beside the label text. The audit now catches that class of bug, plus
+non-alphabetical entries, bad `fidelity` values, and the literal `</script>`
+mistake that blanks the whole file.
+
 ## Maintaining this library
 
 - Check here before building a component that might already exist; reuse the
