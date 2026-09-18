@@ -3138,3 +3138,44 @@ input[type="date"].usa-input {
   padding: 0.3rem 0.7rem;
   text-transform: uppercase;
 }
+
+/* Production parity additions
+   ==========================================================================
+   Classes below are used by real RLP markup and were missing from this
+   stylesheet. Values verified against qa.lnpweb.com on 2026-09-18 by reading
+   computed styles off the live agency pages. Do not "tidy" these to match a
+   prototype convention - they exist to make previews render the way RLP does.
+   ========================================================================== */
+
+.width-full {
+  width: 100%;
+}
+
+.minw-tablet {
+  min-width: 64rem;
+}
+
+.margin-top-0 {
+  margin-top: 0;
+}
+
+.margin-bottom-1 {
+  margin-bottom: 0.8rem;
+}
+
+/* Production empty-state heading: <h2 class="h3">No data found</h2> */
+.h3 {
+  font-size: 2rem;
+  font-weight: 400;
+}
+
+/* Production required-field indicator is .required wrapping an <em>.
+   .field-required is the legacy prototype-only alias, kept so existing
+   prototypes keep rendering. New work should use .required. */
+.required,
+.field-required {
+  font-style: italic;
+  font-size: 1.4rem;
+  font-weight: normal;
+  color: #1b1b1b;
+}

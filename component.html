@@ -1,4 +1,56 @@
 <!DOCTYPE html>
+<!--
+  ============================================================================
+  RLP COMPONENT LIBRARY - READ THIS BEFORE USING ANYTHING IN THIS FILE
+  ============================================================================
+
+  THIS FILE IS NOT THE SOURCE OF TRUTH FOR COMPONENT STYLING.
+  The live RLP application is. This is a prototyping reference.
+
+  PRECEDENCE RULE
+  ---------------
+  If this file and the live RLP app disagree about how a component looks -
+  colour, size, spacing, border, class name, markup structure - THE LIVE APP
+  WINS, every time, without discussion. Go look at the real app and match it.
+
+  WHAT THIS FILE IS AUTHORITATIVE FOR
+  -----------------------------------
+  Composition and page patterns, which exist nowhere else in writing:
+    - which components combine to form a page, and in what order
+    - e.g. Icon Key accordion sits above the table controls bar
+    - e.g. action bars are left-aligned, primary action first
+    - e.g. add-item forms sit above the table that they grow
+    - naming conventions ("Create New X", "All Xs")
+    - error-message wording and tone
+  Use this file for HOW RLP PUTS THINGS TOGETHER. Use the live app for HOW
+  INDIVIDUAL COMPONENTS LOOK.
+
+  EVERY ENTRY CARRIES A `fidelity` FIELD - CHECK IT
+  -------------------------------------------------
+    fidelity: "verified"   Computed styles were read off the live app
+                           (qa.lnpweb.com, 2026-09-18) and match. Copy as-is.
+    fidelity: "unverified" Came from a prototype, never checked against the
+                           live app. CONFIRM AGAINST RLP BEFORE SHIPPING.
+    fidelity: "proposed"   A design proposal that deliberately differs from
+                           the live app. DOES NOT EXIST IN THE PRODUCT YET.
+                           Never build this as though it already ships.
+
+  DO NOT DO THESE THINGS
+  ----------------------
+  - Do NOT copy css/styles.css over the application's stylesheet. That file is
+    a prototype-grown approximation, not a production artifact.
+  - Do NOT introduce a class from this library into production code just
+    because it appears here. Check the live app defines it first.
+  - Do NOT treat a "proposed" entry as an existing feature.
+  - These classes are PROTOTYPE-ONLY and do not exist in RLP. Never ship them:
+      .section-heading      (RLP uses h2.font-family-sans.text-bold)
+      .field-required       (RLP uses span.required wrapping an <em>)
+      .task-container       (RLP uses .simple-card; task-container is proposed)
+      .usa-table--striped   (RLP list tables are not striped)
+
+  See AGENTS.md and README.md in this repo for the full contract.
+  ============================================================================
+-->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -18,6 +70,9 @@
   .lib-top__tag { font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase; color: #c6d5ea;
     border-left: 1px solid rgba(255,255,255,0.25); padding-left: 20px; }
   .lib-top__count { margin-left: auto; font-size: 12px; color: #c6d5ea; font-variant-numeric: tabular-nums; }
+  .lib-sot { flex: 0 0 auto; background: #faf3d1; border-bottom: 1px solid #e6c74c; color: #543a00;
+    padding: 9px 24px; font-size: 12.5px; line-height: 1.5; }
+  .lib-sot b { font-weight: 700; }
   .lib-body { flex: 1; min-height: 0; display: flex; }
   .lib-index { flex: 0 0 306px; width: 306px; background: #fff; border-right: 1px solid #dfe1e2; display: flex; flex-direction: column; min-height: 0; }
   .lib-index__search { padding: 14px 16px 12px; border-bottom: 1px solid #dfe1e2; display: flex; flex-direction: column; gap: 10px; }
@@ -34,7 +89,7 @@
   .lib-group__head { position: sticky; top: 0; background: #fff; display: flex; align-items: center; justify-content: space-between;
     padding: 7px 16px 5px; border-bottom: 1px solid #eceded; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: #71767a; }
   .lib-group__head span:last-child { font-variant-numeric: tabular-nums; }
-  .lib-item { display: block; width: 100%; text-align: left; font: inherit; font-size: 13.5px; padding: 7px 16px;
+  .lib-item { display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; font: inherit; font-size: 13.5px; padding: 7px 16px;
     border: none; border-left: 3px solid transparent; background: none; color: #3d4551; cursor: pointer; }
   .lib-item:hover { background: #f0f3f8; }
   .lib-item.is-active { font-weight: 700; border-left-color: #1a4480; background: #f0f3f8; color: #1a4480; }
@@ -45,6 +100,21 @@
     font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12.5px; color: #71767a; }
   .lib-source__badge { font-size: 10.5px; font-weight: 700; letter-spacing: 0.08em; color: #3d4551;
     background: #eff1f1; border: 1px solid #dfe1e2; border-radius: 2px; padding: 3px 7px; }
+  /* Fidelity — how far this entry has been checked against the live RLP app */
+  .lib-fid { display: inline-flex; align-items: center; gap: 7px; margin: 0 0 18px;
+    font-size: 12.5px; line-height: 1.45; border-radius: 3px; padding: 8px 12px; border: 1px solid; }
+  .lib-fid__dot { width: 8px; height: 8px; border-radius: 50%; flex: 0 0 auto; }
+  .lib-fid--verified { background: #ecf3ec; border-color: #70e17b; color: #1b1b1b; }
+  .lib-fid--verified .lib-fid__dot { background: #00a91c; }
+  .lib-fid--unverified { background: #faf3d1; border-color: #e6c74c; color: #543a00; }
+  .lib-fid--unverified .lib-fid__dot { background: #c2850c; }
+  .lib-fid--proposed { background: #ede3fa; border-color: #b69fd4; color: #2e2251; }
+  .lib-fid--proposed .lib-fid__dot { background: #7849b8; }
+  .lib-fid b { font-weight: 700; }
+  .lib-item .lib-dot { width: 6px; height: 6px; border-radius: 50%; flex: 0 0 auto; }
+  .lib-dot--verified { background: #00a91c; }
+  .lib-dot--unverified { background: #c2850c; }
+  .lib-dot--proposed { background: #7849b8; }
   .lib-stage { background: #fff; border: 1px solid #dfe1e2; border-radius: 5px; padding: 34px 32px; margin-bottom: 10px; overflow: auto; font-size: 1.6rem; }
   .lib-stage .usa-input, .lib-stage .usa-select, .lib-stage .usa-textarea { max-width: 100%; }
   .lib-stage__label { margin: 0 0 30px; font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase; color: #71767a; }
@@ -128,9 +198,16 @@
 <body>
 <div class="lib-app">
   <header class="lib-top">
-    <div class="lib-top__brand"><img src="assets/rlp-logo.png" alt="" width="24" height="24"><span>RLP Component Library - Only for Prototype Creation / AI Protoypes</span></div>
+    <div class="lib-top__brand"><img src="assets/rlp-logo.png" alt="" width="24" height="24"><span>RLP Component Library &mdash; Only for Prototype Creation / AI Prototypes</span></div>
     <span class="lib-top__count" id="lib-count"></span>
   </header>
+  <p class="lib-sot">
+    <b>The live RLP application is the source of truth for component styling &mdash; not this library.</b>
+    Where the two disagree on colour, size, spacing, class name or markup, match the live app.
+    This library is authoritative only for <b>composition and page patterns</b> &mdash; how RLP puts
+    components together. Check each entry&rsquo;s fidelity badge before you copy it, and never port
+    a class from here into production without confirming RLP defines it.
+  </p>
   <div class="lib-body">
     <nav class="lib-index" aria-label="Component index">
       <div class="lib-index__search">
@@ -156,6 +233,7 @@ const ERR_CHARS = "The field <field name> can't include a backslash (\\) or an u
 const COMPONENTS = [
 {
   name: "Accordion — Icon Key",
+  fidelity: "verified",
   preview: `<div class="usa-accordion usa-accordion--bordered">
   <h3 class="usa-accordion__heading">
     <button type="button" class="usa-accordion__button" aria-expanded="false" aria-controls="demo-accordion-content">Icon Key</button>
@@ -211,9 +289,10 @@ Every list page with a Controls column gets one of these, positioned above the t
 },
 {
   name: "Add-Item List (Growing Rows)",
+  fidelity: "unverified",
   preview: `<div id="demo-choices">
   <div class="usa-form-group" style="margin-bottom: 1.5rem;">
-    <label class="usa-label" for="demo-choice-1">Choice 1 <span class="field-required">Required</span></label>
+    <label class="usa-label" for="demo-choice-1">Choice 1 <span class="required"><em>Required</em></span></label>
     <div style="display:flex; align-items:center; gap:1rem;">
       <input class="usa-input" id="demo-choice-1" type="text" style="flex:1;">
     </div>
@@ -222,7 +301,7 @@ Every list page with a Controls column gets one of these, positioned above the t
 <button type="button" class="usa-button usa-button--accent-warm" id="demo-add-choice">Add Choice</button>`,
   code: `<div id="mcChoicesContainer">
   <div class="usa-form-group" style="margin-bottom: 1.5rem; position: relative;" data-choice-number="1">
-    <label class="usa-label" for="mcChoice1">Choice 1 <span class="field-required">Required</span></label>
+    <label class="usa-label" for="mcChoice1">Choice 1 <span class="required"><em>Required</em></span></label>
     <div style="display: flex; align-items: center; gap: 1rem;">
       <input class="usa-input" id="mcChoice1" name="mcChoice1" type="text" style="flex: 1;">
       <button type="button" class="mc-delete-btn" style="display: none;" onclick="deleteMCChoice(1)">
@@ -243,6 +322,7 @@ GAP: your global standards describe a distinct "form sits above table, questions
 },
 {
   name: "Alert — Error (Form Validation)",
+  fidelity: "unverified",
   preview: `<div class="usa-alert usa-alert--error">
   <div class="usa-alert__body">
     <h3 class="usa-alert__heading">Error - 2 errors on this page.</h3>
@@ -297,6 +377,7 @@ RESOLVED 2026-09-17: replaced the old "Error status" / "Please correct the follo
 },
 {
   name: "Breadcrumb",
+  fidelity: "verified",
   preview: `<nav class="usa-breadcrumb" aria-label="Breadcrumbs">
   <ol class="usa-breadcrumb__list">
     <li class="usa-breadcrumb__list-item"><a href="#" class="usa-breadcrumb__link">Home</a></li>
@@ -323,6 +404,7 @@ Required on any page deeper than one level. Final crumb is a plain <span>, never
 },
 {
   name: "Button — Accent-Warm",
+  fidelity: "unverified",
   preview: `<button type="button" class="usa-button usa-button--accent-warm">Add Choice</button>`,
   code: `<button type="button" class="usa-button usa-button--accent-warm" id="addMCChoiceButton">Add Choice</button>`,
   notes: `SOURCE: create-questions.html
@@ -331,6 +413,7 @@ Orange #fa9441. Use only for add-item actions within a form section (never as a 
 },
 {
   name: "Button — Group, Segmented (Filter Tabs)",
+  fidelity: "verified",
   preview: `<div class="usa-button-group usa-button-group--segmented">
   <ul class="usa-button-group__list">
     <li class="usa-button-group__item"><button type="button" class="usa-button usa-button--outline category-filter-btn demo-segment active" data-filter="open">Open</button></li>
@@ -363,6 +446,7 @@ FIXED 2026-09-04: this preview used a demo-only .demo-segment class that had no 
 },
 {
   name: "Button — Outline",
+  fidelity: "verified",
   preview: `<button type="button" class="usa-button usa-button--outline">Clear Search</button>`,
   code: `<button type="button" class="usa-button usa-button--outline">Clear Search</button>`,
   notes: `SOURCE: view-cases.html, queues.html, create-case.html
@@ -371,14 +455,22 @@ Also NOT in the documented 4-class table, but used consistently for "Clear/Back/
 },
 {
   name: "Button — Primary",
+  fidelity: "verified",
   preview: `<button type="button" class="usa-button">Save</button>`,
   code: `<button type="button" class="usa-button" id="submit-button">Save</button>`,
-  notes: `SOURCE: add-denial-code.html
+  notes: `SOURCE: add-denial-code.html; verified against qa.lnpweb.com 2026-09-18
 
-Navy #1a4480. Primary actions only — Save, Create New, Submit.`
+Background is #005ea2, NOT navy #1a4480 — #1a4480 is the hover state. Earlier notes in this library had these two the wrong way round.
+
+Computed values from the live app: 1.6rem / weight 700 / #fff on #005ea2 / padding 12px 24px / border-radius 4px / line-height 1. Disabled is #c9c9c9.
+
+css/styles.css has this at padding 1.1rem 2.4rem and radius 0.35rem — 1px and 0.5px under the real values. Left alone deliberately rather than churn every prototype for a sub-pixel difference; match the production numbers in new production code.
+
+Primary actions only — Save, Create New, Submit.`
 },
 {
   name: "Button — Secondary",
+  fidelity: "unverified",
   preview: `<button type="button" class="usa-button usa-button--secondary">Cancel</button>`,
   code: `<button type="button" class="usa-button usa-button--secondary" id="cancel-edit-letter">Cancel</button>`,
   notes: `SOURCE: rlp-affiliations/edit-letter.html
@@ -387,6 +479,7 @@ A real <button type="button">, not a link — only used for Cancel next to Save/
 },
 {
   name: "Button — Unstyled",
+  fidelity: "unverified",
   preview: `<button type="button" class="usa-button usa-button--unstyled">Preview</button>`,
   code: `<button type="button" class="usa-button usa-button--unstyled"
         onclick="openVersionPreview(1)"
@@ -397,6 +490,7 @@ Icon-only or link-styled controls inside table cells / dense UI. Always give it 
 },
 {
   name: "Checkbox",
+  fidelity: "unverified",
   preview: `<div class="usa-checkbox">
   <input class="usa-checkbox__input" id="demo-checkbox" type="checkbox">
   <label class="usa-checkbox__label" for="demo-checkbox">Application</label>
@@ -419,8 +513,9 @@ For a group, the message goes under the <legend> and <field name> is the legend 
 },
 {
   name: "Combobox (Long-List Select)",
+  fidelity: "unverified",
   preview: `<div style="max-width:360px;">
-  <label class="usa-label" for="demo-combo-input">Owner Application <span class="field-required">Required</span></label>
+  <label class="usa-label" for="demo-combo-input">Owner Application <span class="required"><em>Required</em></span></label>
   <div class="combo-box" id="demo-combo">
     <input class="usa-input combo-box__input" type="text" id="demo-combo-input" placeholder="Please Select" autocomplete="off" aria-expanded="false" aria-controls="demo-combo-list">
     <input type="hidden" id="demo-combo-hidden">
@@ -428,7 +523,7 @@ For a group, the message goes under the <legend> and <field name> is the legend 
   </div>
 </div>`,
   code: `<label class="usa-label" for="primary-license-input">
-  Owner Application <span class="field-required">Required</span>
+  Owner Application <span class="required"><em>Required</em></span>
 </label>
 <span class="usa-error-message" id="primary-license-error" hidden>Select a primary application type</span>
 <div class="combo-box" id="primary-combo">
@@ -449,6 +544,7 @@ Text input + hidden input (holds the real value) + filtered <ul role="listbox">.
 },
 {
   name: "Date Input",
+  fidelity: "unverified",
   preview: `<label class="usa-label" for="demo-date">Target Completion Date</label>
 <input class="usa-input" id="demo-date" type="date" style="max-width:240px;">`,
   code: `<input class="usa-input" id="target-completion-date" name="target-completion-date" type="date" required>`,
@@ -468,11 +564,12 @@ GAP: the standard writes the required message as "The field <date field> is requ
 },
 {
   name: "Document Upload — Attachment Panel (Two-Step Save)",
+  fidelity: "unverified",
   preview: `<div style="background:#f0f0f0; padding:2rem; border-radius:0.5rem; max-width:520px;">
   <p style="font-size:1.6rem; margin-top:0;">After you click <strong>Upload</strong>, you must click <strong>Save</strong> under the Attachment Name input field to upload the file before you click <strong>Save and Close</strong> on this window.</p>
   <p style="font-size:1.6rem; font-weight:700;">File size and type limitations per attachment: 50 MB for txt, csv, png, jpg, jpeg, pdf, doc, xls, docx, xlsx</p>
   <div class="usa-form-group">
-    <label class="usa-label" for="demo-attachment-name">Attachment Name <span class="field-required">Required</span></label>
+    <label class="usa-label" for="demo-attachment-name">Attachment Name <span class="required"><em>Required</em></span></label>
     <input class="usa-input" id="demo-attachment-name" type="text">
   </div>
   <div class="usa-form-group">
@@ -487,7 +584,7 @@ GAP: the standard writes the required message as "The field <date field> is requ
   <p style="font-size:1.6rem; font-weight:700;">File size and type limitations per attachment: 50 MB for txt, csv, png, jpg, jpeg, pdf, doc, xls, docx, xlsx</p>
 
   <div class="usa-form-group">
-    <label class="usa-label" for="attachment-name">Attachment Name <span class="field-required">Required</span></label>
+    <label class="usa-label" for="attachment-name">Attachment Name <span class="required"><em>Required</em></span></label>
     <input class="usa-input" id="attachment-name" name="attachment-name" type="text" required>
   </div>
 
@@ -570,11 +667,23 @@ The outer "Save and Close" referenced in the instructional text is a separate, h
 Reused existing real patterns rather than inventing new ones: .tooltip-icon (circle "?" — from rlp-packets/question-builder.html; note it has no wired-up popover content anywhere in the codebase, just cursor:help styling) and .character-counter / "X of Y remaining" (from rlp-affiliations/task-detail-denied.html). The grey panel background reuses the established questions-section convention (#f0f0f0) rather than matching the screenshot's exact tone.`
 },
 {
+  name: "Empty State — Data Grid (No Data Found)",
+  fidelity: "verified",
+  preview: `<h2 class="h3" style="margin:1.66rem 0;">No data found</h2>`,
+  code: `<h2 class="h3">No data found</h2>`,
+  notes: `SOURCE: qa.lnpweb.com/management/cases/open and /management/license-type/view-all
+
+This is what RLP itself renders when a list-page data grid returns zero rows. Computed in production as 2rem / weight 400 / #4c4c4c — NOT the bold 2.4rem of a section heading, and not a <p>.
+
+Use this on any list page backed by a data grid. For the JS-toggled whole-table empty state on a detail page, see "Empty State — Standalone Paragraph" instead — that pattern has not been verified against production.`
+},
+{
   name: "Empty State — Standalone Paragraph",
+  fidelity: "unverified",
   preview: `<p style="padding: 3rem 0; color: #71767a; font-size: 1.6rem;">
   No email templates found. <a href="#" class="usa-link">Create your first email template.</a>
 </p>`,
-  code: `<table class="usa-table usa-table--borderless usa-table--striped">
+  code: `<table class="usa-table usa-table--borderless width-full minw-tablet">
   ...
   <tbody id="email-tbody"></tbody>
 </table>
@@ -588,7 +697,8 @@ Whole-table empty state: the <table> and this <p> toggle opposite display values
 },
 {
   name: "Empty State — Table Row",
-  preview: `<table class="usa-table usa-table--borderless usa-table--striped" style="margin:0;">
+  fidelity: "unverified",
+  preview: `<table class="usa-table usa-table--borderless width-full" style="margin:0;">
   <tbody><tr><td>No investigations on record for this case.</td></tr></tbody>
 </table>`,
   code: `<tbody id="investigations-tbody">
@@ -607,13 +717,14 @@ A single <tr> with colspan spanning all columns, removed (not hidden) once real 
 },
 {
   name: "Field With Error Message",
+  fidelity: "unverified",
   preview: `<div class="margin-bottom-4 usa-form-group--error">
-  <label class="usa-label" for="demo-code-value">Code Value <span class="field-required">Required</span></label>
+  <label class="usa-label" for="demo-code-value">Code Value <span class="required"><em>Required</em></span></label>
   <span class="usa-error-message">The field Code Value is required.</span>
   <input class="usa-input usa-input--error" id="demo-code-value" type="text">
 </div>`,
   code: `<div class="margin-bottom-4" id="code-value-group">
-  <label class="usa-label" for="code-value">Code Value <span class="field-required">Required</span></label>
+  <label class="usa-label" for="code-value">Code Value <span class="required"><em>Required</em></span></label>
   <span class="usa-error-message" id="code-value-error" hidden>The field Code Value is required.</span>
   <input class="usa-input" id="code-value" name="code-value" type="text" required>
 </div>
@@ -650,12 +761,13 @@ RESOLVED 2026-09-17: example copy was "Enter a code value", which did not follow
 },
 {
   name: "File Input",
+  fidelity: "unverified",
   preview: `<div>
-  <label class="usa-label" for="demo-file">File <span class="field-required">Required</span></label>
+  <label class="usa-label" for="demo-file">File <span class="required"><em>Required</em></span></label>
   <input type="file" id="demo-file" style="font-size: 1.6rem; display: block; width: 100%;">
 </div>`,
   code: `<div class="margin-bottom-2">
-  <label class="usa-label" for="doc-file">File <span class="field-required">Required</span></label>
+  <label class="usa-label" for="doc-file">File <span class="required"><em>Required</em></span></label>
   <input type="file" id="doc-file" name="doc-file" style="font-size: 1.6rem; display: block; width: 100%;">
 </div>`,
   notes: `SOURCE: create-case.html
@@ -666,6 +778,7 @@ Flag to Daniel: this bare input is a prototyping shortcut only, used for speed w
 },
 {
   name: "Icon Button (Table Row Action)",
+  fidelity: "unverified",
   preview: `<a href="#" class="icon-button" aria-label="View Task"><img src="assets/eye-icon.png" alt="" width="30" height="30"></a>
 <a href="#" class="icon-button" aria-label="Claim Task"><img src="assets/claim-task.png" alt="" width="30" height="30"></a>`,
   code: `<a href="task-detail.html?id=1" class="icon-button" aria-label="View Task">
@@ -680,6 +793,7 @@ Flag to Daniel: this bare input is a prototyping shortcut only, used for speed w
 },
 {
   name: "Modal / Dialog",
+  fidelity: "unverified",
   preview: `<button type="button" class="usa-button" data-modal-open="demo-modal">Open Modal</button>
 <div id="demo-modal" class="modal-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="demo-modal-title">
   <div class="modal-content" style="max-width:420px;">
@@ -717,6 +831,7 @@ Custom implementation (not USWDS usa-modal) — toggled via the hidden attribute
 },
 {
   name: "Navigation — Primary Nav",
+  fidelity: "verified",
   preview: `<nav class="horizontalNav main-menu">
   <ul class="usa-nav__primary display-flex padding-left-0">
     <li class="usa-nav__primary-item active"><span class="menuItem-inner"><a href="#">Queues</a></span></li>
@@ -751,6 +866,7 @@ This is only the primary nav list — the full page chrome also includes a banne
 },
 {
   name: "Page Action Bar — Standard (Left-Aligned)",
+  fidelity: "unverified",
   preview: `<div class="usa-form-group" style="max-width:300px;">
   <label class="usa-label" for="demo-doc-search">Search</label>
   <div style="display:flex; gap:1rem;">
@@ -780,6 +896,7 @@ Do NOT right-align or use justify-content: flex-end here — that's a common def
 },
 {
   name: "Page Action Bar — Step/Wizard (Split)",
+  fidelity: "unverified",
   preview: `<div style="background:#f0f0f0; padding:1rem; border-radius:0.5rem; display:flex; justify-content:space-between;">
   <button type="button" class="usa-button usa-button--outline">Back</button>
   <div style="display:flex; gap:1rem;">
@@ -809,12 +926,14 @@ ONLY use this split/right-aligned layout for multi-step application/packet wizar
 },
 {
   name: "Page Title",
+  fidelity: "verified",
   preview: `<h1 class="page-title page-title--underlined">Case Details: CM-2026-0347</h1>`,
   code: `<h1 class="page-title page-title--underlined" id="case-detail-title">Case Details: CM-2026-0347</h1>`,
   notes: `SOURCE: view-case-detail.html`
 },
 {
   name: "Pagination",
+  fidelity: "unverified",
   preview: `<nav aria-label="Pagination" class="usa-pagination" style="display:flex; justify-content:center;">
   <ul class="usa-pagination__list">
     <li class="usa-pagination__item usa-pagination__arrow"><a href="#" class="usa-pagination__link usa-pagination__previous-page" aria-label="Previous page"><span>‹</span><span class="usa-pagination__link-text">Previous</span></a></li>
@@ -852,13 +971,14 @@ Standard USWDS pagination markup, used as-is. Current page gets usa-current + ar
 },
 {
   name: "Radio Group",
+  fidelity: "unverified",
   preview: `<fieldset class="usa-fieldset">
-  <legend class="usa-legend">Status <span class="field-required">Required</span></legend>
+  <legend class="usa-legend">Status <span class="required"><em>Required</em></span></legend>
   <div class="usa-radio"><input class="usa-radio__input" id="demo-radio-active" type="radio" name="demo-status" checked><label class="usa-radio__label" for="demo-radio-active">Active</label></div>
   <div class="usa-radio"><input class="usa-radio__input" id="demo-radio-inactive" type="radio" name="demo-status"><label class="usa-radio__label" for="demo-radio-inactive">Inactive</label></div>
 </fieldset>`,
   code: `<fieldset class="usa-fieldset">
-  <legend class="usa-legend">Status <span class="field-required">Required</span></legend>
+  <legend class="usa-legend">Status <span class="required"><em>Required</em></span></legend>
   <div class="usa-radio">
     <input class="usa-radio__input" id="status-active" type="radio" name="status" value="active" checked>
     <label class="usa-radio__label" for="status-active">Active</label>
@@ -879,12 +999,20 @@ RESOLVED 2026-09-17: the standard's Radio row reads "Select at least one of the 
 },
 {
   name: "Section Heading",
-  preview: `<h2 class="section-heading">Section Title</h2>`,
-  code: `<h2 class="section-heading">Section Title</h2>`,
-  notes: `Standard: font-size 1.9rem; font-weight 700; border-bottom 2px solid #dfe1e2; padding-bottom 8px; margin 32px 0 16px. Used throughout create-case.html, create-questions.html, etc.`
+  fidelity: "verified",
+  preview: `<h2 class="font-family-sans text-bold margin-top-0 margin-bottom-1">Section Title</h2>`,
+  code: `<h2 class="font-family-sans text-bold margin-top-0 margin-bottom-1">Section Title</h2>`,
+  notes: `SOURCE: qa.lnpweb.com/management/cases/open ("Search Cases")
+
+CORRECTED 2026-09-18. This entry previously specified <h2 class="section-heading"> at 1.9rem with a 2px #dfe1e2 bottom border. RLP does not have a .section-heading class and does not underline section headings.
+
+Real RLP section heading, read from computed styles: 2.4rem / weight 700 / #4c4c4c / margin-bottom 8px / NO bottom border.
+
+Older prototypes across the rlp-* directories still use .section-heading. They will look different from the product until they are updated - that is expected, and this entry is the correct pattern.`
 },
 {
   name: "Select — Short List",
+  fidelity: "verified",
   preview: `<label class="usa-label" for="demo-select">Appeal Configuration</label>
 <select class="usa-select" id="demo-select">
   <option value="">Please Select</option>
@@ -915,6 +1043,7 @@ When a page has two or more selects that share a label stem, the instance number
 },
 {
   name: "Status Tag / Badge",
+  fidelity: "unverified",
   preview: `<div style="display:flex; gap:2rem;"><span class="status-pending">Pending</span><span class="status-active">Active</span><span class="status-rejected">Rejected</span></div>`,
   code: `<span class="status-pending">Pending</span>`,
   notes: `SOURCE: view-case-detail.html; color mapping in css/styles.css (~line 836)
@@ -925,6 +1054,7 @@ When reproducing a NEW status value, map it to the closest existing semantic gro
 },
 {
   name: "Table — With Controls Bar",
+  fidelity: "verified",
   preview: `<div class="table-controls">
   <div class="table-controls__left"><strong>Showing 1 - 2 of 2 Entries</strong></div>
   <div class="table-controls__right">
@@ -932,7 +1062,7 @@ When reproducing a NEW status value, map it to the closest existing semantic gro
     <select class="usa-select table-controls__select" id="demo-entries"><option>100</option><option>50</option></select>
   </div>
 </div>
-<table class="usa-table usa-table--borderless usa-table--striped" style="margin:0;">
+<table class="usa-table usa-table--borderless width-full" style="margin:0;">
   <thead><tr><th scope="col">Application Title</th><th scope="col">Controls</th></tr></thead>
   <tbody><tr><td>Business Application 123</td><td><a href="#" class="icon-button" aria-label="View Task"><img src="assets/eye-icon.png" alt="" width="30" height="30"></a></td></tr></tbody>
 </table>`,
@@ -951,7 +1081,7 @@ When reproducing a NEW status value, map it to the closest existing semantic gro
   </div>
 </div>
 
-<table class="usa-table usa-table--borderless usa-table--striped">
+<table class="usa-table usa-table--borderless width-full minw-tablet">
   <thead>
     <tr>
       <th scope="col" role="columnheader" aria-sort="none">Application Title <span class="sort-arrows"></span></th>
@@ -969,12 +1099,19 @@ When reproducing a NEW status value, map it to the closest existing semantic gro
     </tr>
   </tbody>
 </table>`,
-  notes: `SOURCE: queues.html
+  notes: `SOURCE: queues.html; verified against qa.lnpweb.com/management/cases/open and /management/license-type/view-all
+
+CORRECTED 2026-09-18. This entry previously specified usa-table--striped. RLP list tables are NOT striped - the real class list is "usa-table usa-table--borderless width-full minw-tablet data-grid-table" (data-grid-table is added by RLP's data-grid component; omit it if you are not using that component).
+
+Computed values from the live app: th 1.6rem / weight 700 / bg #f0f0f0 / padding 8px 16px; td 1.6rem / padding 20px 5px 20px 10px; both with a 1px #aeb0b5 bottom border.
+
+Caveat: verified on two list pages, both of which returned zero rows, so row-level striping could not be observed directly - but neither table carried the striped class and no striped element was present on either page.
 
 Sortable headers get role="columnheader" aria-sort="none" + an empty <span class="sort-arrows">. Controls column has no sort arrows and is always last, with white-space: nowrap to prevent icon wrapping. Precede with the Icon Key accordion when a Controls column is present.`
 },
 {
   name: "Tag",
+  fidelity: "unverified",
   preview: `<span class="usa-tag">Reinspection</span> <span class="usa-tag">Asset</span> <span class="usa-tag">Primary</span>`,
   code: `<!-- Canonical (stock USWDS) — use this going forward -->
 <span class="usa-tag">Primary</span>
@@ -1001,6 +1138,7 @@ Note the canonical tag is uppercase, so a version badge renders as V2, not v2. F
 },
 {
   name: "Tabs — Horizontal",
+  fidelity: "unverified",
   preview: `<div class="horizontal-tabs">
   <button type="button" class="horizontal-tab demo-tab active" data-tab="demo-a">Inspections</button>
   <button type="button" class="horizontal-tab demo-tab" data-tab="demo-b">Investigations</button>
@@ -1025,6 +1163,7 @@ Custom implementation (not USWDS) — .horizontal-tab.active / .tab-panel.active
 },
 {
   name: "Task Container (Tile)",
+  fidelity: "proposed",
   preview: `<div class="task-container" style="margin-top:0;">
   <div class="task-header" style="display:flex; justify-content:space-between; align-items:flex-start;">
     <div class="task-header-line"><strong>Case Subject:</strong> Johnson, Marcus</div>
@@ -1051,6 +1190,7 @@ The redesigned case-detail page is a stack of these tiles on an off-white #f9f9f
 },
 {
   name: "Textarea",
+  fidelity: "unverified",
   preview: `<label class="usa-label" for="demo-textarea">Description</label>
 <textarea class="usa-textarea" id="demo-textarea" style="max-width:100%;"></textarea>`,
   code: `<label class="usa-label" for="doc-description">Description</label>
@@ -1406,6 +1546,31 @@ function annFrag(f) {
   return '<span class="lib-ann"><span class="lib-ann__n">' + f.n + '</span>' + esc(f.text) + '</span>';
 }
 
+/* Fidelity = how far this entry has been checked against the live RLP app.
+   verified   - computed styles read off qa.lnpweb.com and they match. Copy as-is.
+   unverified - plausible but never checked against RLP. Confirm before shipping.
+   proposed   - deliberately ahead of RLP. Does NOT exist in the product yet. */
+const FIDELITY = {
+  verified: {
+    label: 'Verified against RLP',
+    detail: 'Computed styles were read off the live app (qa.lnpweb.com, 2026-09-18) and match this markup. Safe to copy.'
+  },
+  unverified: {
+    label: 'Not verified against RLP',
+    detail: 'This came from a prototype and has never been checked against the live app. Confirm against RLP before shipping it to production.'
+  },
+  proposed: {
+    label: 'Proposed — not in RLP yet',
+    detail: 'A design proposal that deliberately differs from the live app. Do not treat this as something the product already has.'
+  }
+};
+
+function renderFidelity(c) {
+  const f = FIDELITY[c.fidelity] || FIDELITY.unverified;
+  return '<div class="lib-fid lib-fid--' + (c.fidelity || 'unverified') + '">' +
+    '<span class="lib-fid__dot"></span><span><b>' + esc(f.label) + '</b> — ' + esc(f.detail) + '</span></div>';
+}
+
 function renderExample(ex, kind, title, key) {
   return '<div class="lib-ex__card lib-ex--' + kind + '">' +
     '<div class="lib-ex__head">' +
@@ -1508,7 +1673,9 @@ function renderIndex() {
       '<div class="lib-group__head"><span>' + L + '</span><span>' + items.length + '</span></div>' +
       items.map(c => '<button type="button" class="lib-item' +
         (state.view === 'component' && state.sel === c.name ? ' is-active' : '') +
-        '" data-name="' + esc(c.name) + '">' + esc(c.name) + '</button>').join('') +
+        '" data-name="' + esc(c.name) + '" title="' + esc((FIDELITY[c.fidelity] || FIDELITY.unverified).label) + '">' +
+        '<span class="lib-dot lib-dot--' + (c.fidelity || 'unverified') + '"></span>' +
+        esc(c.name) + '</button>').join('') +
       '</div>';
   }).join('') +
     '<div class="lib-group__head" style="position:static;border-bottom:none;padding-top:14px"><span>FOUNDATIONS</span></div>' +
@@ -1553,6 +1720,7 @@ function renderMain() {
   const p = parseNotes(c.notes);
   main.innerHTML = '<div class="lib-pane">' +
     '<h1>' + esc(c.name) + '</h1>' +
+    renderFidelity(c) +
     '<p class="lib-source"><span class="lib-source__badge">SOURCE</span>' + esc(p.source) +
       '<button type="button" class="lib-copy" id="lib-copy-link" style="margin-left:auto;">Copy link</button></p>' +
     '<div class="lib-stage">' + c.preview + '</div>' +
