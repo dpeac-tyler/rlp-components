@@ -399,6 +399,14 @@ function showErrorAlert(messages) {
 </` + `script>`,
   notes: `SOURCE: add-denial-code.html; wording per Confluence "Error Messaging Standards/Specifics"
 
+CAUTION, 2026-09-18: no top-level error summary alert was found in RLP. The application builder was seen in a genuine validation-error state (two invalid rich-text fields) and RLP showed ONLY inline field errors - no summary alert anywhere on the page, and no .usa-alert element in the DOM at all.
+
+The global standards say "a top-level usa-alert--error alert scrolls into view when Save is attempted with errors". That was not observed. It may exist on forms not yet visited, so this is recorded as unverified rather than deleted - but do not assume RLP has it.
+
+The alert STRUCTURE (.usa-alert > .usa-alert__body) is correct - see the verified "Alert - Warning (Slim)" entry, confirmed in a live modal. What is unverified here is specifically the error variant's colours and the error-summary pattern as a whole.
+
+For the inline field error RLP definitely does have, see "Field With Error Message" - that one is verified.
+
 Sits above profile-content, right after the page header. Paired with the "Field With Error Message" pattern — see the full validateForm()/showFieldError()/clearErrors() shape noted there.
 
 Four rules, all from the standard:
@@ -816,47 +824,55 @@ A single <tr> with colspan spanning all columns, removed (not hidden) once real 
 },
 {
   name: "Field With Error Message",
-  fidelity: "unverified",
-  preview: `<div class="margin-bottom-4 usa-form-group--error">
-  <label class="usa-label" for="demo-code-value">Code Value <span class="required"><em>Required</em></span></label>
-  <span class="usa-error-message">The field Code Value is required.</span>
+  fidelity: "verified",
+  preview: `<div class="margin-bottom-4">
+  <label class="usa-label usa-label--error maxw-full" for="demo-code-value">
+    <div class="display-inline">Code Value</div> <span class="required"><em>Required</em></span>
+    <span class="usa-error-message">The field Code Value is required.</span>
+  </label>
   <input class="usa-input usa-input--error" id="demo-code-value" type="text">
 </div>`,
-  code: `<div class="margin-bottom-4" id="code-value-group">
-  <label class="usa-label" for="code-value">Code Value <span class="required"><em>Required</em></span></label>
-  <span class="usa-error-message" id="code-value-error" hidden>The field Code Value is required.</span>
+  code: `<!-- Error state: add usa-label--error to the LABEL and usa-input--error to the
+     field. The message is a child of the label, after the Required span. -->
+<div class="margin-bottom-4" id="code-value-group">
+  <label class="usa-label maxw-full" for="code-value">
+    <div class="display-inline">Code Value</div>
+    <span class="required"><em>Required</em></span>
+    <span class="usa-error-message" id="code-value-error" hidden>The field Code Value is required.</span>
+  </label>
   <input class="usa-input" id="code-value" name="code-value" type="text" required>
 </div>
 
 <script>
-function showFieldError(groupId, errorId, fieldId) {
-  document.getElementById(groupId).classList.add('usa-form-group--error');
+function showFieldError(labelEl, errorId, fieldId) {
+  labelEl.classList.add('usa-label--error');
   document.getElementById(errorId).removeAttribute('hidden');
   document.getElementById(fieldId).classList.add('usa-input--error');
 }
 function clearErrors() {
-  document.querySelectorAll('.usa-form-group--error').forEach(el => el.classList.remove('usa-form-group--error'));
+  document.querySelectorAll('.usa-label--error').forEach(el => el.classList.remove('usa-label--error'));
   document.querySelectorAll('.usa-error-message').forEach(el => el.setAttribute('hidden', ''));
   document.querySelectorAll('.usa-input--error').forEach(el => el.classList.remove('usa-input--error'));
-  document.getElementById('error-alert').setAttribute('hidden', '');
 }
 </` + `script>`,
-  notes: `SOURCE: add-denial-code.html; error styling in css/styles.css (~line 2025); wording per Confluence "Error Messaging Standards/Specifics"
+  notes: `SOURCE: qa.lnpweb.com/management/create-application/create with Application Description and Application Instructions in an invalid state
 
-This is the generic text-input error pattern — the messages below are the Text Input row of the standard, and they also apply to any single-line input without a more specific entry (Textarea and Custom IDs have their own).
+VERIFIED, and the styling was almost exactly right. What matched: .usa-error-message is display block, 1.6rem, weight 700, colour #b50909 - byte-identical.
 
-The group wrapper is often a plain <div id="..."> rather than literally usa-form-group — usa-form-group--error / usa-input--error get toggled on by JS, not baked into the initial markup. Each input also clears its own error live on the 'input' event.
+Two small corrections now applied to css/styles.css:
+- .usa-input--error border is 4px in RLP, was 0.3rem (3px) here
+- .usa-error-message carries NO vertical margin in RLP (padding 4px 0 only); this had margin-top 0.4rem / margin-bottom 0.8rem
 
-Substitute the real label text for <field name>, exactly as the label reads on screen — "The field Code Value is required.", not "The field code-value is required." If the field repeats, carry the instance number: <field name (n)>.
+One MECHANISM correction. The global standards said the error state is switched on by adding usa-form-group--error to the wrapping group. RLP does not use that class at all - it has no .usa-form-group--error anywhere. Instead:
+- the LABEL gets usa-label--error (which just sets font-weight 700; the label colour stays #444 and does NOT turn red)
+- the field gets usa-input--error
+- .usa-label--error did not exist in css/styles.css and has been added
 
-RESOLVED 2026-08-28: .usa-form-group--error gets a #b50909 left border, 4px thick. .usa-input--error gets a #b50909 border, 3px thick. .usa-form-group--error .usa-label is bold. Preview above shows the classes applied directly (skipping the JS) to demonstrate the finished error state.
+STRUCTURE: the error <span> is a CHILD OF THE LABEL, placed after the Required span - not a sibling between label and input as this entry previously had it. It still renders visually between the label text and the input, so the documented placement was right even though the nesting was not.
 
-RESOLVED 2026-09-17: example copy was "Enter a code value", which did not follow the standard. Now "The field Code Value is required."`,
-  errors: [
-    { trigger: 'Empty field', message: ERR_REQUIRED, placement: 'Inline, between label and input' },
-    { trigger: 'Incorrect entry', message: ERR_NOT_VALID, placement: 'Inline, between label and input' },
-    { trigger: 'Invalid character(s)', message: ERR_CHARS, placement: 'Inline, between label and input' }
-  ]
+RLP does not set aria-invalid on the errored field here (the date input elsewhere does carry aria-invalid="false"), so screen-reader users get the message through the label association only. Worth keeping aria-invalid in new work even though RLP omits it.
+
+On a rich-text field the usa-input--error class goes on the .rich-text-input wrapper, giving the whole editor a 4px red border.`
 },
 {
   name: "File Input",
@@ -1291,6 +1307,61 @@ Colour mapping in css/styles.css (~line 836)
 Semantic class-per-status-value groups: active/approved/live/paid/completed · pending/open/assigned/approved-awaiting-payment · rejected/denied/cancelled/past-due/terminated · expired/revoked/withdrawn/decommissioned/retired · in-progress/rejected-for-resubmission/in-cart · inactive · on-hold/suspended/payment-in-process · in-review/draft/initiated · archived.
 
 When reproducing a NEW status value, map it to the closest existing semantic group — don't invent a new color.`
+},
+{
+  name: "Step Indicator (Progress)",
+  fidelity: "verified",
+  preview: `<nav class="usa-step-indicator usa-step-indicator--counters-sm" aria-label="progress">
+  <ol class="usa-step-indicator__segments">
+    <li class="usa-step-indicator__segment usa-step-indicator__segment--complete"><span class="usa-step-indicator__segment-label">Application Details</span></li>
+    <li class="usa-step-indicator__segment usa-step-indicator__segment--current" aria-current="true"><span class="usa-step-indicator__segment-label">Applicant Information</span></li>
+    <li class="usa-step-indicator__segment"><span class="usa-step-indicator__segment-label">Question Builder</span></li>
+    <li class="usa-step-indicator__segment"><span class="usa-step-indicator__segment-label">Preview</span></li>
+  </ol>
+</nav>`,
+  code: `<nav class="usa-step-indicator usa-step-indicator--counters-sm" aria-label="progress">
+  <ol class="usa-step-indicator__segments">
+    <li class="usa-step-indicator__segment usa-step-indicator__segment--complete">
+      <span class="usa-step-indicator__segment-label">Application Details</span>
+    </li>
+    <li class="usa-step-indicator__segment usa-step-indicator__segment--current" aria-current="true">
+      <span class="usa-step-indicator__segment-label">Applicant Information</span>
+    </li>
+    <li class="usa-step-indicator__segment">
+      <span class="usa-step-indicator__segment-label">Question Builder</span>
+    </li>
+  </ol>
+
+  <div class="usa-step-indicator__header">
+    <h2 class="usa-step-indicator__heading">
+      <span class="usa-step-indicator__heading-counter">
+        <span class="usa-sr-only">Step</span>
+        <span class="usa-step-indicator__current-step">1</span>
+        <span class="usa-step-indicator__total-steps">of 6</span>
+      </span>
+      <span class="usa-step-indicator__heading-text">Application Details</span>
+    </h2>
+  </div>
+</nav>`,
+  notes: `SOURCE: qa.lnpweb.com/management/create-application/create (horizontal, top of page) and the same page's left-hand sub-step rail (vertical)
+
+Stock USWDS Step Indicator - RLP uses it essentially unmodified. It appears on every wizard page in the product, and while css/styles.css already carried a full implementation (~line 2101, including --vertical and --sidebar variants), there was no catalog ENTRY for it, so nobody reading the library would know it existed.
+
+Computed values from the live app:
+- segment ::before is the numbered circle: 2.4rem square, border-radius 99rem, white text, content counter(usa-step-indicator) - the number is GENERATED BY CSS, not written into the markup
+- segment ::after is the connector bar: full segment width, 0.8rem tall
+- segment label: 1.6rem, weight 700, colour #005ea2, margin-top 2.4rem
+- root always carries usa-step-indicator--counters-sm
+- heading reads "Step 1 of 6 Application Details", assembled from __heading-counter (holding __current-step and __total-steps) plus __heading-text
+
+ONE THING STILL TO CHECK: every segment sampled on the live page computed to #005ea2, including the ones matching --current and --complete. css/styles.css renders --complete as a darker navy instead. The observed page had only step 1 active with nothing genuinely completed, so this is not a clean comparison - re-check on a wizard partway through before trusting either. The local stylesheet was left as-is rather than flattened to blue on that basis.
+
+RLP-specific variants on the same page:
+- usa-step-indicator__segments--vertical - the left-hand sub-step rail, same classes laid out as a block
+- step-indicator--disabled - steps not yet reachable, greyed
+- blocked-step-indicator__icon - a blocked glyph shown instead of the number on a disabled step (two present on the observed page, on "Getting Started" and "Application Type")
+
+Do not confuse with "Step Section (Numbered Panel)" - that is the grey field-group panel with the orange numbered corner. This is the progress rail.`
 },
 {
   name: "Step Section (Numbered Panel)",

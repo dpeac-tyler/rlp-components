@@ -35,7 +35,7 @@ coloured dot in the index:
 - 🟣 **Proposed — not in RLP yet** — a design proposal that deliberately differs
   from the live app. Does not exist in the product. Not a spec.
 
-Current state: **30 verified · 8 unverified · 1 proposed** (39 entries).
+Current state: **32 verified · 7 unverified · 1 proposed** (40 entries).
 
 The remainder is a statement about how much checking has been done, not a
 judgement on the components — verification is manual and ongoing.
@@ -71,6 +71,7 @@ Static HTML + vanilla JS. Built on **USWDS** (US Web Design System);
 | Date | What was checked | Result |
 |---|---|---|
 | 2026-09-18 (pass 1) | 14 components against QA (`qa.lnpweb.com`), agency-side | 11 verified identical; 3 real drifts corrected (section heading, required indicator, data-grid empty state); 1 documentation error fixed (primary button is `#005ea2`, navy `#1a4480` is hover) |
+| 2026-09-18 (pass 6) | A genuine validation-error state | 32 verified. Inline field errors verified — colour, size and weight were already exact. Three corrections: the error message is a child of the `<label>` (not a sibling), RLP switches the state with `usa-label--error` rather than `usa-form-group--error` (which it doesn't have at all), and the error border is 4px not 3px. **No error summary alert appeared** — RLP showed inline errors only. Also added a **Step Indicator** entry; the CSS was already in the stylesheet but had no catalog entry. |
 | 2026-09-18 (pass 5) | The application builder (create-application) | 30 verified, and **three new components added** that the library was missing entirely: the numbered **Step Section** panel (RLP's signature form chrome — orange CSS-triangle corner on a `#f0f0f0` panel), the **Quill rich-text editor** RLP uses in place of every textarea, and the **character counter**. Add-Item List verified — items stack with an accent-warm "Add More" below, no table. |
 | 2026-09-18 (pass 4) | Tag, plus three more status values | 26 verified. `.usa-tag` had the right colours but five wrong properties — RLP's is 14px/weight 400/radius 2px/padding 1px 8px/display inline, not the stock-USWDS 12px/700/square. Corrected. All **five** status colours now verified byte-identical to the `.status-*` palette (`#417505`, `#8F5800`, `#A34900`, `#205493`, `#13669A`). |
 | 2026-09-18 (pass 3) | 4 more components on the Individual Profile, incl. a live modal | 25 verified total. Horizontal tabs are RLP's `.sub-tabs` (equal-width flex, grey inactive, blue underline on active), not a custom `.horizontal-tabs`. Modals are `.react-confirm-alert-overlay` + `.modal[role=dialog]` + `.alert-heading`, with a **white 90%** scrim, not a dark one — and `.modal` collides with a legacy class in this repo. Alert left border corrected 5px → 8px; added a verified warning variant. `usa-button--unstyled` verified, but RLP uses it as a text link, not for icon-only controls. Noted that `.profile-content` / `.inspection-content` don't exist in RLP. |
@@ -81,9 +82,9 @@ stylesheet, so there is no CSS file to diff. Verification is done by reading
 computed styles off real elements in the browser — see AGENTS.md for the method
 and the pages used.
 
-Still unverified (8): textarea, file input, error alert,
-field-with-error-message, document upload panel, both prototype-specific
-empty-state variants, and the combobox.
+Still unverified (7): textarea, file input, the error *summary* alert,
+document upload panel, both prototype-specific empty-state variants, and the
+combobox.
 
 Two are probably **negatives** rather than gaps: RLP's application builder has
 no `<textarea>` at all (it uses a Quill rich-text editor), and no file-upload

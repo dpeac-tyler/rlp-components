@@ -2037,21 +2037,29 @@ input[type="date"].usa-input {
   font-weight: 700 !important;
 }
 
+/* Verified against RLP 2026-09-18. Colour, size and weight matched exactly;
+   RLP carries no vertical margin (it sits inside the <label>, which supplies
+   the spacing) and pads 4px top and bottom. */
 .usa-error-message {
   display: block;
   color: #b50909;
   font-size: 1.6rem;
   font-weight: 700;
-  margin-top: 0.4rem;
-  margin-bottom: 0.8rem;
-  padding-top: 0.4rem;
+  margin: 0;
+  padding: 0.4rem 0;
 }
 
+/* RLP marks the error state on the LABEL, not on a form-group wrapper. */
+.usa-label--error {
+  font-weight: 700;
+}
+
+/* RLP uses a 4px error border, not 3px. Verified 2026-09-18. */
 .usa-input--error,
 .usa-select--error,
 .usa-textarea--error {
-  border: 0.3rem solid #b50909;
-  border-width: 0.3rem;
+  border: 0.4rem solid #b50909;
+  border-width: 0.4rem;
 }
 
 .usa-input--error:focus,
@@ -3505,4 +3513,36 @@ ul.pagination li.disabled a {
   clip: rect(0 0 0 0);
   white-space: nowrap;
   border: 0;
+}
+
+/* Step indicator - RLP-specific additions only.
+   The stock USWDS implementation already lives at ~line 2101 (including the
+   --vertical and --sidebar variants); do not duplicate it. These are the
+   modifiers RLP adds on top, verified 2026-09-18. */
+
+/* RLP always sets this on the root. Smaller numbered counters. */
+.usa-step-indicator--counters-sm .usa-step-indicator__segment::before {
+  width: 2.4rem;
+  height: 2.4rem;
+  font-size: 1.4rem;
+}
+
+/* Steps not yet reachable: greyed out, with a blocked glyph in place of the
+   number (RLP renders that glyph as .blocked-step-indicator__icon). */
+.step-indicator--disabled .usa-step-indicator__segment::before,
+.step-indicator--disabled .usa-step-indicator__segment::after {
+  background-color: #a9aeb1;
+}
+
+.step-indicator--disabled .usa-step-indicator__segment-label {
+  color: #71767a;
+}
+
+.blocked-step-indicator__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  color: #71767a;
 }
