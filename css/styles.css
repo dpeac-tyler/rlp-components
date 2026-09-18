@@ -3418,9 +3418,17 @@ ul.pagination li.disabled a {
    ========================================================================== */
 
 /* Numbered step section. RLP's wizard forms wrap every group of fields in one
-   of these: a grey panel with a numbered orange corner triangle. The triangle
-   is two stacked CSS border-triangles - white 85px behind, orange 75px in
-   front - not an image. */
+   of these: a grey panel with a numbered orange corner triangle. The corner is
+   two stacked CSS border-triangles - not an image:
+     .step-section__wrapper::before  white triangle (the outer notch)
+     .step-section__num::before      orange triangle (the visible badge)
+   The legend itself stays position:static, so BOTH the orange triangle and the
+   number span position against .step-section__wrapper.
+   Two sizes exist. Add .step-section__primary for a top-level panel (85/75px,
+   2.4rem number); omit it for a nested panel (55/50px, 1.8rem number).
+   All values verified against qa.lnpweb.com/management/license-type/create
+   2026-09-18 - RLP authors these in px, and they are px here too so the
+   triangles stay pixel-identical. */
 .step-section__wrapper {
   position: relative;
   display: flex;
@@ -3428,6 +3436,7 @@ ul.pagination li.disabled a {
   margin-bottom: 1.6rem;
 }
 
+/* White outer notch */
 .step-section__wrapper::before {
   content: "";
   position: absolute;
@@ -3436,22 +3445,30 @@ ul.pagination li.disabled a {
   width: 0;
   height: 0;
   border-style: solid;
-  border-width: 8.5rem 8.5rem 0 0;
+  border-width: 55px 55px 0 0;
   border-color: #fff transparent transparent transparent;
 }
 
-.step-section__num {
-  position: relative;
+.step-section__wrapper.step-section__primary::before {
+  border-width: 85px 85px 0 0;
+}
+
+.step-section__wrapper .step-section__num {
+  position: static;
   display: block;
-  flex: 0 0 auto;
-  width: 7rem;
-  margin: 0;
-  font-size: 1.8rem;
-  font-weight: 700;
+  width: 50px;
+  margin: 0 1px 0 0;
+  padding: 0;
   color: #444;
 }
 
-.step-section__num::before {
+.step-section__wrapper.step-section__primary .step-section__num {
+  width: 75px;
+  margin-right: 5px;
+}
+
+/* Orange badge */
+.step-section__wrapper .step-section__num::before {
   content: "";
   position: absolute;
   top: 0;
@@ -3459,20 +3476,56 @@ ul.pagination li.disabled a {
   width: 0;
   height: 0;
   border-style: solid;
-  border-width: 7.5rem 7.5rem 0 0;
+  border-width: 50px 50px 0 0;
   border-color: #fa9441 transparent transparent transparent;
 }
 
-.step-section__num > span {
-  position: relative;
-  z-index: 1;
-  display: inline-block;
-  padding: 0.2rem 0 0 0.8rem;
+.step-section__wrapper.step-section__primary .step-section__num::before {
+  border-width: 75px 75px 0 0;
+}
+
+/* The number is absolutely positioned over the triangle and horizontally
+   centred in a fixed-width flex box - it is NOT offset with padding-left. */
+.step-section__wrapper .step-section__num > span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  width: 35px;
+  padding-top: 2px;
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.step-section__wrapper.step-section__primary .step-section__num > span {
+  width: 50px;
+  padding-top: 6px;
+  font-size: 2.4rem;
 }
 
 .step-section__content {
   width: 100%;
-  padding: 1.6rem;
+  padding: 1.6rem 3.2rem 1.6rem 1.6rem;
+}
+
+/* Wrapper for everything below the panel heading. Carries no styling of its
+   own in RLP; it exists so the app can target field rows inside it. */
+.step-section__children {
+  display: block;
+}
+
+/* Panel heading size used inside a step section (h2.h3-size) */
+.h3-size {
+  font-size: 2rem;
+  line-height: 2.8rem;
+  font-weight: 700;
+  color: #4c4c4c;
+}
+
+.padding-right-4 {
+  padding-right: 3.2rem;
 }
 
 /* Rich text editor (Quill). RLP uses this for every multi-line text field -

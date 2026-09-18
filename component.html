@@ -1471,38 +1471,73 @@ Do not confuse with "Step Section (Numbered Panel)" - that is the grey field-gro
   name: "Step Section (Numbered Panel)",
   fidelity: "verified",
   preview: `<fieldset style="border:0; padding:0; margin:0;">
-  <div class="position-relative display-flex step-section__wrapper">
-    <legend class="usa-legend step-section__num margin-0"><span>1<span class="visuallyhidden"> of 6</span></span></legend>
-    <div class="step-section__content">
-      <h3 style="font-size:1.9rem; margin:0 0 4px;">Document 1</h3>
-      <hr style="margin:0 0 16px;">
-      <label class="usa-label" for="demo-step-type">1. Type <span class="required"><em>Required</em></span></label>
-      <select class="usa-select" id="demo-step-type" style="max-width:320px;"><option>Certification Document</option></select>
+  <div class="position-relative display-flex step-section__wrapper bg-base-lightest step-section__primary" style="margin-bottom:8px;">
+    <legend class="usa-legend step-section__num margin-0"><span>1<span class="visuallyhidden">License Type Name</span></span></legend>
+    <div class="step-section__content width-full padding-2 padding-right-4">
+      <div class="position-relative width-full display-flex flex-align-center">
+        <h2 class="h3-size margin-0 text-bold">License Type Name</h2>
+      </div>
+      <div class="step-section__children">
+        <p class="margin-top-2">Provide the following information for your license type.</p>
+        <label class="usa-label" for="demo-step-name">License Type Name <span class="required">Required</span></label>
+        <input class="usa-input" id="demo-step-name" type="text" style="max-width:320px;">
+      </div>
+    </div>
+  </div>
+  <div class="position-relative display-flex step-section__wrapper bg-base-lightest" style="margin-bottom:0;">
+    <legend class="usa-legend step-section__num margin-0"><span>2<span class="visuallyhidden">Nested panel</span></span></legend>
+    <div class="step-section__content width-full padding-2 padding-right-4">
+      <div class="position-relative width-full display-flex flex-align-center">
+        <h2 class="h3-size margin-0 text-bold">Nested panel (no step-section__primary)</h2>
+      </div>
     </div>
   </div>
 </fieldset>`,
   code: `<fieldset>
-  <div class="position-relative display-flex step-section__wrapper margin-bottom-2">
+  <div class="position-relative display-flex step-section__wrapper margin-bottom-2 bg-base-lightest step-section__primary">
     <legend class="usa-legend step-section__num margin-0">
-      <span>1<span class="visuallyhidden"> of 6</span></span>
+      <span>1<span class="visuallyhidden">License Type Name</span></span>
     </legend>
-    <div class="step-section__content width-full padding-2">
-      <!-- section heading + fields -->
+    <div class="step-section__content width-full padding-2 padding-right-4">
+      <div class="position-relative width-full display-flex flex-align-center">
+        <h2 class="h3-size margin-0 text-bold">License Type Name</h2>
+      </div>
+      <div class="step-section__children">
+        <!-- intro copy + fields -->
+      </div>
     </div>
   </div>
 </fieldset>`,
-  notes: `SOURCE: qa.lnpweb.com/management/create-application/document-upload and /management/license-type/create
+  notes: `SOURCE: qa.lnpweb.com/management/license-type/create and /management/create-application/document-upload. Re-measured from the live DOM 2026-09-18.
 
-RLP wraps every group of fields on a wizard form in one of these. It is the single most recognisable piece of RLP form chrome and the library did not have it.
+RLP wraps every group of fields on a wizard form in one of these. It is the single most recognisable piece of RLP form chrome.
 
-Structure: a <fieldset> containing a flex .step-section__wrapper (background #f0f0f0, margin-bottom 16px), whose two children are the numbered <legend class="usa-legend step-section__num"> and a .step-section__content (width 100%, padding 16px).
+Structure: a &lt;fieldset&gt; containing a flex .step-section__wrapper (background #f0f0f0 via bg-base-lightest, margin-bottom 16px), whose two children are the numbered &lt;legend class="usa-legend step-section__num margin-0"&gt; and a .step-section__content (width 100%, padding 16px with 32px on the right). Inside the content, the panel title is an h2.h3-size.margin-0.text-bold in its own flex row, and everything after it sits in a .step-section__children div.
 
-The numbered orange corner is NOT an image. It is two stacked CSS border-triangles:
-- .step-section__wrapper::before - 85px white triangle (the outer notch)
-- .step-section__num::before - 75px triangle in accent-warm #fa9441 (the visible badge)
-Both are position absolute at the top-left with border-width "Npx Npx 0 0" and only border-top-color set.
+THE NUMBERED CORNER - exact geometry, all in px (RLP authors it in px, not rem):
 
-The number itself sits above the triangle at 1.8rem / weight 700 / #444, with the accessible remainder of the label in a .visuallyhidden span (e.g. "1" visible, " of 6" hidden).
+Two sizes, switched by .step-section__primary on the wrapper:
+
+|                        | primary (top level) | nested (no modifier) |
+|------------------------|---------------------|----------------------|
+| wrapper::before, white | 85px                | 55px                 |
+| num::before, orange    | 75px                | 50px                 |
+| legend width           | 75px                | 50px                 |
+| legend margin-right    | 5px                 | 1px                  |
+| number span width      | 50px                | 35px                 |
+| number span padding-top| 6px                 | 2px                  |
+| number font-size       | 2.4rem              | 1.8rem               |
+
+Both triangles are CSS borders, not images: width/height 0, border-width "Npx Npx 0 0", only border-top-color set (#fff on the wrapper, accent-warm #fa9441 on the legend). Both are absolutely positioned at top/left 0.
+
+Three details that are easy to get wrong, and were wrong in this library until 2026-09-18:
+1. .step-section__num is position:STATIC. It is not a containing block, so both the orange triangle and the number span resolve their absolute position against .step-section__wrapper. Making the legend position:relative shifts the badge.
+2. The number is NOT nudged into place with padding-left. Its span is position:absolute at top/left 0, display:flex, justify-content:center, with a fixed width (50px primary / 35px nested) and a small padding-top. That is what optically centres the digit in the upper-left of the triangle, and it keeps a two-digit number ("13") centred too.
+3. The number is 2.4rem/700 #444 on a primary panel - not 1.8rem. 1.8rem is the nested size.
+
+RLP also sets z-index:10 on the legend and z-index:0 on its ::before. Both are inert (the legend is static), so the orange triangle paints over the white one purely by tree order. Kept in the production markup, not needed in a prototype.
+
+The accessible label is the remainder of the span: &lt;span&gt;1&lt;span class="visuallyhidden"&gt;License Type Name&lt;/span&gt;&lt;/span&gt; - RLP puts the section title (and sometimes its intro sentence) in the hidden part.
 
 Numbering is per-context: the outer form sections use one running sequence (observed up to 13) and repeated add-item cards restart at 1. Field labels inside a repeated card are themselves prefixed with the card number ("1. Type", "1. Sub Type").
 
