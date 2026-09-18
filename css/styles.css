@@ -3129,17 +3129,22 @@ input[type="date"].usa-input {
 /* Tag — canonical stock USWDS pattern, sourced from rlp-inspections/css/styles.css
    (matches USWDS default exactly). See component.html notes for the divergent
    pill-shaped variant found in rlp-case-management. */
+/* Verified against RLP 2026-09-18 (the "Agency" tag in the Submitted By column
+   of the profile Submissions grid). RLP's tag is LARGER, LIGHTER and slightly
+   ROUNDED compared with the stock-USWDS values this previously carried:
+   14px not 12px, weight 400 not 700, radius 2px not 0, padding 1px 8px not
+   3px 7px, and display inline not inline-block. */
 .usa-tag {
   background-color: #565c65;
-  border-radius: 0;
+  border-radius: 0.2rem;
   color: #fff;
-  display: inline-block;
+  display: inline;
   font-family: "Public Sans Web", "Helvetica Neue", "Helvetica", "Roboto", "Arial", sans-serif;
-  font-size: 1.2rem;
-  font-weight: 700;
+  font-size: 1.4rem;
+  font-weight: 400;
   letter-spacing: normal;
-  line-height: 1;
-  padding: 0.3rem 0.7rem;
+  line-height: 1.6;
+  padding: 0.1rem 0.8rem;
   text-transform: uppercase;
 }
 

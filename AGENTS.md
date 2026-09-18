@@ -48,7 +48,7 @@ It is not decoration. Read it before you copy anything.
 | `unverified` | Came from a prototype. **Never checked against the live app.** | Confirm against RLP before shipping. Treat the markup as a starting point, not a spec. |
 | `proposed` | A design proposal that **deliberately differs** from the live app. | **Does not exist in the product yet.** Never build it as though it already ships. Raise it with the design owner first. |
 
-As of 2026-09-18: **25 verified, 10 unverified, 1 proposed** (36 entries).
+As of 2026-09-18: **26 verified, 9 unverified, 1 proposed** (36 entries).
 Assume unverified unless the badge says otherwise.
 
 ## Hard prohibitions
@@ -135,6 +135,12 @@ alert warning         bg #faf3d1, border-left #ffbe2e, body padding 8px 20px
 unstyled button       #005ea2, weight 400, padding 0 - used as a TEXT LINK in RLP
 destructive outline   #990f00 (.delete-acct-btn), right-aligned in a panel header
 empty state           centred
+tag (.usa-tag)        bg #565c65, #fff, 14px, weight 400, radius 2px,
+                      padding 1px 8px, display inline, uppercased by CSS
+                      (NOT the stock-USWDS 12px/700/square values)
+status text           #417505 approved | #8F5800 pending | #A34900 payment-in-process
+                      #205493 rejected-for-resubmission | #13669A draft/in-review
+                      all five verified byte-identical to the .status-* palette
 breadcrumb            16px, links #005ea2
 .usa-input            padding 8px, 1px border #565c65
 accordion button      #f0f0f0, 16px, 700, padding 16px 24px
@@ -170,7 +176,7 @@ QA agency pages used for the 2026-09-18 pass:
                                        accent-warm add-item button, red Cancel
 ```
 
-Still unverified (10): Textarea, File Input, Tag, Alert — Error (Form Validation),
+Still unverified (9): Textarea, File Input, Alert — Error (Form Validation),
 Field With Error Message, Add-Item List (Growing Rows), Document Upload —
 Attachment Panel, Empty State — Standalone Paragraph, Empty State — Table Row,
 Combobox (Long-List Select).
@@ -181,8 +187,6 @@ What each still needs:
 - Textarea / File Input / Document Upload: a create or edit form with a free-text
   field and an upload control. The profile Documents tab has Upload as a row
   action, so it needs a record that already has documents.
-- Tag: not seen anywhere in RLP yet. It may genuinely not exist — if a sweep
-  confirms that, the honest outcome is a note saying so, not a verification.
 - Empty State variants: RLP's data-grid empty state is already verified as its own
   entry. These two are prototype-specific patterns for different contexts.
 

@@ -1204,7 +1204,18 @@ When a page has two or more selects that share a label stem, the instance number
 
 VERIFIED and the colours are exact. RLP renders status as PLAIN COLOURED TEXT - no pill, no background, no border, no padding, no uppercasing. Despite the "Badge" in this entry's name, that is what this entry already does, so it is correct as-is.
 
-Live app: "Approved" is rgb(65,117,5) = #417505 and "Pending" is rgb(143,88,0) = #8F5800 - byte-identical to .status-approved and .status-pending in css/styles.css. RLP adds text-transform: capitalize.
+FIVE of the semantic groups are now confirmed byte-identical against the live app, across two grids:
+
+  RLP value                  RLP colour   matches
+  Approved                   #417505      .status-approved
+  Pending                    #8F5800      .status-pending
+  Payment in Process         #A34900      .status-inactive group (warm orange)
+  Rejected for Resubmission  #205493      .status-rejected-for-resubmission
+  Draft                      #13669A      .status-draft / in-review / initiated
+
+Every one matched with no adjustment, which is strong evidence the whole .status-* palette in css/styles.css was lifted faithfully from RLP. RLP adds text-transform: capitalize.
+
+Content note: RLP appends an age to draft status text - the live grid shows "Draft (1914 days old)", not just "Draft". Worth reproducing if you are mocking a drafts list.
 
 RLP's own class names are per-column (e.g. .submission-cell__status), not semantic per-value. The semantic .status-* system below is a prototype abstraction over the same palette - keep using it, the rendered colour is what matters.
 
@@ -1277,30 +1288,45 @@ Sortable headers get role="columnheader" aria-sort="none" + an empty <span class
 },
 {
   name: "Tag",
-  fidelity: "unverified",
-  preview: `<span class="usa-tag">Reinspection</span> <span class="usa-tag">Asset</span> <span class="usa-tag">Primary</span>`,
-  code: `<!-- Canonical (stock USWDS) — use this going forward -->
-<span class="usa-tag">Primary</span>
+  fidelity: "verified",
+  preview: `<span class="usa-tag">Agency</span> <span class="usa-tag">Primary</span> <span class="usa-tag">Asset</span>`,
+  code: `<span class="usa-tag">Agency</span>
 
 .usa-tag {
   background-color: #565c65;
-  border-radius: 0;
+  border-radius: 0.2rem;
   color: #fff;
-  display: inline-block;
-  font-size: 1.2rem;
-  font-weight: 700;
+  display: inline;
+  font-size: 1.4rem;
+  font-weight: 400;
   letter-spacing: normal;
-  line-height: 1;
-  padding: 0.3rem 0.7rem;
+  line-height: 1.6;
+  padding: 0.1rem 0.8rem;
   text-transform: uppercase;
 }`,
-  notes: `SOURCE (canonical): rlp-inspections/css/styles.css — matches stock USWDS exactly. rlp-packets/css/styles.css has a near-identical simplified variant.
+  notes: `SOURCE: qa.lnpweb.com/management/applicant-profile?landingTab=submissions - the "Agency" tag in the Submitted By column (10 instances on that grid)
 
-RESOLVED 2026-08-27: the gray square tag is canonical — use it everywhere. A pill-shaped .usa-tag--active/--draft/--archived variant existed as legacy drift — never a second real pattern.
+CORRECTED 2026-09-18. The class name and colours were right; five other properties were not. This entry previously carried the stock-USWDS values, which are smaller and bolder than RLP's.
 
-MIGRATED 2026-09-04: rlp-correspondence/correspondence-email-template.html and correspondence-letter-template.html now use the canonical tag for their version (v2) and "Current" badges, and the three pill modifiers have been deleted. No known instances of the pill variant remain — don't reintroduce it.
+What matched: background #565c65, colour #fff, text-transform uppercase, letter-spacing normal, font-family Public Sans Web.
 
-Note the canonical tag is uppercase, so a version badge renders as V2, not v2. For coloured status text in list tables (Active / Draft / Inactive / Archived), use the .status-* text classes instead — that is a separate pattern, not a tag.`
+What did NOT match, now corrected in css/styles.css:
+- font-size   RLP 1.4rem   was 1.2rem
+- font-weight RLP 400      was 700
+- radius      RLP 0.2rem   was 0
+- padding     RLP 0.1rem 0.8rem   was 0.3rem 0.7rem
+- display     RLP inline   was inline-block
+- line-height RLP 1.6      was 1
+
+Net effect: RLP's tag is a bit larger, noticeably lighter (not bold), slightly rounded rather than a hard square, and much tighter vertically. The old values read as a small bold chip; RLP's reads as a quiet inline label.
+
+Note this contradicts the 2026-08-27 note that the tag is a hard square - RLP does round it, just barely (2px). It is still not a pill.
+
+HEADS UP: rlp-correspondence uses this tag for version badges ("V2", "Current"). Those will now render larger and non-bold. That is correct per RLP, but it is a visible change to those pages.
+
+Markup casing: write the label in normal case ("Agency"); CSS uppercases it. RLP does exactly that.
+
+For coloured status text in list tables, use the .status-* text classes instead - that is a separate pattern, not a tag. See "Status Tag / Badge".`
 },
 {
   name: "Tabs — Horizontal",
