@@ -834,25 +834,33 @@ select:focus {
 /* Status Text
    ========================================================================== */
 
-/* Green - Active, Approved, Live, Paid, Completed */
+/* Green - Active, Approved, Live, Paid, Completed, Sent, Sold, Done / Review Done */
 .status-active,
 .status-approved,
 .status-live,
 .status-paid,
-.status-completed {
+.status-completed,
+.status-sent,
+.status-sold,
+.status-done,
+.status-review-done {
   color: #417505;
 }
 
-/* Yellow - Pending/Open, Assigned, Approved - Awaiting Payment */
+/* Yellow - Pending, Open, Assigned, Approved - Awaiting Payment, Awaiting Application, Generated, Collecting */
 .status-pending,
 .status-open,
 .status-assigned,
-.status-approved-awaiting-payment {
+.status-approved-awaiting-payment,
+.status-awaiting-application,
+.status-generated,
+.status-collecting {
   color: #8F5800;
 }
 
-/* Red - Rejected/Denied/Cancelled/Past Due/Terminated */
+/* Red - Rejected / Review Rejected, Denied, Cancelled, Past Due, Terminated */
 .status-rejected,
+.status-review-rejected,
 .status-denied,
 .status-cancelled,
 .status-past-due,
@@ -860,39 +868,45 @@ select:focus {
   color: #CD2026;
 }
 
-/* Dark Red - Expired/Revoked/Withdrawn/Decommissioned/Retired */
+/* Dark Red - Expired, Revoked, Withdrawn, Decommissioned, Retired, Exported */
 .status-expired,
 .status-revoked,
 .status-withdrawn,
 .status-decommissioned,
-.status-retired {
+.status-retired,
+.status-exported {
   color: #80252A;
 }
 
-/* Cool Blue - In Progress, Rejected for Resubmission, In Cart, Inactive */
+/* Cool Blue - In Progress, Rejected for Resubmission, In Cart, Submitted, Ready for Review */
 .status-in-progress,
 .status-rejected-for-resubmission,
 .status-in-cart,
-.status-inactive {
+.status-submitted,
+.status-ready-for-review {
   color: #205493;
 }
 
-/* Warm Orange - On Hold, Suspended, Payment in Process */
+/* Warm Orange - On Hold / Review On Hold, Suspended, Payment in Process, Inactive */
 .status-on-hold,
+.status-review-on-hold,
 .status-suspended,
-.status-payment-in-process {
+.status-payment-in-process,
+.status-inactive {
   color: #A34900;
 }
 
-/* Draft Blue - In Review, Draft, Initiated */
+/* Draft Blue - In Review / Review In Progress, Draft, Initiated */
 .status-in-review,
+.status-review-in-progress,
 .status-draft,
 .status-initiated {
   color: #13669A;
 }
 
-/* Gray - Archived */
-.status-archived {
+/* Gray - Archived, Closed */
+.status-archived,
+.status-closed {
   color: #5C5F66;
 }
 

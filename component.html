@@ -1480,7 +1480,7 @@ RLP's own class names are per-column (e.g. .submission-cell__status), not semant
 
 Colour mapping in css/styles.css (~line 836)
 
-Semantic class-per-status-value groups: active/approved/live/paid/completed · pending/open/assigned/approved-awaiting-payment · rejected/denied/cancelled/past-due/terminated · expired/revoked/withdrawn/decommissioned/retired · in-progress/rejected-for-resubmission/in-cart/inactive · on-hold/suspended/payment-in-process · in-review/draft/initiated · archived.
+Semantic class-per-status-value groups: active/approved/live/paid/completed/sent/sold/done/review-done · pending/open/assigned/approved-awaiting-payment/awaiting-application/generated/collecting · rejected/review-rejected/denied/cancelled/past-due/terminated · expired/revoked/withdrawn/decommissioned/retired/exported · in-progress/rejected-for-resubmission/in-cart/submitted/ready-for-review · on-hold/review-on-hold/suspended/payment-in-process/inactive · in-review/review-in-progress/draft/initiated · archived/closed.
 
 When reproducing a NEW status value, map it to the closest existing semantic group — don't invent a new color.`
 
@@ -2051,64 +2051,64 @@ const STATUSES = [
   "title": "#417505 — Green",
   "cls": "status-active",
   "sample": "Active",
-  "labels": "Active · Approved · Live · Paid · Completed",
-  "classes": ".status-active, .status-approved, .status-live, .status-paid, .status-completed"
+  "labels": "Active · Approved · Live · Paid · Completed · Sent · Sold · Done / Review Done",
+  "classes": ".status-active, .status-approved, .status-live, .status-paid, .status-completed, .status-sent, .status-sold, .status-done, .status-review-done"
  },
  {
   "hex": "#8F5800",
   "title": "#8F5800 — Yellow",
   "cls": "status-pending",
   "sample": "Pending",
-  "labels": "Pending / Open · Assigned · Approved - Awaiting Payment",
-  "classes": ".status-pending, .status-open, .status-assigned, .status-approved-awaiting-payment"
+  "labels": "Pending · Open · Assigned · Approved - Awaiting Payment · Awaiting Application · Generated · Collecting",
+  "classes": ".status-pending, .status-open, .status-assigned, .status-approved-awaiting-payment, .status-awaiting-application, .status-generated, .status-collecting"
  },
  {
   "hex": "#CD2026",
   "title": "#CD2026 — Red",
   "cls": "status-rejected",
   "sample": "Rejected",
-  "labels": "Rejected / Denied · Cancelled · Past Due · Terminated",
-  "classes": ".status-rejected, .status-denied, .status-cancelled, .status-past-due, .status-terminated"
+  "labels": "Rejected / Review Rejected · Denied · Cancelled · Past Due · Terminated",
+  "classes": ".status-rejected, .status-review-rejected, .status-denied, .status-cancelled, .status-past-due, .status-terminated"
  },
  {
   "hex": "#80252A",
   "title": "#80252A — Dark Red",
   "cls": "status-expired",
   "sample": "Expired",
-  "labels": "Expired / Revoked · Withdrawn · Decommissioned · Retired",
-  "classes": ".status-expired, .status-revoked, .status-withdrawn, .status-decommissioned, .status-retired"
+  "labels": "Expired · Revoked · Withdrawn · Decommissioned · Retired · Exported",
+  "classes": ".status-expired, .status-revoked, .status-withdrawn, .status-decommissioned, .status-retired, .status-exported"
  },
  {
   "hex": "#205493",
   "title": "#205493 — Cool Blue",
   "cls": "status-in-progress",
   "sample": "In Progress",
-  "labels": "In Progress · Rejected for Resubmission · In Cart · Inactive",
-  "classes": ".status-in-progress, .status-rejected-for-resubmission, .status-in-cart, .status-inactive"
+  "labels": "In Progress · Rejected for Resubmission · In Cart · Submitted · Ready for Review",
+  "classes": ".status-in-progress, .status-rejected-for-resubmission, .status-in-cart, .status-submitted, .status-ready-for-review"
  },
  {
   "hex": "#A34900",
   "title": "#A34900 — Warm Orange",
   "cls": "status-on-hold",
   "sample": "On Hold",
-  "labels": "On Hold · Suspended · Payment in Process",
-  "classes": ".status-on-hold, .status-suspended, .status-payment-in-process"
+  "labels": "On Hold / Review On Hold · Suspended · Payment in Process · Inactive",
+  "classes": ".status-on-hold, .status-review-on-hold, .status-suspended, .status-payment-in-process, .status-inactive"
  },
  {
   "hex": "#13669A",
   "title": "#13669A — Draft Blue",
   "cls": "status-draft",
   "sample": "Draft",
-  "labels": "In Review · Draft · Initiated",
-  "classes": ".status-in-review, .status-draft, .status-initiated"
+  "labels": "In Review / Review In Progress · Draft · Initiated",
+  "classes": ".status-in-review, .status-review-in-progress, .status-draft, .status-initiated"
  },
  {
   "hex": "#5C5F66",
   "title": "#5C5F66 — Gray",
   "cls": "status-archived",
   "sample": "Archived",
-  "labels": "Archived",
-  "classes": ".status-archived"
+  "labels": "Archived · Closed",
+  "classes": ".status-archived, .status-closed"
  }
 ];
 
