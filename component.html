@@ -1468,7 +1468,7 @@ FIVE of the semantic groups are now confirmed byte-identical against the live ap
   RLP value                  RLP colour   matches
   Approved                   #417505      .status-approved
   Pending                    #8F5800      .status-pending
-  Payment in Process         #A34900      .status-inactive group (warm orange)
+  Payment in Process         #A34900      .status-payment-in-process (warm orange)
   Rejected for Resubmission  #205493      .status-rejected-for-resubmission
   Draft                      #13669A      .status-draft / in-review / initiated
 
@@ -1480,7 +1480,7 @@ RLP's own class names are per-column (e.g. .submission-cell__status), not semant
 
 Colour mapping in css/styles.css (~line 836)
 
-Semantic class-per-status-value groups: active/approved/live/paid/completed · pending/open/assigned/approved-awaiting-payment · rejected/denied/cancelled/past-due/terminated · expired/revoked/withdrawn/decommissioned/retired · in-progress/rejected-for-resubmission/in-cart · inactive · on-hold/suspended/payment-in-process · in-review/draft/initiated · archived.
+Semantic class-per-status-value groups: active/approved/live/paid/completed · pending/open/assigned/approved-awaiting-payment · rejected/denied/cancelled/past-due/terminated · expired/revoked/withdrawn/decommissioned/retired · in-progress/rejected-for-resubmission/in-cart/inactive · on-hold/suspended/payment-in-process · in-review/draft/initiated · archived.
 
 When reproducing a NEW status value, map it to the closest existing semantic group — don't invent a new color.`
 
@@ -2083,16 +2083,16 @@ const STATUSES = [
   "title": "#205493 — Cool Blue",
   "cls": "status-in-progress",
   "sample": "In Progress",
-  "labels": "In Progress · Rejected for Resubmission · In Cart",
-  "classes": ".status-in-progress, .status-rejected-for-resubmission, .status-in-cart"
+  "labels": "In Progress · Rejected for Resubmission · In Cart · Inactive",
+  "classes": ".status-in-progress, .status-rejected-for-resubmission, .status-in-cart, .status-inactive"
  },
  {
   "hex": "#A34900",
   "title": "#A34900 — Warm Orange",
   "cls": "status-on-hold",
   "sample": "On Hold",
-  "labels": "Inactive · On Hold · Suspended · Payment in Process",
-  "classes": ".status-inactive, .status-on-hold, .status-suspended, .status-payment-in-process"
+  "labels": "On Hold · Suspended · Payment in Process",
+  "classes": ".status-on-hold, .status-suspended, .status-payment-in-process"
  },
  {
   "hex": "#13669A",

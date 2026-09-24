@@ -869,16 +869,12 @@ select:focus {
   color: #80252A;
 }
 
-/* Cool Blue - In Progress, Rejected for Resubmission, In Cart */
+/* Cool Blue - In Progress, Rejected for Resubmission, In Cart, Inactive */
 .status-in-progress,
 .status-rejected-for-resubmission,
-.status-in-cart {
-  color: #205493;
-}
-
-/* Warm Orange - On Hold, Suspended, Payment in Process, Inactive */
+.status-in-cart,
 .status-inactive {
-  color: #A34900;
+  color: #205493;
 }
 
 /* Warm Orange - On Hold, Suspended, Payment in Process */
