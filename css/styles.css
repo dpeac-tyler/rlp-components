@@ -878,21 +878,21 @@ select:focus {
   color: #80252A;
 }
 
-/* Cool Blue - In Progress, Rejected for Resubmission, In Cart, Submitted, Ready for Review */
+/* Cool Blue - In Progress, Rejected for Resubmission, In Cart, Submitted, Ready for Review, Inactive */
 .status-in-progress,
 .status-rejected-for-resubmission,
 .status-in-cart,
 .status-submitted,
-.status-ready-for-review {
+.status-ready-for-review,
+.status-inactive {
   color: #205493;
 }
 
-/* Warm Orange - On Hold / Review On Hold, Suspended, Payment in Process, Inactive */
+/* Warm Orange - On Hold / Review On Hold, Suspended, Payment in Process */
 .status-on-hold,
 .status-review-on-hold,
 .status-suspended,
-.status-payment-in-process,
-.status-inactive {
+.status-payment-in-process {
   color: #A34900;
 }
 

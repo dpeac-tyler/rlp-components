@@ -79,6 +79,8 @@ Current records:
 - **Modal / Dialog** — Figma specifies 30px padding on all four sides of the
   dialog body. The app ships 42px left/right and 10px top/bottom. Accepted
   2026-09-18; not being raised with dev at this time.
+- **Status Tag / Badge** — Figma puts Inactive in Warm Orange (`#A34900`). The
+  app ships it Cool Blue (`#205493`), confirmed by a developer on QA 2026-09-25.
 
 ## Hard prohibitions
 

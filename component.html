@@ -1472,6 +1472,10 @@ FIVE of the semantic groups are now confirmed byte-identical against the live ap
   Rejected for Resubmission  #205493      .status-rejected-for-resubmission
   Draft                      #13669A      .status-draft / in-review / initiated
 
+Inactive renders #205493 (Cool Blue) on QA - confirmed by a developer on the live app 2026-09-25, so .status-inactive sits in the Cool Blue group.
+
+DESIGN INTENT: the Figma status legend puts Inactive in Warm Orange (#A34900). The app ships it as Cool Blue (#205493). This entry records the AS-BUILT colour; do not move Inactive back to Warm Orange unless Daniel reopens it with dev.
+
 Every one matched with no adjustment, which is strong evidence the whole .status-* palette in css/styles.css was lifted faithfully from RLP. RLP adds text-transform: capitalize.
 
 Content note: RLP appends an age to draft status text - the live grid shows "Draft (1914 days old)", not just "Draft". Worth reproducing if you are mocking a drafts list.
@@ -1480,7 +1484,7 @@ RLP's own class names are per-column (e.g. .submission-cell__status), not semant
 
 Colour mapping in css/styles.css (~line 836)
 
-Semantic class-per-status-value groups: active/approved/live/paid/completed/sent/sold/done/review-done · pending/open/assigned/approved-awaiting-payment/awaiting-application/generated/collecting · rejected/review-rejected/denied/cancelled/past-due/terminated · expired/revoked/withdrawn/decommissioned/retired/exported · in-progress/rejected-for-resubmission/in-cart/submitted/ready-for-review · on-hold/review-on-hold/suspended/payment-in-process/inactive · in-review/review-in-progress/draft/initiated · archived/closed.
+Semantic class-per-status-value groups: active/approved/live/paid/completed/sent/sold/done/review-done · pending/open/assigned/approved-awaiting-payment/awaiting-application/generated/collecting · rejected/review-rejected/denied/cancelled/past-due/terminated · expired/revoked/withdrawn/decommissioned/retired/exported · in-progress/rejected-for-resubmission/in-cart/submitted/ready-for-review/inactive · on-hold/review-on-hold/suspended/payment-in-process · in-review/review-in-progress/draft/initiated · archived/closed.
 
 When reproducing a NEW status value, map it to the closest existing semantic group — don't invent a new color.`
 
@@ -2083,16 +2087,16 @@ const STATUSES = [
   "title": "#205493 — Cool Blue",
   "cls": "status-in-progress",
   "sample": "In Progress",
-  "labels": "In Progress · Rejected for Resubmission · In Cart · Submitted · Ready for Review",
-  "classes": ".status-in-progress, .status-rejected-for-resubmission, .status-in-cart, .status-submitted, .status-ready-for-review"
+  "labels": "In Progress · Rejected for Resubmission · In Cart · Submitted · Ready for Review · Inactive",
+  "classes": ".status-in-progress, .status-rejected-for-resubmission, .status-in-cart, .status-submitted, .status-ready-for-review, .status-inactive"
  },
  {
   "hex": "#A34900",
   "title": "#A34900 — Warm Orange",
   "cls": "status-on-hold",
   "sample": "On Hold",
-  "labels": "On Hold / Review On Hold · Suspended · Payment in Process · Inactive",
-  "classes": ".status-on-hold, .status-review-on-hold, .status-suspended, .status-payment-in-process, .status-inactive"
+  "labels": "On Hold / Review On Hold · Suspended · Payment in Process",
+  "classes": ".status-on-hold, .status-review-on-hold, .status-suspended, .status-payment-in-process"
  },
  {
   "hex": "#13669A",
